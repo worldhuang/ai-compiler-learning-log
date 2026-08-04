@@ -25,7 +25,7 @@ test("server-renders the 50-week password gate", async () => {
 test("planner and standalone file include the requested behavior", async () => {
   const [planner, standalone] = await Promise.all([
     readFile(new URL("../app/Planner.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../AI编译器年度学习计划.html", import.meta.url), "utf8"),
+    readFile(new URL("../worldhaung_ai.html", import.meta.url), "utf8"),
   ]);
   assert.match(planner, /全部 50 周/);
   assert.match(planner, /day6Knowledge/);

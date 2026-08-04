@@ -55,6 +55,9 @@ function render(){const list=DATA.weeks.map((w,i)=>({...w,index:i+1})).filter(w=
 unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sessionStorage.setItem('learning-log-unlocked','1');offlineGate.style.display='none'}else unlockError.textContent='密码不正确，请重试'};if(sessionStorage.getItem('learning-log-unlocked')==='1')offlineGate.style.display='none';startDate=document.getElementById('startDate').value=startDate;document.getElementById('startDate').onchange=e=>{startDate=e.target.value;persist();render()};search.oninput=e=>{query=e.target.value;render()};renderSignals();renderPhases();render();updateProgress();
 </script></body></html>`;
 
-const output = path.join(root, "AI编译器年度学习计划.html");
+const output = path.join(root, "worldhaung_ai.html");
+const pagesOutput = path.join(root, "docs", "index.html");
 fs.writeFileSync(output, html, "utf8");
-console.log(output);
+fs.mkdirSync(path.dirname(pagesOutput), { recursive: true });
+fs.writeFileSync(pagesOutput, html, "utf8");
+console.log(`${output}\n${pagesOutput}`);
