@@ -33,5 +33,6 @@ test("planner and standalone file include the requested behavior", async () => {
   assert.match(planner, /Transformer Subgraph Compiler/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /020721/);
-  assert.match(standalone, /LeetCode 从第 9 周开始/);
+  assert.match(standalone, /2027\.02 开始每周约 5 道 LeetCode/);
+  assert.match(standalone, /简历项目里程碑/);
 });

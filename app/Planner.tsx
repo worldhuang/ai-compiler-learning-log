@@ -13,9 +13,9 @@ type Week = {
 const phases = [
   { name: "基础与性能直觉", range: "W01–W12", color: "#ef6a4c" },
   { name: "CUDA Kernel 工程", range: "W13–W20", color: "#e6a83e" },
-  { name: "PyTorch 编译栈", range: "W21–W30", color: "#3c86c6" },
-  { name: "TVM · 编译后端 · LLM 算子", range: "W31–W44", color: "#7e62c7" },
-  { name: "MLIR · 项目 · 秋招", range: "W45–W50", color: "#249577" },
+  { name: "PyTorch 编译栈 · 刷题启动", range: "W21–W30", color: "#3c86c6" },
+  { name: "简历项目双主线", range: "W31–W44", color: "#7e62c7" },
+  { name: "MLIR · 开源 · 秋招", range: "W45–W50", color: "#249577" },
 ];
 
 const weeks: Week[] = [
@@ -48,17 +48,17 @@ const weeks: Week[] = [
   { phase:3,title:"Inductor 与 Triton Codegen",goal:"从 FX graph 追到生成 kernel",output:"generated-code 注释样例",days:["保存 Inductor 生成代码与缓存目录","选 pointwise fusion 案例逐行标注","选 reduction 案例观察调度与 autotune","修改输入 shape 看代码和 guard 如何变化","对照 Triton 手写版本做性能/代码比较","写《一次 torch.compile 性能回归怎么查》"]},
   { phase:3,title:"自定义后端与 Pass",goal:"实现可插拔 backend 和图级优化",output:"mini torch.compile backend",days:["实现接收 FX GraphModule 的 eager backend","加入图打印、计时和 fallback","在 backend 前执行常量/冗余算子简化","处理 unsupported op 与动态 shape 边界","构造 8 个正确性/回归测试","发布 PyTorch compiler-playground"]},
   { phase:3,title:"融合项目升级",goal:"把 FX 原型变成可复现项目",output:"fusion-pass v1 + benchmark dashboard",days:["明确支持条件：eval/train、dtype、shape","补图模式匹配的负例与回退策略","覆盖 ResNet18/50 的子图测试","用 profiler 证明 kernel launch/访存变化","在不同 batch 测 eager/compile/custom pass","写项目文档与 12 个面试追问答案"]},
-  { phase:3,title:"阶段缓冲与综合考核",goal:"补齐短板并完成一次闭卷实现",output:"90 分钟 mock + 缺口清单",days:["闭卷画 PyTorch 编译栈与关键 IR","90 分钟实现 FX pattern rewrite","90 分钟 CUDA reduction 手写/伪码","修复前三周遗留 issue，不开新坑","重跑所有公开 benchmark","阶段复盘：保留/停止/调整下一阶段任务"]},
-  { phase:4,title:"TVM 架构与 IRModule",goal:"建立 Relax/TensorIR/Runtime 的全局模型",output:"TVM 端到端最小编译器",days:["从源码构建 TVM 并冻结 commit、CUDA 与 LLVM 版本","学习 IRModule、结构化 IR 与 TVMScript","手写 Relax 函数并观察 LegalizeOps 前后 IR","实现 Matmul+Bias+ReLU 的 TIR 与 call_tir","编译到 CUDA，校验正确性并测冷/热启动","综合实现由 Day 6 挑战自动生成"]},
-  { phase:4,title:"TensorIR 与 GPU Schedule",goal:"掌握 block、buffer、reduction 与 GPU 映射",output:"TVM CUDA matmul + schedule trace",days:["写 elementwise/reduction/matmul 三个 PrimFunc","应用 split/reorder/cache_read/cache_write","绑定 blockIdx/threadIdx 并做 cooperative fetch","加入 shared/local cache 与寄存器分块","保存 schedule trace，用 Nsight 对比手写 CUDA","综合实现由 Day 6 挑战自动生成"]},
-  { phase:4,title:"MetaSchedule 与代价模型",goal:"理解搜索空间、runner、cost model 与数据库",output:"可复现的 tune_tir 调优实验",days:["拆解 MetaSchedule 组件与一次 tuning trace","为 matmul 生成并检查 design space","运行 32/128/512 trials 并保存数据库","分析最佳 trace 与人工 schedule 的差异","在 holdout shape 上验证泛化和稳定性","综合实现由 Day 6 挑战自动生成"]},
-  { phase:4,title:"Relax 图优化与模型导入",goal:"能写图 Pass 并跑通小模型 GPU 推理",output:"自定义 Relax Pass + 小模型推理",days:["学习 DataflowBlock、DPL、FuseOps/FuseTIR","实现 Matmul+Bias+Activation 模式重写","加入结构测试、数值测试和 fallback","导入小型 Transformer/MLP 并检查算子覆盖","测编译时间、峰值显存和稳态 latency","综合实现由 Day 6 挑战自动生成"]},
-  { phase:4,title:"TIR 归约与算子融合",goal:"把 Softmax/LayerNorm 从数学定义降到可调度 PrimFunc",output:"TIR Softmax + LayerNorm schedule 库",days:["用 TVMScript 写稳定 Softmax 与 LayerNorm baseline","拆解归约轴、线程映射和 shared-memory 生命周期","实现 warp/block reduction 与 cooperative fetch","加入 epilogue fusion 和向量化访存","跨 dtype/hidden size 对比 CUDA/Triton/PyTorch","精读 TensorIR reduction block 与 schedule legality"]},
-  { phase:4,title:"动态 Shape 与符号推理",goal:"理解编译器面对动态 batch/sequence 的约束与 guard",output:"动态 shape 编译与重编译实验集",days:["学习 Relax ShapeExpr、symbolic vars 与约束","构造动态 batch/sequence 的 Transformer 子图","记录 specialization、guard 与重编译行为","为非法 shape 和未知维度设计诊断信息","比较静态/动态编译的代码与性能差异","精读动态 shape 表示与 shape inference 实现入口"]},
-  { phase:4,title:"Relax Pass 与融合分区",goal:"实现可靠的图级融合、回退和结构验证",output:"Transformer 子图 Relax fusion pipeline",days:["用 DPL 描述 RMSNorm/MLP/attention 子图模式","实现匹配、重写与结构等价检查","加入 dtype/layout/shape 支持矩阵与 fallback","检查 FuseOps/FuseTIR 前后 IR 和 kernel 数","构造正例、负例、动态 shape 回归测试","精读 Relax dataflow rewrite 与 pass pipeline"]},
-  { phase:4,title:"MetaSchedule 深入",goal:"为自定义算子设计搜索空间并解释代价模型",output:"LayerNorm/Matmul 调优数据库 + 分析报告",days:["定义 schedule rules 与 postprocessors","建立本地 runner、数据库和可复现实验配置","扫描 trial 数与输入 shape，保存 top-k trace","分析 cost model 误判与测量噪声","与人工 schedule、cuBLAS/PyTorch 做公平对照","精读 MetaSchedule tune context 与数据库源码"]},
-  { phase:4,title:"自定义 Target 与 BYOC",goal:"理解子图分区、代码生成和外部运行时接入",output:"可运行的 mini external-codegen backend",days:["学习 target、partition、codegen、runtime 边界","实现一个只支持 Matmul+Bias 的外部后端","为支持算子做子图标注与分区","生成 CUDA/C++ stub 并接入 runtime module","覆盖 unsupported op、混合分区与 fallback","精读 TVM BYOC 示例并画端到端调用链"]},
-  { phase:4,title:"TVM Runtime 与部署",goal:"从编译产物追到模块加载、内存与函数调用",output:"AOT/VM 部署包 + runtime trace",days:["比较 Relax VM 与 AOT 风格执行路径","导出/加载 module，检查参数与常量打包","追踪 PackedFunc、NDArray 与 device API","测编译时间、加载时间、首轮和稳态 latency","制造缺算子/版本不匹配并写诊断清单","精读 runtime module、memory planning 与执行器源码"]},
+  { phase:3,title:"简历项目 A 立项：GPU 算子库",goal:"从 3 月开始把前期 CUDA Lab 合并为完整工程，而不是新增小 Demo",output:"项目 RFC、支持矩阵、仓库骨架与 benchmark 协议",days:["确定项目问题、目标用户、非目标和验收指标","设计 operators/backend/tests/benchmarks/docs 目录","冻结硬件、软件版本、输入 shape 与精度阈值","迁移前期 Softmax/LayerNorm/GEMM 并保留演进历史","建立 PyTorch/CUTLASS/Triton baseline 与结果格式","精读成熟算子库的测试、benchmark 与发布结构"]},
+  { phase:4,title:"项目 A：Softmax 与 RMSNorm 工程化",goal:"将课堂 kernel 升级为支持多 shape/dtype 的可维护组件",output:"Softmax/RMSNorm v1 + correctness matrix",days:["重构 API、dispatch 和错误检查","覆盖 FP32/FP16、非对齐 shape 与极值输入","实现 naive/shared/warp/Triton 多版本","加入自动正确性、数值误差与回归测试","用 Nsight 解释访存、occupancy 和瓶颈迁移","精读 FlashAttention/Triton 中的归约实现"]},
+  { phase:4,title:"项目 A：GEMM 与 Transformer MLP",goal:"将 GEMM、bias、activation 组合成真实 Transformer 热点",output:"GEMM/MLP benchmark suite",days:["定义 M/N/K 与 Transformer 典型 shape 集","整理 tiled/register-blocked GEMM 实现","实现 bias+GELU/SwiGLU epilogue fusion","对比 cuBLAS/CUTLASS/Triton 并控制变量","分析小矩阵、大矩阵和不同 dtype 的性能差异","精读 CUTLASS mainloop 与 epilogue 设计"]},
+  { phase:4,title:"项目 A：RoPE 与 Attention 热点",goal:"覆盖 LLM 推理中的布局、融合和 IO 问题",output:"RoPE/attention hotspot kernels + IO 分析",days:["实现 RoPE reference 与 CUDA/Triton kernel","推导 prefill/decode shape 和 KV cache 字节数","实现小型 fused attention 或关键子算子","比较连续与分页 KV 布局的访问代价","用 Roofline/Nsight 解释热点而非只报加速比","精读 FlashAttention 与 PagedAttention 论文/源码入口"]},
+  { phase:4,title:"项目 A：PyTorch / vLLM 接入",goal:"证明算子库能进入真实框架调用链",output:"PyTorch custom op + vLLM 可选集成 demo",days:["用 torch.library/C++ extension 注册自定义算子","加入 fake/meta kernel 和 torch.compile 兼容检查","实现能力判断、fallback 与异常诊断","接入 mini Transformer 或 vLLM 单个 custom op","对比单 kernel 收益与端到端收益","精读 PyTorch custom op 与 vLLM 调用链"]},
+  { phase:4,title:"项目 A 封版：GPU Operator Library",goal:"形成第一个可写简历、可被陌生人复现的主项目",output:"gpu-operator-lab v1.0 + 性能报告 + 10 分钟讲解",days:["冻结 API、支持矩阵、环境与一键运行脚本","跑全量 correctness/performance regression","生成跨 shape/dtype 性能图和失败案例","补架构图、优化演进、限制与复现说明","邀请他人按 README 复现并修复全部阻塞项","精读核心实现并准备 20 个源码追问"]},
+  { phase:4,title:"项目 B 立项：Transformer 子图编译器",goal:"从 4 月中旬启动端到端编译器主项目",output:"编译器 RFC + PyTorch/ONNX→Relax 最小链路",days:["冻结支持的 Transformer 子图与非目标","从源码构建 TVM 并锁定版本","学习 IRModule、Relax、TensorIR 与 Runtime 分层","导入 MLP/RMSNorm 子图并保存规范化 IR","建立 eager/torch.compile/TVM baseline","精读 TVM 端到端编译流程与关键入口"]},
+  { phase:4,title:"项目 B：TensorIR Lowering 与 GPU Schedule",goal:"从高层算子降到可解释、可优化的 GPU PrimFunc",output:"Matmul/RMSNorm/Softmax TIR schedule 库",days:["用 TVMScript 写三个正确 baseline","应用 split/reorder/cache_read/cache_write","完成 block/thread 绑定和 cooperative fetch","加入归约、向量化与寄存器分块","对照项目 A kernel 与生成代码做性能分析","精读 schedule legality 与生成 CUDA"]},
+  { phase:4,title:"项目 B：Relax 融合 Pass",goal:"实现可靠的模式匹配、融合、回退与结构验证",output:"Transformer fusion pipeline + 20 个图测试",days:["用 DPL 描述 MLP/RMSNorm/attention 模式","实现匹配、重写和前后 IR 保存","加入 dtype/layout/shape 支持矩阵","实现 unsupported op 与混合子图 fallback","验证数值、kernel 数和访存变化","精读 FuseOps/FuseTIR 与 dataflow rewrite"]},
+  { phase:4,title:"项目 B：动态 Shape 与 MetaSchedule",goal:"处理真实 batch/sequence 变化并构建可复现调优流程",output:"动态 shape 策略 + tuning database",days:["学习 ShapeExpr、symbolic vars 与约束","实现 specialization/guard/recompile 实验","构造动态 batch/sequence 正负测试","建立 MetaSchedule runner 与数据库","比较人工 schedule、top-k trace 与 holdout shape","精读 shape inference 与 MetaSchedule cost model"]},
+  { phase:4,title:"项目 B：Runtime、BYOC 与框架集成",goal:"打通代码生成、模块加载、内存和外部 kernel",output:"可部署 runtime package + external backend",days:["追踪 PackedFunc、NDArray、device API 与执行器","实现 external codegen 或调用项目 A kernel","加入能力检查、分区与 fallback","测编译/加载/首轮/稳态 latency 和峰值显存","制造版本错配、缺算子和 OOM 诊断案例","精读 Runtime/BYOC 的关键源码调用链"]},
   { phase:4,title:"LLM 算子编译：Attention 与 KV Cache",goal:"把 AI Infra 场景转化为编译器可优化的算子与布局问题",output:"小型 decoder block 的融合与内存规划报告",days:["推导 prefill/decode 的 shape、算量与访存","实现 RMSNorm+QKV+RoPE 的参考图","为 attention/KV cache 选择布局并写 TIR kernel","比较连续/分页 KV 布局的访问与容量代价","编译 mini decoder，记录 kernel 数、显存和 latency","精读 FlashAttention 与 PagedAttention 的 IO 思路"]},
   { phase:4,title:"编译器接入推理框架",goal:"证明自定义 kernel/编译后端能进入真实推理调用链",output:"vLLM 或 PyTorch custom-op 集成 demo",days:["选择 vLLM custom op 或 PyTorch extension 接入点","接入自写 RMSNorm/Softmax/TIR 或 Triton kernel","实现能力检查、fallback 与数值一致性测试","用固定 workload 对比 eager/原生/自定义实现","记录端到端收益与收益被调度开销吞没的案例","精读 vLLM custom op 与模型执行器调用链"]},
   { phase:4,title:"核心项目：Transformer 子图编译器",goal:"整合捕获、Pass、Lowering、Schedule、Runtime 与 benchmark",output:"transformer-compiler v1.0",days:["冻结输入 IR、支持算子与动态 shape 范围","完成 PyTorch/ONNX→Relax 导入和规范化","完成 fusion→TIR lowering→GPU schedule","加入 fallback、错误诊断与 20 个回归测试","对 3 组模型/shape 做端到端性能报告","精读项目关键路径，准备 10 分钟源码讲解"]},
@@ -66,7 +66,7 @@ const weeks: Week[] = [
   { phase:5,title:"MLIR 基础与 Toy 1–2",goal:"理解 dialect、operation、region、SSA 与 TableGen",output:"Toy AST→MLIR 运行记录",days:["配置 LLVM/MLIR 或使用预构建工具；跑 mlir-opt","完成 Toy Ch1，追踪源码到 AST dump","完成 Toy Ch2，理解 Op/Type/Attribute","读一段 .mlir：operation/region/block/value","用通用格式改写同一 IR 并 round-trip","画 MLIR 多层 dialect 降低路线"]},
   { phase:5,title:"Pattern Rewrite 与 Pass",goal:"能写局部重写并解释 pass 管理",output:"transpose canonicalization Pass",days:["完成 Toy Ch3，理解 RewritePattern","写 transpose(transpose(x)) 消除模式","添加 fold/canonicalization 思路与测试","完成 Toy Ch4 的 interface 概念","用 FileCheck 风格写正/负测试","对比 MLIR rewrite 与 FX/Relax Pass"]},
   { phase:5,title:"Lowering 与代码生成",goal:"理解从高层 dialect 降到 LLVM 的边界",output:"Toy Ch5–6 降低笔记",days:["完成 Toy Ch5，观察 affine/scf/memref","逐步跑 lowering pipeline 并保存中间 IR","学习 legality、conversion target、type converter","完成 Toy Ch6 到 LLVM IR/可执行文件","跟踪 transpose 在不同层级的表示","写《何时在什么 IR 层做优化》"]},
-  { phase:5,title:"项目整合与工程质量",goal:"让三个项目都能被陌生人复现",output:"3 个 portfolio-ready 仓库",days:["审计 CUDA 项目：README、测试、benchmark","审计 PyTorch Pass：支持矩阵、fallback、图示","审计 TVM 项目：版本、脚本、结果可信度","统一图表样式与环境信息","清理大文件/死代码/硬编码路径","让朋友按 README 复现并修复全部阻塞项"]},
+  { phase:5,title:"双主项目工程质量审计",goal:"让两个简历主项目都能被陌生人复现",output:"2 个 portfolio-ready 主仓库",days:["审计 GPU 算子库：API、测试、benchmark 与接入示例","审计编译器：IR、Pass、fallback、runtime 与版本锁定","检查性能数据的硬件、输入、warmup 与统计口径","统一图表、架构图与环境信息","清理大文件、死代码和硬编码路径","让朋友按 README 复现并修复全部阻塞项"]},
   { phase:5,title:"简历与项目叙事",goal:"用证据和技术取舍表达成果",output:"一页简历 + 项目问答库",days:["每项目写 1 句问题、2 句动作、1 句量化结果","制作简历第一版，删除无证据的“精通”","为每项目准备 2/5/10 分钟版本","列出 30 个追问并写 STAR/技术回答","录屏回答，检查含糊词和跳步","找 2 人评审并合并高价值反馈"]},
   { phase:5,title:"秋招冲刺：算法、GPU 与编译器",goal:"完成针对性投递闭环并恢复手写与系统表达",output:"岗位矩阵 + 2 套模拟面试 + 10 次高质量投递",days:["按 JD 建技能—项目证据矩阵并制作两版简历","完成 C++/LeetCode 90 分钟模拟并订正","白板写 reduction/LayerNorm 与边界处理","讲 torch.compile graph break、Relax/TIR 和 MLIR lowering","投递 3–5 个高匹配岗位并复盘一次模拟/真实面试","精读目标团队技术博客或开源模块，补最后一个证据缺口"]},
 ];
@@ -136,9 +136,17 @@ function day6Knowledge(week: Week) {
   return `专题学习：围绕「${week.title}」精读 ${focus}；画调用链，定位 1 个源码入口，并写最小验证实验`;
 }
 
-function weekTasks(week: Week & { index?: number }) {
-  const algorithm = (week.index || 0) >= 9 ? "；完成 LeetCode 2 题并写复杂度、边界与第二解法" : "";
-  return [...week.days.slice(0,5), day6Knowledge(week), `补漏或精读：阅读 1 份官方资料或开源源码，记录 5 条笔记、1 个疑问和 1 个验证实验${algorithm}。`];
+function leetcodeActive(start: string, week: number) {
+  const d = new Date(`${start}T00:00:00`);
+  d.setDate(d.getDate() + (week - 1) * 7);
+  return d >= new Date("2027-02-01T00:00:00");
+}
+
+function weekTasks(week: Week & { index: number }, start: string) {
+  const base = [...week.days.slice(0,5), day6Knowledge(week), "补漏或精读：阅读 1 份官方资料或开源源码，记录 5 条笔记、1 个疑问和 1 个验证实验。"];
+  if (!leetcodeActive(start, week.index)) return base;
+  const algorithm = ["；加练 LeetCode 1 题，写复杂度和边界", "", "；加练 LeetCode 1 题并复述思路", "", "；加练 LeetCode 1 题并补第二解法", "", "；完成 LeetCode 2 题并整理错题"];
+  return base.map((task, index) => `${task}${algorithm[index]}`);
 }
 
 const detailSteps = [
@@ -205,7 +213,7 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="heroCopy">
-          <span className="eyebrow">350 天 · 50 周 · 4 条硬核项目线</span>
+          <span className="eyebrow">350 天 · 50 周 · 2 个简历主项目</span>
           <h1>AI 编译器<br/><em>学习日志</em></h1>
           <p>把一年的学习、实验与性能证据沉淀成可追踪的工程日志。每周有验收物，每天有主任务、时间预算和完成标准；空档日也提供官方资料入口。</p>
           <div className="heroActions"><a className="primary" href="#roadmap">开始本周计划 →</a><a className="secondary" href="#method">先看执行方法</a></div>
@@ -219,10 +227,10 @@ export default function Home() {
       </section>
 
       <section className="principles" id="method">
-        <div><span>01</span><h3>70% 动手</h3><p>每天至少 2 小时写代码、测数据或调试，课程只是输入。</p></div>
-        <div><span>02</span><h3>Day 6 学新知识</h3><p>周六专题精读官方文档与源码，并用最小实验验证结论，不安排总结日。</p></div>
-        <div><span>03</span><h3>证据优先</h3><p>所有加速比都附硬件、输入、warmup、误差与 P50 数据。</p></div>
-        <div><span>04</span><h3>留出余量</h3><p>周日默认恢复或补漏；连续两周拖延就主动砍任务。</p></div>
+        <div><span>2026.08—2027.01</span><h3>能力积累期</h3><p>C++、体系结构、CUDA、PyTorch 编译栈；阶段产出统一标为 Lab，不单独写简历。</p></div>
+        <div><span>2027.02</span><h3>算法启动</h3><p>每周约 5 题，安排在周一、三、五、日；与编译器学习并行。</p></div>
+        <div><span>2027.03</span><h3>简历项目 A</h3><p>把前期 CUDA Lab 合并为 Transformer GPU 算子库，强调框架接入与性能证据。</p></div>
+        <div><span>2027.04—06</span><h3>简历项目 B</h3><p>完成 PyTorch/ONNX→Relax→TIR→CUDA 的 Transformer 子图编译器。</p></div>
       </section>
 
       <section className="jdEvidence">
@@ -235,7 +243,7 @@ export default function Home() {
           <div className="asideTitle"><span>YEAR</span><b>路线导航</b></div>
           <button className={activePhase===0?"active":""} onClick={()=>setActivePhase(0)}><span>全部 50 周</span><b>{percent}%</b></button>
           {phases.map((p,i)=><button key={p.name} className={activePhase===i+1?"active":""} onClick={()=>setActivePhase(i+1)}><i style={{background:p.color}}/><span><small>{p.range}</small>{p.name}</span><b>{phaseDone(i+1)}%</b></button>)}
-          <div className="weeklyRhythm"><b>推荐节奏</b><span>周一–周五</span><p>每天 3 小时</p><span>周六</span><p>专题知识学习</p><span>周日</span><p>W09 起：补漏 + LeetCode 2 题</p></div>
+          <div className="weeklyRhythm"><b>推荐节奏</b><span>2027 年 2 月前</span><p>每天约 3 小时，不刷 LeetCode</p><span>2027 年 2 月起</span><p>每周约 5 题</p><span>2027 年 3 月起</span><p>进入简历主项目</p></div>
         </aside>
 
         <div className="planContent">
@@ -246,7 +254,7 @@ export default function Home() {
 
           <div className="weekList">
             {filtered.map(w => {
-              const tasks = weekTasks(w);
+              const tasks = weekTasks(w, startDate);
               const wDone = Array.from({length:7},(_,d)=>completed[`${w.index}-${d+1}`]).filter(Boolean).length;
               const isOpen = openWeek === w.index;
               return <article className={`weekCard ${isOpen?"open":""}`} key={w.index}>
@@ -257,12 +265,12 @@ export default function Home() {
                   <span className="chevron">⌄</span>
                 </button>
                 {isOpen && <div className="weekBody">
-                  <div className="deliverable"><span>本周验收物</span><b>{w.output}</b><small>周六结束前提交到 Git 仓库；必须可运行、可复现。</small></div>
+                  <div className="deliverable"><span>{w.index<30?"本周学习验收物 · LAB":"本周简历项目里程碑"}</span><b>{w.output}</b><small>{w.index<30?"用于积累能力与素材，不建议单独占用简历项目栏。":"合并进入主项目仓库；必须可运行、可复现、可量化。"}</small></div>
                   <div className="resourceShelf"><span>本周知识链接</span><div>{phaseResources[w.phase-1].map(resource=><a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>{resource.label}<b>↗</b></a>)}</div></div>
                   <div className="dayGrid">
                     {tasks.map((task,di)=>{
                       const id=`${w.index}-${di+1}`; const checked=!!completed[id]; const dayOpen=!!openDays[id];
-                      const links=[...phaseResources[w.phase-1],...openSourceProjects.filter(project=>project.phase===w.phase).map(project=>({label:project.label,url:project.url})),...(w.index>=9&&di===6?[{label:"LeetCode 热题 100",url:"https://leetcode.cn/studyplan/top-100-liked/"}]:[])].slice(di===6?0:Math.min(di,2),di===6?6:Math.min(di,2)+5);
+                      const links=[...phaseResources[w.phase-1],...openSourceProjects.filter(project=>project.phase===w.phase).map(project=>({label:project.label,url:project.url})),...(leetcodeActive(startDate,w.index)?[{label:"LeetCode 热题 100",url:"https://leetcode.cn/studyplan/top-100-liked/"}]:[])].slice(di===6?0:Math.min(di,2),di===6?6:Math.min(di,2)+5);
                       return <div className={`dayWrap ${checked?"checked":""} ${dayOpen?"expanded":""}`} key={id}>
                         <div className="dayTop">
                           <label className="checkLabel" aria-label={`${checked?"取消":"完成"} Day ${di+1}`}><input type="checkbox" checked={checked} onChange={()=>toggle(id)}/><span className="box">{checked?"✓":""}</span></label>
@@ -286,12 +294,11 @@ export default function Home() {
       </section>
 
       <section className="deliverables" id="deliverables">
-        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>面向 AI 编译器秋招的四个硬项目</h2><p>每个项目都必须有正确性、性能、失败路径和可复现脚本；目标是能承受 30 分钟源码、IR 与性能追问，而不是堆技术名词。</p></div>
+        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>前期 shared_ptr、分配器、CPU 张量库、单 kernel 和 FX Pass 都是学习 Lab。到 2027 年 3–4 月再把它们合并成完整工程，避免简历堆课程型 Demo。</p></div>
         <div className="projectGrid">
-          <article><span>01 · CUDA</span><h3>Kernel Optimization Lab</h3><p>GEMM、Softmax、LayerNorm 的逐步优化，含正确性测试、Nsight 证据和跨 shape 性能曲线。</p><b>W13 → W20</b></article>
-          <article className="featured"><span>02 · COMPILER</span><h3>PyTorch Fusion Backend</h3><p>FX/torch.compile 图捕获、模式重写、fallback 与 profiler 结果，能解释 guards 和 graph break。</p><b>W21 → W30</b></article>
-          <article><span>03 · TVM</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→CUDA runtime，覆盖动态 shape、fallback、MetaSchedule 与端到端 benchmark。</p><b>W31 → W44</b></article>
-          <article><span>04 · MLIR</span><h3>Dialect & Lowering Lab</h3><p>实现 transpose canonicalization 与 lowering pipeline，保存每层 IR、FileCheck 测试，并争取 TVM/LLVM 上游 PR。</p><b>W45 → W50</b></article>
+          <article><span>01 · 2027.03</span><h3>Transformer GPU Operator Library</h3><p>整合 GEMM、Softmax、RMSNorm、RoPE 和 attention 热点，覆盖多 dtype/shape、PyTorch/vLLM 接入、Nsight/Roofline 与性能回归。</p><b>W30 → W35</b></article>
+          <article className="featured"><span>02 · 2027.04—06</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→CUDA runtime，覆盖动态 shape、fallback、外部 kernel 和端到端 benchmark。</p><b>W36 → W44</b></article>
+          <article><span>03 · 持续加分</span><h3>TVM / LLVM 开源贡献</h3><p>以最小复现、源码定位、修复测试和 Code Review 证明真实工程协作；MLIR Lab 作为编译器项目的技术补充，不单列主项目。</p><b>W44 → W50</b></article>
         </div>
         <div className="repoRadar"><span className="eyebrow">OPEN SOURCE RADAR</span><h3>建议深读并争取贡献的开源项目</h3><div>{openSourceProjects.filter(project=>project.phase>=2).map(project=><a href={project.url} target="_blank" rel="noreferrer" key={project.url}><b>{project.label}</b><small>{project.note}</small><i>↗</i></a>)}</div></div>
       </section>
