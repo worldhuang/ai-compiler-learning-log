@@ -75,6 +75,42 @@ const weeks: Week[] = [
 
 const dayNames = ["一", "二", "三", "四", "五", "六", "日"];
 const timePlan = ["理论 45m · 编码 105m · 记录 30m", "复习 20m · 编码 130m · 测试 30m", "理论 30m · 实验 120m · 复盘 30m", "编码 120m · 调试 40m · 记录 20m", "实验 120m · 性能分析 40m · 记录 20m", "验收 90m · 文档 60m · 周复盘 30m", "休息；仅补漏 ≤ 90m，不开新内容"];
+const acceptancePlan = [
+  "验收：写下 5 条核心概念，并附 1 个可运行最小示例。",
+  "验收：代码通过编译，覆盖正常路径与至少 2 个边界条件。",
+  "验收：保存实验输入、输出和错误记录，能够从零复现。",
+  "验收：提交可读代码、单元测试，并解释一次关键调试过程。",
+  "验收：记录 baseline、硬件、输入规模、P50 与误差范围。",
+  "验收：更新 README、周报和知识卡，形成可展示的提交。",
+  "验收：无补漏任务时，任选下方 1 篇资料，整理 3 条摘要。",
+];
+const phaseResources = [
+  [
+    { label: "C++ 核心语言参考", url: "https://en.cppreference.com/w/cpp/language/" },
+    { label: "C++ 内存与智能指针", url: "https://en.cppreference.com/w/cpp/memory" },
+    { label: "CSAPP 官方课程站", url: "https://csapp.cs.cmu.edu/" },
+  ],
+  [
+    { label: "CUDA Programming Guide", url: "https://docs.nvidia.com/cuda/cuda-programming-guide/" },
+    { label: "Nsight Compute Profiling Guide", url: "https://docs.nvidia.com/nsight-compute/ProfilingGuide/" },
+    { label: "Triton 官方教程", url: "https://triton-lang.org/main/getting-started/tutorials/" },
+  ],
+  [
+    { label: "PyTorch FX 文档", url: "https://docs.pytorch.org/docs/stable/fx.html" },
+    { label: "torch.compiler 指南", url: "https://docs.pytorch.org/docs/main/user_guide/torch_compiler/torch.compiler.html" },
+    { label: "ONNX 官方介绍", url: "https://onnx.ai/onnx/intro/" },
+  ],
+  [
+    { label: "TVM TensorIR", url: "https://tvm.apache.org/docs/deep_dive/tensor_ir/index.html" },
+    { label: "TVM Relax", url: "https://tvm.apache.org/docs/deep_dive/relax/index.html" },
+    { label: "MetaSchedule 教程", url: "https://tvm.apache.org/docs/deep_dive/tensor_ir/tutorials/meta_schedule.html" },
+  ],
+  [
+    { label: "MLIR Toy Tutorial", url: "https://mlir.llvm.org/docs/Tutorials/Toy/" },
+    { label: "MLIR Pass 基础设施", url: "https://mlir.llvm.org/docs/PassManagement/" },
+    { label: "MLIR Pattern Rewrite", url: "https://mlir.llvm.org/docs/PatternRewriter/" },
+  ],
+];
 
 function dateLabel(start: string, week: number, day: number) {
   const d = new Date(`${start}T00:00:00`);
@@ -130,8 +166,8 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="heroCopy">
           <span className="eyebrow">365 天 · 52 周 · 3 条硬核项目线</span>
-          <h1>把“学过”变成<br/><em>编译器工程能力</em></h1>
-          <p>为 AI 编译器与计算加速岗位设计的年度作战地图。每周有可验收产出，每天有唯一主任务；性能结论必须有 baseline、正确性与 profiler 证据。</p>
+          <h1>AI 编译器<br/><em>学习日志</em></h1>
+          <p>把一年的学习、实验与性能证据沉淀成可追踪的工程日志。每周有验收物，每天有主任务、时间预算和完成标准；空档日也提供官方资料入口。</p>
           <div className="heroActions"><a className="primary" href="#roadmap">开始本周计划 →</a><a className="secondary" href="#method">先看执行方法</a></div>
         </div>
         <div className="heroPanel">
@@ -176,13 +212,14 @@ export default function Home() {
                 </button>
                 {isOpen && <div className="weekBody">
                   <div className="deliverable"><span>本周验收物</span><b>{w.output}</b><small>周六结束前提交到 Git 仓库；必须可运行、可复现。</small></div>
+                  <div className="resourceShelf"><span>本周知识链接</span><div>{phaseResources[w.phase-1].map(resource=><a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>{resource.label}<b>↗</b></a>)}</div></div>
                   <div className="dayGrid">
-                    {[...w.days,"恢复、补漏或休息；若本周已完成，做 30 分钟轻量回顾后彻底离开屏幕。"].map((task,di)=>{
+                    {[...w.days,"恢复或补漏；如果没有遗留任务，从本周知识链接中任选 1 篇精读，并写 3 条摘要和 1 个问题。"].map((task,di)=>{
                       const id=`${w.index}-${di+1}`; const checked=!!completed[id];
                       return <label className={`day ${checked?"checked":""}`} key={id}>
                         <input type="checkbox" checked={checked} onChange={()=>toggle(id)}/><span className="box">{checked?"✓":""}</span>
                         <span className="dayDate"><b>DAY {String(di+1).padStart(2,"0")}</b><small>周{dayNames[di]} · {dateLabel(startDate,w.index,di)}</small></span>
-                        <span className="task"><b>{task}</b><small>{timePlan[di]}</small></span>
+                        <span className="task"><b>{task}</b><small>{timePlan[di]}</small><small className="acceptance">{acceptancePlan[di]}</small></span>
                       </label>;
                     })}
                   </div>

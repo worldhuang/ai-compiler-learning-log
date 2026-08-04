@@ -1,5 +1,13 @@
+import { cookies } from "next/headers";
+import { COOKIE_NAME, createAccessToken } from "./access-token";
+import PasswordGate from "./PasswordGate";
 import Planner from "./Planner";
 
-export default function Home() {
-  return <Planner />;
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const cookieStore = await cookies();
+  const suppliedToken = cookieStore.get(COOKIE_NAME)?.value;
+  const expectedToken = await createAccessToken();
+  return expectedToken && suppliedToken === expectedToken ? <Planner /> : <PasswordGate />;
 }
