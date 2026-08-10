@@ -11,7 +11,7 @@ type Week = {
 };
 
 const phases = [
-  { name: "C++ 恢复与性能基础", range: "W01–W12", color: "#ef6a4c" },
+  { name: "MiniTensor 与性能基础", range: "W01–W12", color: "#ef6a4c" },
   { name: "CUDA Kernel 工程", range: "W13–W20", color: "#e6a83e" },
   { name: "PyTorch 编译栈 · 刷题启动", range: "W21–W30", color: "#3c86c6" },
   { name: "简历项目双主线", range: "W31–W44", color: "#7e62c7" },
@@ -19,18 +19,18 @@ const phases = [
 ];
 
 const weeks: Week[] = [
-  { phase:1,title:"C++ 恢复训练：语法与函数",goal:"用最小实验找回类型、控制流、函数、引用和 const，而不是重看整套入门课",output:"20 个可运行语法实验 + 一页遗忘清单",days:["完成自测：类型、循环、函数、数组各写 2 个最小程序，标记不会的点","复习值/引用/指针传参和 const；用地址输出验证差异","复习作用域、static、命名空间、头文件与声明/定义","复习 struct/class、构造函数、成员初始化列表和访问控制","写命令行矩阵/向量小工具，覆盖输入错误和边界","观看对应章节并补 6 个语义实验：每个实验先猜输出再运行"]},
-  { phase:1,title:"C++ 恢复训练：内存与所有权",goal:"重新建立栈、堆、生命周期、裸指针和 RAII 的可靠直觉",output:"RAII 文件句柄 + scoped_ptr + 生命周期图",days:["画栈、堆、静态区与对象生命周期图；验证 new/delete 和数组释放","复习指针算术、别名、悬空指针；制造并用 ASan 定位 3 类错误","实现不可拷贝的 RAII 文件句柄，覆盖打开失败和重复关闭","手写 scoped_ptr：禁拷贝、可移动、自动释放","比较裸指针、引用、unique_ptr 的所有权表达与接口设计","观看智能指针/RAII 视频并完成 8 个生命周期判断题"]},
-  { phase:1,title:"C++ 恢复训练：类、拷贝与移动",goal:"找回对象模型、Rule of Five、移动语义和异常安全",output:"线程不安全版 mini_shared_ptr",days:["复习构造、析构、拷贝构造、拷贝赋值与深浅拷贝","实现管理动态数组的 Buffer，先完成 Rule of Three","加入移动构造/移动赋值，打印每次资源转移并解释 std::move","设计控制块与引用计数，实现 mini_shared_ptr 构造/析构/拷贝","补 reset、use_count、自赋值、空指针和异常路径测试","观看现代 C++ 移动语义视频；用一页图解释值类别与资源所有权"]},
-  { phase:1,title:"C++ 恢复训练：STL、模板与泛型",goal:"恢复 vector/string/map、迭代器、算法和模板的工程使用能力",output:"小型 Vector<T> + STL 练习集",days:["复习 vector/string/map/unordered_map 的常用操作和失效规则","用迭代器与 ranges/algorithm 重写 5 段手写循环","复习函数模板、类模板、类型推导与 concepts 基础","实现 Vector<T> 的容量增长、迭代器、拷贝与移动","为平凡/非平凡类型补测试并验证异常安全","观看 STL/模板视频；完成容器选型表和 10 个短练习"]},
-  { phase:1,title:"C++ 工程工具：CMake、调试与测试",goal:"把恢复后的语法装进可构建、可测试、可分析的工程",output:"带 CMake、CTest、clang-format、sanitizer 和 benchmark 的 cpp-lab",days:["安装并核验 clang/GCC、CMake、Git；创建 src/include/tests 目录","写根 CMakeLists：target、include、Debug/Release 与编译警告","加入 clang-format、编译数据库和 VS Code/IDE 调试配置","加入 CTest/GoogleTest 思路，为 Buffer/Vector 写边界测试","加入 ASan/UBSan 与 chrono/google-benchmark 最小基准","观看 CMake/Git 视频；从预处理到链接画出完整构建链路"]},
-  { phase:1,title:"C++ 恢复验收：迷你张量容器",goal:"用一个小工程确认语法、内存、模板和工具链已经真正恢复",output:"Tensor<T> v0：shape/stride/storage/view + 20 个测试",days:["设计 Tensor<T> 的 shape、stride、storage 与错误模型","实现连续存储、索引、numel 和 bounds check","实现 reshape/view，验证连续性与共享所有权","实现逐元素 add/mul 与广播的最小子集","用 CMake/CTest/sanitizer 跑满 20 个测试并修复问题","录制 5 分钟讲解：对象所有权、数据布局和仍不熟的 C++ 点"]},
-  { phase:1,title:"机器表示、汇编与链接",goal:"能从 C++ 追到汇编，理解整数、浮点、栈帧和链接",output:"6 个 C++/汇编对照案例",days:["CSAPP 数据表示：整数溢出、补码和浮点误差实验","学习 x86-64 寄存器、调用约定与栈帧","用 Compiler Explorer 比较 -O0/-O3 汇编","观察 move、内联、虚函数和模板实例化的生成代码","复习预处理、编译、汇编、链接与静态/动态库","观看 CSAPP 对应视频并手算一次完整栈帧"]},
-  { phase:1,title:"CPU Cache、分支与 SIMD",goal:"建立局部性、流水线、分支预测和向量化的性能直觉",output:"cache/branch/SIMD 微基准报告",days:["学习 L1/L2/L3、cache line、组相联和工作集","写 stride 与行优先/列优先遍历 benchmark","做 blocked transpose 并扫描 tile size","比较 sorted/unsorted 分支，解释预测失败成本","写可自动向量化的 sum/dot 并查看 vectorization report/汇编","观看 CSAPP 存储层次与优化视频，画性能因果链"]},
-  { phase:1,title:"并发、原子与 False Sharing",goal:"掌握线程、锁、条件变量、happens-before 与缓存一致性",output:"线程池雏形 + false-sharing 实验",days:["复习 thread/mutex/condition_variable 与竞态","实现阻塞任务队列，覆盖停止和空队列边界","实现固定线程池 submit + future","学习 happens-before 与 atomic 基础","构造 false sharing，padding 后对比吞吐","用 TSan/代码审查检查并记录 5 条并发不变量"]},
-  { phase:1,title:"内存分配器 I：从块布局到合并",goal:"理解对齐、碎片、隐式空闲链表与堆不变量",output:"implicit free-list allocator + heap checker",days:["定义块头、块脚、对齐和 prologue/epilogue","实现 heap 初始化、extend_heap 与 first-fit","实现 malloc 放置和块分割","实现 free 与相邻块合并","写 heap checker 和 6 组边界 trace","计算吞吐/利用率并画 3 组 heap 快照"]},
-  { phase:1,title:"内存分配器 II 与性能方法",goal:"用显式/分离链表提升性能，并建立可信 benchmark 方法",output:"segregated allocator + 可复现实验报告",days:["实现显式双向空闲链表插入/删除并维护不变量","设计 size class，迁移到 segregated free list","补对齐、重复块、未合并和链表一致性检查","学习 warmup、重复、P50/P95 与同步陷阱","用 profiler/计数器定位吞吐和碎片热点","对比两版 allocator，写环境/输入/方法/结论完整报告"]},
-  { phase:1,title:"阶段项目：CPU 张量库",goal:"把 C++、内存与缓存知识合成最小张量库",output:"Tensor + matmul + benchmark v1",days:["设计 Tensor shape/stride/storage 与测试清单","实现连续 Tensor、索引、reshape/view","实现 naive matmul 并与参考结果校验","实现 tiled matmul，扫描 tile size","接入线程池做并行版本并测扩展性","发布 v0.1：图表、限制、下一阶段接口"]},
+  { phase:1,title:"MiniTensor I：工程骨架与张量接口",goal:"不再按语法章节重学 C++；从一个可运行的张量项目中按需找回类型、函数、引用、类、STL 与构建知识",output:"minitensor 仓库骨架 + Tensor<float> 接口 + 8 个测试",days:["创建 include/src/tests/benchmarks 目录；用 CMake 构建 library、demo 与 test target","设计 Shape、Stride、DType 与 Tensor 接口；用 vector/span/const reference 表达参数","实现 numel、连续 stride、边界检查和打印；补齐循环、函数、namespace 与异常知识","实现一维/二维索引和 fill；用 debugger 跟踪一次构造与索引调用","接入 GoogleTest，覆盖空 shape、越界、零维和普通矩阵；开启 warnings-as-errors","直达视频章节学习数组、函数、引用与类；只补项目当天卡住的语法"]},
+  { phase:1,title:"MiniTensor II：Storage、RAII 与视图",goal:"通过真实 storage/view 设计掌握栈/堆、所有权、智能指针、拷贝移动与对象生命周期",output:"Storage<T> + Tensor<T> + reshape/view + ASan 全绿",days:["画 Storage/Tensor/View 所有权图；实现模板 Storage<T> 连续分配与 RAII 释放","实现深拷贝、移动构造和移动赋值；打印验证资源转移并解释 std::move 不等于移动","用 shared_ptr<Storage<T>> 让 view 共享底层数据；处理 offset、shape 与 stride","实现 reshape、transpose view 与 contiguous 判断；补悬空引用和别名测试","开启 ASan/UBSan，主动制造 use-after-free、越界和 double free 后逐一修复","直达 new/delete、构造析构、深浅拷贝章节；对照项目写一页 Rule of Five 说明"]},
+  { phase:1,title:"MiniTensor III：模板、算子与测试体系",goal:"用 add/mul/matmul 的泛型实现恢复模板、STL、算法、运算符重载与异常安全",output:"add/mul/naive matmul + 25 个测试 + clang-format",days:["把 Tensor 固化为 Tensor<T>；约束支持类型并处理模板声明/定义位置","实现逐元素 add/mul 与标量运算；用 algorithm/ranges 替换重复循环","实现最小二维广播与 shape 校验；写参数化测试覆盖 float/double","实现 naive matmul，和手算/Python 参考值对齐；定义误差阈值","加入 clang-format、CTest 和 Debug/Release preset；检查 include 边界与命名","直达类模板、vector 与深浅拷贝章节；对照 xtensor 的 API 写 5 条设计取舍"]},
+  { phase:1,title:"MiniTensor IV：线程池、基准与 v0.1",goal:"在同一项目里补齐并发、性能测量和发布能力，形成后续 CPU/CUDA 实验的统一载体",output:"MiniTensor v0.1：并行 matmul + benchmark 报告 + README",days:["实现阻塞任务队列与固定线程池，覆盖停止、空队列和异常传播","把 matmul 按输出行分块并行；比较 1/2/4/8 线程扩展性","接入 Google Benchmark，固定 warmup、重复、P50 与硬件信息","用 profiler 定位热点；记录优化前后数据，不做无证据微优化","整理 README：架构图、构建命令、测试、benchmark、限制与路线图","录制 6 分钟项目讲解并打 v0.1 tag；C++ 集中复习到此结束"]},
+  { phase:1,title:"机器表示、汇编与链接",goal:"从 MiniTensor 的 C++ 源码追到汇编，理解整数、浮点、栈帧和链接",output:"6 个 C++/汇编对照案例 + 构建链路图",days:["CSAPP 数据表示：整数溢出、补码和浮点误差实验","学习 x86-64 寄存器、调用约定与栈帧","用 Compiler Explorer 比较 MiniTensor 核心循环的 -O0/-O3 汇编","观察 move、内联、虚函数和模板实例化的生成代码","追踪预处理、编译、汇编、链接与静态/动态库产物","直达 CSAPP 数据表示、机器级代码与链接章节并手算一次栈帧"]},
+  { phase:1,title:"CPU Cache 与数据局部性",goal:"让张量 layout 与硬件缓存建立联系，形成可测量的局部性直觉",output:"stride/transpose/tile 微基准报告",days:["学习 L1/L2/L3、cache line、组相联、TLB 与工作集","在 MiniTensor 写 stride sweep 和行/列优先遍历 benchmark","实现 blocked transpose 并扫描 tile size","用缓存计数器或 profiler 观察 miss 与带宽变化","把 shape/stride/view 的代价写进项目文档","直达 CSAPP 存储层次章节；画出访问模式→cache miss→延迟的因果链"]},
+  { phase:1,title:"流水线、分支与 SIMD",goal:"掌握编译器优化、分支预测、自动向量化和 intrinsic 的适用边界",output:"branch/SIMD benchmark + 向量化报告",days:["学习流水线、数据相关、分支预测与乱序执行","比较 sorted/unsorted 分支和 branchless 写法","让 add/dot 自动向量化并读取 vectorization report","查看 AVX2/AVX-512 intrinsic，手写一版 vector add","检查尾部处理、对齐和不同规模下的性能","直达程序性能优化章节；用汇编解释一次加速和一次退化"]},
+  { phase:1,title:"并发、原子与 False Sharing",goal:"深化线程、锁、条件变量、happens-before 与缓存一致性，而非重复造线程池",output:"线程池 v2 + false-sharing 实验",days:["审计 MiniTensor 线程池的竞态、停止协议和异常传播","学习 C++ memory model、happens-before 与 atomic 基础","构造 false sharing，padding 后对比吞吐","实现 work partitioning，比较静态分块与动态任务粒度","用 TSan/代码审查验证 5 条并发不变量","直达 CSAPP 并发章节；画任务队列的同步时序图"]},
+  { phase:1,title:"内存分配器 I：块布局与合并",goal:"理解对齐、碎片、隐式空闲链表与堆不变量，并连接到 Tensor storage",output:"implicit free-list allocator + heap checker",days:["定义块头、块脚、对齐和 prologue/epilogue","实现 heap 初始化、extend_heap 与 first-fit","实现 malloc 放置和块分割","实现 free 与相邻块合并","写 heap checker 和 6 组边界 trace","把分配器接入 MiniTensor 的可选 Storage 后端并测正确性"]},
+  { phase:1,title:"内存分配器 II：分离链表",goal:"用显式/分离链表提升分配性能并理解空间—时间权衡",output:"segregated allocator + 碎片分析",days:["实现显式双向空闲链表插入/删除并维护不变量","设计 size class，迁移到 segregated free list","补对齐、重复块、未合并和链表一致性检查","设计 Tensor 常见尺寸的 allocation trace","比较系统 malloc 与两版 allocator 的吞吐和利用率","精读 mimalloc 的 size class/segment 设计并写差异表"]},
+  { phase:1,title:"可信性能工程方法",goal:"掌握 warmup、重复、方差、P50/P95、roofline 与 profiler 证据链",output:"统一 benchmark harness + 性能实验模板",days:["统一环境、随机种子、输入 shape、线程数和计时边界","实现 warmup、重复、P50/P95 与异常值输出","区分延迟、吞吐、带宽、FLOPS 和利用率指标","用 profiler/硬件计数器定位一个 MiniTensor 热点","写一份可复现实验模板：问题→假设→实验→数据→结论","直达 CSAPP 程序优化章节；复查三组旧数据并纠正测量陷阱"]},
+  { phase:1,title:"MiniTensor CPU Runtime：性能验收",goal:"把前 11 周知识收束回同一工程，为 CUDA 阶段提供可靠 CPU baseline",output:"MiniTensor v0.2：tiled/parallel matmul + allocator + 完整性能报告",days:["冻结 Tensor/Storage/Operator/ThreadPool/Allocator 模块边界与测试矩阵","实现 naive、tiled、parallel matmul 三版本并校验","扫描 tile、线程数和 shape，输出性能曲线","用 profiler/计数器解释瓶颈从访存到计算的迁移","与 Eigen 或 PyTorch CPU 做诚实 baseline，写限制和下一步","发布 v0.2：架构图、复现脚本、测试结果、性能图与口头讲解"]},
   { phase:2,title:"CUDA 编程模型",goal:"掌握 grid/block/thread、host/device 与错误检查",output:"vector add + 带宽基准",days:["确认 GPU/驱动/CUDA 环境；记录设备规格","学习 SIMT、warp、grid/block 映射","写 vector add kernel 与 CPU 对照测试","加入 grid-stride loop 和统一错误检查宏","测 H2D/D2H/kernel 时间与有效带宽","Nsight Systems 观察时间线并输出截图"]},
   { phase:2,title:"CUDA 内存层次",goal:"理解 coalescing、shared memory 与 bank conflict",output:"三版 transpose kernel",days:["学习 global/shared/register/constant memory","写 naive transpose，检查 global load/store 合并","写 tiled shared-memory transpose","制造并消除 bank conflict（padding）","用 Nsight Compute 看吞吐与相关指标","整理三版结果和瓶颈迁移解释"]},
   { phase:2,title:"矩阵乘法 I",goal:"从 naive GEMM 到 shared-memory tiling",output:"正确、可测的 tiled GEMM",days:["定义 M/N/K、多尺寸和误差容限测试矩阵","写 naive GEMM 与边界保护","实现 shared-memory tiled GEMM","处理非 tile 整倍数与多数据类型测试","用 CUDA Events 正确计时并算 GFLOPS","对比 cuBLAS baseline，解释差距而非追平"]},
@@ -84,27 +84,33 @@ const acceptancePlan = [
 ];
 const phaseResources = [
   [
-    { label: "视频｜黑马 C++ 从 0 到 1", url: "https://www.bilibili.com/video/BV1et411b73Z/" },
-    { label: "视频｜现代 C++ 核心语言特性", url: "https://www.bilibili.com/video/BV1P9jRzXE3a/" },
+    { label: "C++｜引用做函数参数（P91）", url: "https://www.bilibili.com/video/BV1et411b73Z/?p=91" },
+    { label: "C++｜深拷贝与浅拷贝（P110）", url: "https://www.bilibili.com/video/BV1et411b73Z/?p=110" },
     { label: "视频｜CMake、编译与 Git", url: "https://www.bilibili.com/video/BV1WVtjejE82/" },
-    { label: "视频｜C++ STL 与模板", url: "https://www.bilibili.com/video/BV1PW411t7Xg/" },
-    { label: "视频｜CSAPP 重点导读", url: "https://www.bilibili.com/video/BV1RK4y1R7Kf/" },
+    { label: "STL｜vector 容量增长（P43）", url: "https://www.bilibili.com/video/BV1PW411t7Xg/?p=43" },
+    { label: "CSAPP｜程序性能优化（P5）", url: "https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
   ],
   [
-    { label: "视频｜NVIDIA CUDA 系统课程", url: "https://www.bilibili.com/video/BV1LE411p7ej/" },
-    { label: "视频｜GPU 并行编程基础", url: "https://www.bilibili.com/video/BV1yt411w7h8/" },
+    { label: "CUDA｜GPU 架构（P5）", url: "https://www.bilibili.com/video/BV1LE411p7ej/?p=5" },
+    { label: "CUDA｜编程模型（P6）", url: "https://www.bilibili.com/video/BV1LE411p7ej/?p=6" },
+    { label: "并行计算｜Reduction/Scan（P4）", url: "https://www.bilibili.com/video/BV1yt411w7h8/?p=4" },
     { label: "视频｜CUDA 内存模型与线程束", url: "https://www.bilibili.com/video/BV1jX4y1w7Um/" },
     { label: "视频｜CUDA GEMM 八步优化", url: "https://www.bilibili.com/video/BV1bH4y1w7mm/" },
     { label: "视频｜Nsight 性能分析实战", url: "https://www.bilibili.com/video/BV14RU6BmE5u/" },
     { label: "视频｜FlashAttention CUDA 编程", url: "https://www.bilibili.com/video/BV1wZ421s7y8/" },
   ],
   [
-    { label: "视频｜PyTorch 官方培训（双语）", url: "https://www.bilibili.com/video/BV1Vf4y1E7qT/" },
+    { label: "PyTorch｜Tensor 基础（P2）", url: "https://www.bilibili.com/video/BV1Vf4y1E7qT/?p=2" },
+    { label: "PyTorch｜Autograd（P3）", url: "https://www.bilibili.com/video/BV1Vf4y1E7qT/?p=3" },
     { label: "视频｜PyTorch Autograd 与源码", url: "https://www.bilibili.com/video/BV1vL411u7bL/" },
-    { label: "视频｜PyTorch 2 编译栈：FX/Dynamo/AOT/Dispatcher", url: "https://www.bilibili.com/video/BV1L3411d7SM/" },
-    { label: "视频｜AutoGrad 动态计算图", url: "https://www.bilibili.com/video/BV1LL41147G8/" },
+    { label: "视频｜FX 与 Lazy Tensor", url: "https://www.bilibili.com/video/BV1944y1m7fU/" },
+    { label: "视频｜PyTorch 2.0 与 torch.compile", url: "https://www.bilibili.com/video/BV1p84y1675B/" },
+    { label: "视频｜PyTorch Dispatcher", url: "https://www.bilibili.com/video/BV1L3411d7SM/" },
+    { label: "视频｜ONNX Runtime", url: "https://www.bilibili.com/video/BV1ym421W71r/" },
   ],
   [
+    { label: "视频｜AI 编译器基础", url: "https://www.bilibili.com/video/BV1D84y1y73v/" },
+    { label: "视频｜AI 编译器前端", url: "https://www.bilibili.com/video/BV1ne411w7n2/" },
     { label: "视频｜AI 编译器后端与 TVM Auto-Tuning", url: "https://www.bilibili.com/video/BV1uA411D7JF/" },
     { label: "视频｜AI 编译器与 TPU-MLIR 系列", url: "https://www.bilibili.com/video/BV1V24y1h7J1/" },
     { label: "视频｜FlashAttention 原理", url: "https://www.bilibili.com/video/BV1UT421k7rA/" },
@@ -113,13 +119,156 @@ const phaseResources = [
   ],
   [
     { label: "视频｜MLIR Toy Tutorial 概述", url: "https://www.bilibili.com/video/BV1s7411K7rR/" },
-    { label: "视频｜LLVM 与 MLIR 构建编译器", url: "https://www.bilibili.com/video/BV1h14y1J7Gm/" },
+    { label: "MLIR｜Basics（P8）", url: "https://www.bilibili.com/video/BV1h14y1J7Gm/?p=8" },
+    { label: "MLIR｜Pass Infrastructure（P10）", url: "https://www.bilibili.com/video/BV1h14y1J7Gm/?p=10" },
+    { label: "MLIR｜Lowering（P11）", url: "https://www.bilibili.com/video/BV1h14y1J7Gm/?p=11" },
     { label: "视频｜LLVM 架构、Clang 与 IR", url: "https://www.bilibili.com/video/BV1CG4y1V7Dn/" },
     { label: "视频｜LLVM 编译器入门", url: "https://www.bilibili.com/video/BV1tN411B71r/" },
     { label: "视频｜LLVM 代码生成与 SSA", url: "https://www.bilibili.com/video/BV1KvoUYYEaK/" },
   ],
 ];
+const phaseReferences = [
+  [
+    { label:"C++ 语言参考", url:"https://en.cppreference.com/w/cpp/language/" },
+    { label:"C++ 内存管理", url:"https://en.cppreference.com/w/cpp/memory" },
+    { label:"CMake 官方教程", url:"https://cmake.org/cmake/help/latest/guide/tutorial/" },
+    { label:"GoogleTest Primer", url:"https://google.github.io/googletest/primer.html" },
+    { label:"CSAPP 课程与 Labs", url:"https://csapp.cs.cmu.edu/3e/labs.html" },
+  ],
+  [
+    { label:"CUDA Programming Guide", url:"https://docs.nvidia.com/cuda/cuda-programming-guide/" },
+    { label:"CUDA Best Practices", url:"https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/" },
+    { label:"Nsight Compute Profiling Guide", url:"https://docs.nvidia.com/nsight-compute/ProfilingGuide/" },
+    { label:"Triton 官方教程", url:"https://triton-lang.org/main/getting-started/tutorials/" },
+  ],
+  [
+    { label:"PyTorch FX 文档", url:"https://docs.pytorch.org/docs/stable/fx.html" },
+    { label:"torch.compiler 指南", url:"https://docs.pytorch.org/docs/main/user_guide/torch_compiler/torch.compiler.html" },
+    { label:"PyTorch Custom Ops", url:"https://docs.pytorch.org/tutorials/advanced/custom_ops_landing_page.html" },
+    { label:"ONNX IR 介绍", url:"https://onnx.ai/onnx/intro/" },
+  ],
+  [
+    { label:"TVM 教程索引", url:"https://tvm.apache.org/docs/tutorial/index.html" },
+    { label:"TensorIR 深入", url:"https://tvm.apache.org/docs/deep_dive/tensor_ir/index.html" },
+    { label:"Relax 深入", url:"https://tvm.apache.org/docs/deep_dive/relax/index.html" },
+    { label:"MetaSchedule 教程", url:"https://tvm.apache.org/docs/deep_dive/tensor_ir/tutorials/meta_schedule.html" },
+  ],
+  [
+    { label:"MLIR Toy Tutorial", url:"https://mlir.llvm.org/docs/Tutorials/Toy/" },
+    { label:"MLIR Pass Management", url:"https://mlir.llvm.org/docs/PassManagement/" },
+    { label:"MLIR Pattern Rewriter", url:"https://mlir.llvm.org/docs/PatternRewriter/" },
+    { label:"LLVM 前端教程", url:"https://llvm.org/docs/tutorial/MyFirstLanguageFrontend/index.html" },
+  ],
+];
+const weekLearningResources = [
+  { week:1, videos:[
+    { label:"数组定义（P42）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=42" },
+    { label:"函数定义（P50）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=50" },
+    { label:"引用做参数（P91）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=91" },
+    { label:"类与封装（P99）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=99" },
+    { label:"CMake、编译与 Git", url:"https://www.bilibili.com/video/BV1WVtjejE82/" },
+  ], references:[
+    { label:"C++ 函数参考", url:"https://en.cppreference.com/w/cpp/language/functions" },
+    { label:"C++ 容器参考", url:"https://en.cppreference.com/w/cpp/container" },
+    { label:"CMake 官方教程", url:"https://cmake.org/cmake/help/latest/guide/tutorial/" },
+    { label:"GoogleTest Primer", url:"https://google.github.io/googletest/primer.html" },
+  ]},
+  { week:2, videos:[
+    { label:"堆区（P87）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=87" },
+    { label:"new 运算符（P88）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=88" },
+    { label:"构造与析构（P106）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=106" },
+    { label:"深拷贝与浅拷贝（P110）", url:"https://www.bilibili.com/video/BV1et411b73Z/?p=110" },
+  ], references:[
+    { label:"对象生命周期", url:"https://en.cppreference.com/w/cpp/language/lifetime" },
+    { label:"RAII", url:"https://en.cppreference.com/w/cpp/language/raii" },
+    { label:"智能指针", url:"https://en.cppreference.com/w/cpp/memory" },
+    { label:"移动构造", url:"https://en.cppreference.com/w/cpp/language/move_constructor" },
+  ]},
+  { week:3, videos:[
+    { label:"函数模板（P1）", url:"https://www.bilibili.com/video/BV1PW411t7Xg/?p=1" },
+    { label:"类模板（P6）", url:"https://www.bilibili.com/video/BV1PW411t7Xg/?p=6" },
+    { label:"模板分文件问题（P13）", url:"https://www.bilibili.com/video/BV1PW411t7Xg/?p=13" },
+    { label:"vector 容量增长（P43）", url:"https://www.bilibili.com/video/BV1PW411t7Xg/?p=43" },
+  ], references:[
+    { label:"模板参考", url:"https://en.cppreference.com/w/cpp/language/templates" },
+    { label:"std::vector", url:"https://en.cppreference.com/w/cpp/container/vector" },
+    { label:"算法库", url:"https://en.cppreference.com/w/cpp/algorithm" },
+    { label:"clang-format 文档", url:"https://clang.llvm.org/docs/ClangFormat.html" },
+  ]},
+  { week:4, videos:[
+    { label:"并发基础（CSAPP P12）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=12" },
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+    { label:"CMake、编译与 Git", url:"https://www.bilibili.com/video/BV1WVtjejE82/" },
+  ], references:[
+    { label:"C++ 并发支持", url:"https://en.cppreference.com/w/cpp/thread" },
+    { label:"Google Benchmark 指南", url:"https://google.github.io/benchmark/user_guide.html" },
+    { label:"CMake Presets", url:"https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html" },
+    { label:"GitHub README 指南", url:"https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes" },
+  ]},
+  { week:5, videos:[
+    { label:"数据表示（CSAPP P2）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=2" },
+    { label:"机器级表示（CSAPP P3）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=3" },
+    { label:"链接（CSAPP P7）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=7" },
+  ], references:[
+    { label:"CSAPP 官方站", url:"https://csapp.cs.cmu.edu/" },
+    { label:"Compiler Explorer", url:"https://godbolt.org/" },
+    { label:"System V AMD64 ABI", url:"https://gitlab.com/x86-psABIs/x86-64-ABI" },
+  ]},
+  { week:6, videos:[
+    { label:"存储层次（CSAPP P6）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=6" },
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+  ], references:[
+    { label:"CSAPP Labs", url:"https://csapp.cs.cmu.edu/3e/labs.html" },
+    { label:"Google Benchmark 指南", url:"https://google.github.io/benchmark/user_guide.html" },
+  ]},
+  { week:7, videos:[
+    { label:"处理器体系结构（CSAPP P4）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=4" },
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+  ], references:[
+    { label:"Intel Intrinsics Guide", url:"https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html" },
+    { label:"Clang Vectorizers", url:"https://llvm.org/docs/Vectorizers.html" },
+  ]},
+  { week:8, videos:[
+    { label:"并发（CSAPP P12）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=12" },
+    { label:"GPU/CPU 并行模型（P1）", url:"https://www.bilibili.com/video/BV1LE411p7ej/?p=1" },
+  ], references:[
+    { label:"C++ Memory Model", url:"https://en.cppreference.com/w/cpp/language/memory_model" },
+    { label:"C++ 原子操作", url:"https://en.cppreference.com/w/cpp/atomic" },
+  ]},
+  { week:9, videos:[
+    { label:"虚拟内存（CSAPP P9）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=9" },
+    { label:"系统概览（CSAPP P1）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=1" },
+  ], references:[
+    { label:"CSAPP Malloc Lab", url:"https://csapp.cs.cmu.edu/3e/malloclab.pdf" },
+    { label:"C++ 对齐支持", url:"https://en.cppreference.com/w/cpp/memory" },
+  ]},
+  { week:10, videos:[
+    { label:"虚拟内存（CSAPP P9）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=9" },
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+  ], references:[
+    { label:"mimalloc 技术报告", url:"https://www.microsoft.com/en-us/research/publication/mimalloc-free-list-sharding-in-action/" },
+    { label:"Google Benchmark 指南", url:"https://google.github.io/benchmark/user_guide.html" },
+  ]},
+  { week:11, videos:[
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+    { label:"存储层次（CSAPP P6）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=6" },
+  ], references:[
+    { label:"Google Benchmark 指南", url:"https://google.github.io/benchmark/user_guide.html" },
+    { label:"Linux perf Wiki", url:"https://perf.wiki.kernel.org/index.php/Main_Page" },
+  ]},
+  { week:12, videos:[
+    { label:"程序性能优化（CSAPP P5）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=5" },
+    { label:"存储层次（CSAPP P6）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=6" },
+    { label:"并发（CSAPP P12）", url:"https://www.bilibili.com/video/BV1RK4y1R7Kf/?p=12" },
+  ], references:[
+    { label:"xtensor 文档", url:"https://xtensor.readthedocs.io/" },
+    { label:"Eigen 文档", url:"https://eigen.tuxfamily.org/dox/" },
+    { label:"Google Benchmark 指南", url:"https://google.github.io/benchmark/user_guide.html" },
+  ]},
+];
 const openSourceProjects = [
+  { phase:1, label:"xtensor-stack/xtensor", url:"https://github.com/xtensor-stack/xtensor", note:"MiniTensor API、shape 与广播参考" },
+  { phase:1, label:"google/googletest", url:"https://github.com/google/googletest", note:"C++ 单元测试工程参考" },
   { phase:1, label:"google/benchmark", url:"https://github.com/google/benchmark", note:"C++ 微基准方法" },
   { phase:1, label:"microsoft/mimalloc", url:"https://github.com/microsoft/mimalloc", note:"高性能分配器实现" },
   { phase:2, label:"NVIDIA/CUTLASS", url:"https://github.com/NVIDIA/cutlass", note:"GEMM 与 GPU 模板库" },
@@ -132,6 +281,13 @@ const openSourceProjects = [
   { phase:4, label:"vllm-project/vllm", url:"https://github.com/vllm-project/vllm", note:"真实推理框架的 custom op 接入" },
   { phase:5, label:"llvm/llvm-project", url:"https://github.com/llvm/llvm-project", note:"LLVM/MLIR 主仓" },
 ];
+
+function learningResourcesForWeek(week: number, phase: number) {
+  return weekLearningResources.find(item=>item.week===week) ?? {
+    videos: phaseResources[phase-1],
+    references: phaseReferences[phase-1],
+  };
+}
 
 const jdSignals = [
   { company:"Apple", role:"On-Device ML Compiler", skills:"MLIR 编译栈、C++、PyTorch、GPU/CPU/NPU kernel 与运行时性能", url:"https://jobs.apple.com/en-us/details/200631247/on-device-ml-compiler-engineer-model-compilation-graphics-games-and-machine-learning" },
@@ -236,7 +392,7 @@ export default function Home() {
       </section>
 
       <section className="principles" id="method">
-        <div><span>2026.08—2027.01</span><h3>恢复与能力积累期</h3><p>前 6 周定向恢复 C++，随后进入体系结构、CUDA 与 PyTorch 编译栈；阶段产出统一标为 Lab。</p></div>
+        <div><span>2026.08—2027.01</span><h3>项目驱动积累期</h3><p>前 4 周用同一个 MiniTensor Runtime 按需恢复 C++，第 5 周立即进入体系结构、CUDA 与 PyTorch 编译栈；阶段产出统一标为 Lab。</p></div>
         <div><span>2027.02</span><h3>算法启动</h3><p>每周约 5 题，安排在周一、三、五、日；与编译器学习并行。</p></div>
         <div><span>2027.03</span><h3>简历项目 A</h3><p>把前期 CUDA Lab 合并为 Transformer GPU 算子库，强调框架接入与性能证据。</p></div>
         <div><span>2027.04—06</span><h3>简历项目 B</h3><p>完成 PyTorch/ONNX→Relax→TIR→CUDA 的 Transformer 子图编译器。</p></div>
@@ -264,6 +420,7 @@ export default function Home() {
           <div className="weekList">
             {filtered.map(w => {
               const tasks = weekTasks(w, startDate);
+              const learningResources = learningResourcesForWeek(w.index, w.phase);
               const wDone = Array.from({length:7},(_,d)=>completed[`${w.index}-${d+1}`]).filter(Boolean).length;
               const isOpen = openWeek === w.index;
               return <article className={`weekCard ${isOpen?"open":""}`} key={w.index}>
@@ -275,12 +432,20 @@ export default function Home() {
                 </button>
                 {isOpen && <div className="weekBody">
                   <div className="deliverable"><span>{w.index<30?"本周学习验收物 · LAB":"本周简历项目里程碑"}</span><b>{w.output}</b><small>{w.index<30?"用于积累能力与素材，不建议单独占用简历项目栏。":"合并进入主项目仓库；必须可运行、可复现、可量化。"}</small></div>
-                  <div className="resourceShelf"><span>本周可观看视频</span><div>{phaseResources[w.phase-1].map(resource=><a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>{resource.label}<b>▶</b></a>)}</div></div>
+                  <div className="resourceShelf">
+                    <span>本周学习资源</span>
+                    <div className="resourceGroups">
+                      <div><small>直达视频章节</small>{learningResources.videos.map(resource=><a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>{resource.label}<b>▶</b></a>)}</div>
+                      <div><small>对应参考文献</small>{learningResources.references.map(resource=><a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>{resource.label}<b>↗</b></a>)}</div>
+                    </div>
+                  </div>
                   <div className="dayGrid">
                     {tasks.map((task,di)=>{
                       const id=`${w.index}-${di+1}`; const checked=!!completed[id]; const dayOpen=!!openDays[id];
-                      const videos=phaseResources[w.phase-1];
-                      const links=Array.from({length:Math.min(3,videos.length)},(_,offset)=>videos[(di+offset)%videos.length]);
+                      const videos=learningResources.videos;
+                      const references=learningResources.references;
+                      const videoLinks=Array.from({length:Math.min(2,videos.length)},(_,offset)=>videos[(di+offset)%videos.length]);
+                      const referenceLinks=Array.from({length:Math.min(2,references.length)},(_,offset)=>references[(di+offset)%references.length]);
                       return <div className={`dayWrap ${checked?"checked":""} ${dayOpen?"expanded":""}`} key={id}>
                         <div className="dayTop">
                           <label className="checkLabel" aria-label={`${checked?"取消":"完成"} Day ${di+1}`}><input type="checkbox" checked={checked} onChange={()=>toggle(id)}/><span className="box">{checked?"✓":""}</span></label>
@@ -290,7 +455,7 @@ export default function Home() {
                         </div>
                         {dayOpen&&<div className="dayDetails">
                           <div><span>执行步骤</span><ol><li>{detailSteps[di]}</li><li>围绕“{task}”提交代码或实验，不以看完资料作为完成。</li><li>{acceptancePlan[di]}</li></ol></div>
-                          <div className="dayLinks"><span>今日可观看视频</span>{links.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>▶</b></a>)}</div>
+                          <div className="dayLinks"><span>直达视频章节</span>{videoLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>▶</b></a>)}<span>对应参考文献</span>{referenceLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>↗</b></a>)}</div>
                         </div>}
                       </div>;
                     })}
@@ -304,13 +469,13 @@ export default function Home() {
       </section>
 
       <section className="deliverables" id="deliverables">
-        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>前期 shared_ptr、分配器、CPU 张量库、单 kernel 和 FX Pass 都是学习 Lab。到 2027 年 3–4 月再把它们合并成完整工程，避免简历堆课程型 Demo。</p></div>
+        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>前期 MiniTensor、分配器、单 kernel 和 FX Pass 都是学习 Lab。到 2027 年 3–4 月再把它们合并成完整工程，避免简历堆课程型 Demo。</p></div>
         <div className="projectGrid">
           <article><span>01 · 2027.03</span><h3>Transformer GPU Operator Library</h3><p>整合 GEMM、Softmax、RMSNorm、RoPE 和 attention 热点，覆盖多 dtype/shape、PyTorch/vLLM 接入、Nsight/Roofline 与性能回归。</p><b>W30 → W35</b></article>
           <article className="featured"><span>02 · 2027.04—06</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→CUDA runtime，覆盖动态 shape、fallback、外部 kernel 和端到端 benchmark。</p><b>W36 → W44</b></article>
           <article><span>03 · 持续加分</span><h3>TVM / LLVM 开源贡献</h3><p>以最小复现、源码定位、修复测试和 Code Review 证明真实工程协作；MLIR Lab 作为编译器项目的技术补充，不单列主项目。</p><b>W44 → W50</b></article>
         </div>
-        <div className="repoRadar"><span className="eyebrow">OPEN SOURCE RADAR</span><h3>建议深读并争取贡献的开源项目</h3><div>{openSourceProjects.filter(project=>project.phase>=2).map(project=><a href={project.url} target="_blank" rel="noreferrer" key={project.url}><b>{project.label}</b><small>{project.note}</small><i>↗</i></a>)}</div></div>
+        <div className="repoRadar"><span className="eyebrow">OPEN SOURCE RADAR</span><h3>项目实现时对照阅读的开源仓库</h3><div>{openSourceProjects.map(project=><a href={project.url} target="_blank" rel="noreferrer" key={project.url}><b>{project.label}</b><small>{project.note}</small><i>↗</i></a>)}</div></div>
       </section>
 
       <section className="adjustments">
