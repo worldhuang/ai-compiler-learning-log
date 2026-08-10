@@ -57,8 +57,10 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
 </script></body></html>`;
 
 const output = path.join(root, "worldhaung_ai.html");
+const rootOutput = path.join(root, "index.html");
 const pagesOutput = path.join(root, "docs", "index.html");
 fs.writeFileSync(output, html, "utf8");
+fs.writeFileSync(rootOutput, html, "utf8");
 fs.mkdirSync(path.dirname(pagesOutput), { recursive: true });
 fs.writeFileSync(pagesOutput, html, "utf8");
-console.log(`${output}\n${pagesOutput}`);
+console.log(`${output}\n${rootOutput}\n${pagesOutput}`);

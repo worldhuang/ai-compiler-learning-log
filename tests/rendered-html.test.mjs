@@ -50,3 +50,13 @@ test("project-driven C++ phase exposes chapter links, references, and repositori
   assert.match(resourceBlock, /cmake\.org\/cmake\/help/);
   assert.ok((resourceBlock.match(/https:\/\/www\.bilibili\.com\/video\//g) ?? []).length >= 20);
 });
+
+test("GitHub Pages root entry matches the generated learning log", async () => {
+  const [rootEntry, docsEntry] = await Promise.all([
+    readFile(new URL("../index.html", import.meta.url), "utf8"),
+    readFile(new URL("../docs/index.html", import.meta.url), "utf8"),
+  ]);
+  assert.equal(rootEntry, docsEntry);
+  assert.match(rootEntry, /MiniTensor I：工程骨架与张量接口/);
+  assert.match(rootEntry, /对应参考文献/);
+});
