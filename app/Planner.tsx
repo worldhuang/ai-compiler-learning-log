@@ -10,6 +10,14 @@ type Week = {
   days: string[];
 };
 
+type DailyGuide = {
+  workspace: string;
+  files: string;
+  steps: string[];
+  command: string;
+  doneWhen: string[];
+};
+
 const phases = [
   { name: "MiniTensor 与性能基础", range: "W01–W12", color: "#ef6a4c" },
   { name: "CUDA Kernel 工程", range: "W13–W20", color: "#e6a83e" },
@@ -324,6 +332,112 @@ const detailSteps = [
   "视频补强：重看薄弱章节，定位到 1 个实验 API，用最小代码验证结论。",
 ];
 
+const weekFileHints: Record<number, string> = {
+  1:"CMakeLists.txt · include/minitensor/tensor.hpp · src/tensor.cpp · tests/test_tensor.cpp",
+  2:"include/minitensor/storage.hpp · include/minitensor/tensor_view.hpp · tests/test_storage.cpp",
+  3:"include/minitensor/operators.hpp · src/operators.cpp · tests/test_operators.cpp · .clang-format",
+  4:"include/minitensor/thread_pool.hpp · benchmarks/matmul_bench.cpp · README.md",
+  5:"labs/assembly/*.cpp · labs/assembly/*.s · docs/W05-build-pipeline.md",
+  6:"benchmarks/cache_bench.cpp · benchmarks/transpose_bench.cpp · docs/W06-cache.md",
+  7:"benchmarks/simd_bench.cpp · include/minitensor/simd.hpp · docs/W07-vectorization.md",
+  8:"include/minitensor/thread_pool.hpp · benchmarks/false_sharing.cpp · tests/test_thread_pool.cpp",
+  9:"include/minitensor/allocator.hpp · src/allocator.cpp · tests/allocator_traces/",
+  10:"src/segregated_allocator.cpp · tests/allocator_traces/ · docs/W10-fragmentation.md",
+  11:"benchmarks/harness.hpp · scripts/report_benchmark.py · docs/benchmark-template.md",
+  12:"src/matmul.cpp · benchmarks/matmul_bench.cpp · docs/minitensor-v0.2-report.md",
+  13:"src/vector_add.cu · tests/test_vector_add.cu · benchmarks/vector_add_bench.cu",
+  14:"src/transpose.cu · tests/test_transpose.cu · benchmarks/transpose_bench.cu",
+  15:"src/gemm_naive.cu · src/gemm_tiled.cu · tests/test_gemm.cu",
+  16:"src/gemm_register.cu · benchmarks/gemm_bench.cu · docs/W16-roofline.md",
+  17:"src/reduction.cu · src/softmax.cu · tests/test_softmax.cu",
+  18:"src/layernorm.cu · tests/test_layernorm.cu · benchmarks/layernorm_bench.cu",
+  19:"triton/softmax.py · triton/layernorm.py · tests/test_triton_ops.py",
+  20:"benchmarks/run_all.py · docs/cuda-kernels-v1.md · results/W20/",
+  21:"autograd/tensor.py · extensions/custom_op.cpp · tests/test_autograd.py",
+  22:"passes/conv_bn_relu.py · examples/resnet_fx.py · tests/test_fx_fusion.py",
+  23:"onnx_tools/export_resnet.py · onnx_tools/rewrite.py · tests/test_onnx.py",
+  24:"compile_labs/quickstart.py · compile_labs/graph_breaks.py · docs/W24-stack.md",
+  25:"compile_labs/dynamo_guards.py · compile_labs/bytecode.py · docs/W25-debug.md",
+  26:"compile_labs/aot_autograd.py · compile_labs/decomposition.py · tests/test_aot.py",
+  27:"compile_labs/inductor_codegen.py · generated/ · docs/W27-regression.md",
+  28:"backend/backend.py · backend/passes.py · tests/test_backend.py",
+  29:"passes/conv_bn_relu.py · benchmarks/fusion_bench.py · docs/fusion-pass-v1.md",
+  30:"docs/RFC.md · docs/support-matrix.md · benchmarks/protocol.md · pyproject.toml",
+  31:"operators/softmax/ · operators/rmsnorm/ · tests/test_norm_ops.py",
+  32:"operators/gemm/ · operators/mlp/ · benchmarks/mlp_bench.py",
+  33:"operators/rope/ · operators/attention/ · docs/attention-io.md",
+  34:"bindings/torch_ops.py · integrations/vllm_demo.py · tests/test_integration.py",
+  35:"README.md · scripts/reproduce.py · results/v1.0/ · docs/interview-qa.md",
+  36:"compiler/frontend.py · compiler/importer.py · docs/compiler-rfc.md · tests/test_import.py",
+  37:"compiler/tir_kernels.py · compiler/schedules.py · tests/test_tir.py",
+  38:"compiler/passes/fusion.py · tests/ir/ · tests/test_fusion.py",
+  39:"compiler/dynamic_shapes.py · compiler/tuning.py · tuning_db/ · tests/test_dynamic.py",
+  40:"runtime/backend.py · runtime/external_codegen.py · tests/test_runtime.py",
+  41:"models/decoder_block.py · compiler/kv_cache.py · docs/attention-memory.md",
+  42:"integrations/vllm_backend.py · integrations/torch_backend.py · tests/test_e2e.py",
+  43:"compiler/pipeline.py · tests/test_pipeline.py · benchmarks/e2e.py",
+  44:"upstream/issue.md · upstream/reproducer.py · README.md · results/v1.0/",
+  45:"mlir/test/ · mlir/examples/toy/ · docs/W45-mlir-basics.md",
+  46:"mlir/lib/Transforms/Canonicalize.cpp · mlir/test/Transforms/transpose.mlir",
+  47:"mlir/test/Lowering/ · docs/W47-lowering.md · saved_ir/",
+  48:"gpu-operator-lab/README.md · transformer-compiler/README.md · portfolio/checklist.md",
+  49:"portfolio/resume.md · portfolio/project-qa.md · portfolio/demo-scripts/",
+  50:"portfolio/jd-matrix.csv · portfolio/mock-interviews/ · portfolio/applications.md",
+};
+
+function executionWorkspace(week: number) {
+  if (week <= 12) return "ai-compiler-year-one/projects/minitensor";
+  if (week <= 20) return "ai-compiler-year-one/projects/cuda-kernels";
+  if (week <= 29) return "ai-compiler-year-one/projects/compiler-playground";
+  if (week <= 35) return "ai-compiler-year-one/projects/gpu-operator-lab";
+  if (week <= 44) return "ai-compiler-year-one/projects/transformer-compiler";
+  if (week <= 47) return "ai-compiler-year-one/projects/mlir-toy-lab";
+  return "ai-compiler-year-one/portfolio";
+}
+
+function validationCommand(week: number) {
+  if (week <= 12) return "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug\ncmake --build build -j\nctest --test-dir build --output-on-failure";
+  if (week <= 20) return "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release\ncmake --build build -j\nctest --test-dir build --output-on-failure";
+  if (week <= 29) return "python -m pytest -q\npython examples/run_week.py --week CURRENT_WEEK";
+  if (week <= 35) return "python -m pytest -q\npython benchmarks/run.py --quick";
+  if (week <= 44) return "python -m pytest tests -q\npython benchmarks/e2e.py --quick";
+  if (week <= 47) return "cmake --build build --target check-mlir\nbuild/bin/mlir-opt <当天的 .mlir 文件> --verify-diagnostics";
+  return "git status --short\ngit diff --check";
+}
+
+function dailyGuide(week: Week & { index: number }, day: number, task: string): DailyGuide {
+  const workspace = executionWorkspace(week.index);
+  const files = weekFileHints[week.index];
+  const note = `docs/learning-log/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}.md`;
+  const mainTask = task.split("；加练 LeetCode")[0];
+  const common = [
+    `进入 ${workspace}；第一次做到这里时先创建目录，并确认 git status 没有混入无关修改。`,
+    `打开或创建：${files}。先在 ${note} 写清今天的输入、预期输出和 2 个边界情况。`,
+    `只完成今天这一件事：${mainTask}。先做正确可运行的最小版本，再考虑优化。`,
+    "补 1 个正常用例和至少 2 个边界用例；失败时把报错、原因和修复方式写进当天日志。",
+    `运行下方验收命令；把关键输出粘贴到 ${note}，再提交一次只包含当天工作的 Git commit。`,
+  ];
+  const study = [
+    `进入 ${workspace}，打开本周代码和 ${note}；先写下看视频前最想解决的 3 个问题。`,
+    "从当天列出的直达视频中选 1 节，看到关键代码时暂停，不倍速跳过示例。",
+    `在 ${files} 对应模块旁新建 labs/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}，复写一个最小示例并亲自运行。`,
+    "改变一个输入、shape、线程数或编译参数，记录变化；不能只留下视频笔记。",
+    `在 ${note} 回答开头的 3 个问题，附运行命令、输出和一个仍不理解的问题。`,
+  ];
+  return {
+    workspace,
+    files,
+    steps: day >= 5 ? study : common,
+    command: validationCommand(week.index).replace("CURRENT_WEEK", String(week.index)),
+    doneWhen: [
+      "当天主程序、实验或 IR 可以从零重新运行，不依赖口头说明。",
+      "正常路径通过，并且至少验证 2 个边界情况或失败路径。",
+      `存在当天日志 ${note}，里面有命令、结果、问题和结论。`,
+      task.includes("LeetCode") ? "额外算法题已写复杂度、边界和一次口头复述记录。" : "代码、测试与日志三者保持一致；现在才勾选今天。",
+    ],
+  };
+}
+
 function dateLabel(start: string, week: number, day: number) {
   const d = new Date(`${start}T00:00:00`);
   if (Number.isNaN(d.getTime())) return "";
@@ -333,6 +447,7 @@ function dateLabel(start: string, week: number, day: number) {
 
 export default function Home() {
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
+  const [subtasks, setSubtasks] = useState<Record<string, boolean>>({});
   const [startDate, setStartDate] = useState("2026-08-10");
   const [activePhase, setActivePhase] = useState(0);
   const [query, setQuery] = useState("");
@@ -344,14 +459,15 @@ export default function Home() {
     try {
       const saved = JSON.parse(localStorage.getItem("ai-compiler-plan") || "{}");
       if (saved.completed) setCompleted(saved.completed);
+      if (saved.subtasks) setSubtasks(saved.subtasks);
       if (saved.startDate) setStartDate(saved.startDate);
     } catch {}
     setReady(true);
   }, []);
 
   useEffect(() => {
-    if (ready) localStorage.setItem("ai-compiler-plan", JSON.stringify({ completed, startDate }));
-  }, [completed, startDate, ready]);
+    if (ready) localStorage.setItem("ai-compiler-plan", JSON.stringify({ completed, subtasks, startDate }));
+  }, [completed, subtasks, startDate, ready]);
 
   const total = weeks.length * 7;
   const done = Object.values(completed).filter(Boolean).length;
@@ -363,6 +479,15 @@ export default function Home() {
   }), [activePhase, query]);
 
   function toggle(id: string) { setCompleted(c => ({ ...c, [id]: !c[id] })); }
+  function toggleSubtask(id: string) { setSubtasks(c => ({ ...c, [id]: !c[id] })); }
+  function completeDay(id: string, stepCount: number) {
+    setSubtasks(current => {
+      const next = { ...current };
+      for (let index = 0; index < stepCount; index += 1) next[`${id}-step-${index}`] = true;
+      return next;
+    });
+    setCompleted(current => ({ ...current, [id]: true }));
+  }
   function phaseDone(p: number) {
     const ids = weeks.flatMap((w, wi) => w.phase === p ? Array.from({length:7},(_,di)=>`${wi+1}-${di+1}`) : []);
     return Math.round((ids.filter(id => completed[id]).length / ids.length) * 100) || 0;
@@ -442,6 +567,7 @@ export default function Home() {
                   <div className="dayGrid">
                     {tasks.map((task,di)=>{
                       const id=`${w.index}-${di+1}`; const checked=!!completed[id]; const dayOpen=!!openDays[id];
+                      const guide=dailyGuide(w,di,task);
                       const videos=learningResources.videos;
                       const references=learningResources.references;
                       const videoLinks=Array.from({length:Math.min(2,videos.length)},(_,offset)=>videos[(di+offset)%videos.length]);
@@ -454,8 +580,18 @@ export default function Home() {
                           <button className="dayExpand" type="button" onClick={()=>setOpenDays(state=>({...state,[id]:!state[id]}))} aria-expanded={dayOpen}>{dayOpen?"收起 −":"展开 +"}</button>
                         </div>
                         {dayOpen&&<div className="dayDetails">
-                          <div><span>执行步骤</span><ol><li>{detailSteps[di]}</li><li>围绕“{task}”提交代码或实验，不以看完资料作为完成。</li><li>{acceptancePlan[di]}</li></ol></div>
-                          <div className="dayLinks"><span>直达视频章节</span>{videoLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>▶</b></a>)}<span>对应参考文献</span>{referenceLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>↗</b></a>)}</div>
+                          <div className="executionGuide">
+                            <div className="startHere"><span>今天从这里开始</span><code>{guide.workspace}</code><p>主要会改：{guide.files}</p></div>
+                            <span>照着做 · 每一步都能单独打勾</span>
+                            <ol className="actionList">{guide.steps.map((step,index)=>{const stepId=`${id}-step-${index}`;return <li key={stepId}><label><input type="checkbox" checked={!!subtasks[stepId]} onChange={()=>toggleSubtask(stepId)}/><i>{subtasks[stepId]?"✓":index+1}</i><b>{step}</b></label></li>})}</ol>
+                            <button className="completeDay" type="button" onClick={()=>completeDay(id,guide.steps.length)}>全部步骤完成，勾选今天 ✓</button>
+                          </div>
+                          <div className="dayMeta">
+                            <span>最后运行这些命令</span><pre><code>{guide.command}</code></pre>
+                            <span>满足这些条件才算完成</span><ul>{guide.doneWhen.map(item=><li key={item}>{item}</li>)}</ul>
+                            <p className="methodNote">方法提醒：{detailSteps[di]} {acceptancePlan[di]}</p>
+                            <div className="dayLinks"><span>直达视频章节</span>{videoLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>▶</b></a>)}<span>对应参考文献</span>{referenceLinks.map(link=><a href={link.url} target="_blank" rel="noreferrer" key={link.url}>{link.label}<b>↗</b></a>)}</div>
+                          </div>
                         </div>}
                       </div>;
                     })}

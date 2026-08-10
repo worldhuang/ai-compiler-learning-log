@@ -1,0 +1,137 @@
+.dayDetails {
+  padding: 20px 22px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+}
+
+.startHere {
+  background: #211c1a;
+  color: white;
+  padding: 15px 17px;
+  margin-bottom: 18px;
+}
+
+.startHere span {
+  display: block;
+  margin-bottom: 8px;
+  color: #d3c6bd;
+  font-size: 9px;
+  letter-spacing: .14em;
+}
+
+.startHere code {
+  display: block;
+  color: #ffd2c6;
+  font: 11px/1.6 Consolas, monospace;
+  overflow-wrap: anywhere;
+}
+
+.startHere p {
+  margin: 8px 0 0;
+  color: #c9bfb8;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.actionList {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0 !important;
+  list-style: none;
+}
+
+.actionList li { margin: 0; }
+
+.actionList label {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 9px;
+  align-items: start;
+  padding: 10px 11px;
+  border: 1px solid #d8cce8;
+  background: white;
+  cursor: pointer;
+}
+
+.actionList input {
+  position: absolute;
+  opacity: 0;
+}
+
+.actionList i {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border: 1px solid #9b88c2;
+  color: #7257aa;
+  font: 10px monospace;
+  font-style: normal;
+}
+
+.actionList input:checked + i {
+  border-color: #249577;
+  background: #249577;
+  color: white;
+}
+
+.actionList b {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+.actionList input:checked ~ b {
+  color: #8b838f;
+  text-decoration: line-through;
+}
+
+.completeDay {
+  width: 100%;
+  margin-top: 10px;
+  padding: 11px 14px;
+  border: 0;
+  background: #7257aa;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.completeDay:hover { background: #5f478f; }
+.dayMeta > span { margin-top: 2px; }
+
+.dayMeta pre {
+  overflow: auto;
+  margin: 0 0 18px;
+  padding: 13px;
+  border-left: 3px solid #ef6a4c;
+  background: #282321;
+  color: #f7f1e9;
+}
+
+.dayMeta pre code {
+  white-space: pre-wrap;
+  font: 10px/1.7 Consolas, monospace;
+}
+
+.dayMeta ul {
+  margin: 0 0 18px;
+  padding-left: 18px;
+  font-size: 10px;
+  line-height: 1.75;
+}
+
+.methodNote {
+  padding: 9px 11px;
+  border-left: 3px solid #aa99d0;
+  background: #eee7f7;
+  color: #62596a;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.dayLinks > span { margin-top: 7px; }
+
+@media (max-width: 700px) {
+  .dayDetails { grid-template-columns: 1fr; }
+}

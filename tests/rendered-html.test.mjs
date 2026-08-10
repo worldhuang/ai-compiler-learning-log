@@ -31,10 +31,19 @@ test("planner and standalone file include the requested behavior", async () => {
   assert.match(planner, /day6Knowledge/);
   assert.match(planner, /LeetCode 2 题/);
   assert.match(planner, /Transformer Subgraph Compiler/);
+  assert.match(planner, /今天从这里开始/);
+  assert.match(planner, /每一步都能单独打勾/);
+  assert.match(planner, /cmake --build build -j/);
+  assert.match(planner, /toggleSubtask/);
   assert.match(standalone, /class="expand"/);
+  assert.match(standalone, /class="subcheck"/);
+  assert.match(standalone, /全部步骤完成，勾选今天/);
   assert.match(standalone, /020721/);
   assert.match(standalone, /2027\.02 开始每周约 5 道 LeetCode/);
   assert.match(standalone, /简历项目里程碑/);
+  const inlineScript = standalone.match(/<script>([\s\S]*)<\/script>/)?.[1];
+  assert.ok(inlineScript, "standalone page should contain its interactive script");
+  assert.doesNotThrow(() => new Function(inlineScript));
 });
 
 test("project-driven C++ phase exposes chapter links, references, and repositories", async () => {
