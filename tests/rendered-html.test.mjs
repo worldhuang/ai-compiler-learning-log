@@ -32,11 +32,16 @@ test("planner and standalone file include the requested behavior", async () => {
   assert.match(planner, /LeetCode 2 题/);
   assert.match(planner, /Transformer Subgraph Compiler/);
   assert.match(planner, /今天从这里开始/);
+  assert.match(planner, /今天学习的目的/);
+  assert.match(planner, /今天必须掌握的知识点/);
+  assert.match(planner, /weekKnowledgePoints/);
   assert.match(planner, /每一步都能单独打勾/);
   assert.match(planner, /cmake --build build -j/);
   assert.match(planner, /toggleSubtask/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
+  assert.match(standalone, /class="purposeCard"/);
+  assert.match(standalone, /class="knowledgeCard"/);
   assert.match(standalone, /全部步骤完成，勾选今天/);
   assert.match(standalone, /020721/);
   assert.match(standalone, /2027\.02 开始每周约 5 道 LeetCode/);

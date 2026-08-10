@@ -13,6 +13,8 @@ type Week = {
 type DailyGuide = {
   workspace: string;
   files: string;
+  purpose: string;
+  knowledgePoints: string[];
   steps: string[];
   command: string;
   doneWhen: string[];
@@ -385,6 +387,59 @@ const weekFileHints: Record<number, string> = {
   50:"portfolio/jd-matrix.csv · portfolio/mock-interviews/ · portfolio/applications.md",
 };
 
+const weekKnowledgePoints: Record<number, string[]> = {
+  1:["CMake 中 library、executable、test target 的区别，以及 target_link_libraries 如何连接它们","头文件声明与 .cpp 定义的分工；能区分编译错误、头文件查找错误和链接错误","class 的 public 接口、构造函数、成员函数、namespace 与 const 成员函数","out-of-source build、Debug 构建、CTest 注册和测试发现的完整流程"],
+  2:["RAII 如何把资源生命周期绑定到对象生命周期，为什么析构函数必须可靠释放资源","深拷贝、浅拷贝、移动构造、移动赋值和 std::move 的真实语义","shared_ptr 的共享所有权、引用计数成本，以及 Tensor view 为什么需要共享 Storage","shape、stride、offset、contiguous 与 view 之间的关系"],
+  3:["函数模板和类模板的实例化时机，以及模板实现为何通常放在头文件","vector、span、algorithm/ranges 的所有权与非拥有视图差异","逐元素算子、标量算子和二维广播的 shape 推导规则","浮点误差阈值、参数化测试、异常安全与 API 约束"],
+  4:["互斥锁、条件变量、任务队列和线程停止协议如何组成固定线程池","线程池中的异常传播、空队列等待、析构和竞态条件","矩阵乘法按输出行分块时的任务粒度、负载均衡和扩展性","benchmark 的 warmup、重复次数、P50 与硬件环境记录"],
+  5:["补码、整数溢出和 IEEE 754 浮点表示如何影响张量计算","x86-64 寄存器、调用约定、栈帧和函数参数传递","-O0 与 -O3 下内联、循环优化、模板实例化和 move 的汇编差异","预处理、编译、汇编、静态/动态链接各自产生什么文件"],
+  6:["L1/L2/L3、cache line、组相联、替换和 TLB 的基本工作方式","shape、stride 和行/列优先遍历如何决定空间局部性","blocked transpose 的 tile size 为什么会改变 cache miss 和带宽","工作集大小、缓存容量、miss rate 与延迟之间的因果链"],
+  7:["处理器流水线、数据相关、乱序执行和分支预测的性能影响","branchless 写法何时有效，何时会增加无用计算","编译器自动向量化的前提、vectorization report 和阻碍因素","AVX2/AVX-512 intrinsic、内存对齐和尾部元素处理"],
+  8:["C++ memory model、happens-before、data race 和原子操作语义","mutex、condition_variable 与 atomic 的适用边界","false sharing 如何由 cache line 共享引起，以及 padding 的作用","静态分块、动态任务粒度与线程池调度开销"],
+  9:["分配器块头、块脚、对齐、prologue 与 epilogue 的布局","first-fit、块分割、相邻块合并和外部碎片","隐式空闲链表的遍历成本与堆不变量","heap checker 如何发现越界、重复块和未合并空闲块"],
+  10:["显式双向空闲链表的插入、删除和一致性维护","size class 与 segregated free list 的空间—时间权衡","吞吐、峰值占用、内部/外部碎片的不同含义","真实 Tensor allocation trace 与通用 malloc trace 的差异"],
+  11:["延迟、吞吐、带宽、FLOPS、利用率和显存的口径区别","warmup、重复、P50/P95、方差和异常值处理","Roofline 中算术强度、带宽上限和算力上限","可复现实验必须固定的硬件、软件、输入、随机种子和计时边界"],
+  12:["Tensor、Storage、Operator、ThreadPool、Allocator 的模块边界","naive、tiled、parallel matmul 的算法与访存差异","tile、线程数、shape 扫描如何形成可信性能曲线","与 Eigen/PyTorch CPU 对照时如何控制变量并诚实描述限制"],
+  13:["SIMT、warp、grid、block、thread 的层级和索引映射","host/device 内存分配、拷贝和 kernel launch 生命周期","grid-stride loop、边界保护与统一 CUDA 错误检查","H2D、D2H、kernel 时间和有效带宽的分离测量"],
+  14:["global、shared、register、constant memory 的容量和访问特征","coalesced memory access 与矩阵转置读写模式","shared-memory tiling 和 bank conflict 的来源","padding 如何消除 bank conflict，以及 Nsight Compute 如何验证"],
+  15:["GEMM 的 M/N/K 索引、数据布局和边界条件","shared-memory tiled GEMM 的加载、同步和计算阶段","非 tile 整倍数 shape 的保护与浮点误差检查","CUDA Events 计时、GFLOPS 计算和 cuBLAS baseline"],
+  16:["register blocking、每线程多输出和指令级并行","occupancy、寄存器压力、shared memory 与 block 配置的权衡","向量化 load/store 的对齐约束和生成指令","PTX/SASS、资源报告和 Roofline 对瓶颈的定位"],
+  17:["树形归约、shared-memory reduction 和多 block 合并","warp shuffle 与 warp/block reduce 的正确写法","softmax 减 max 的数值稳定性和误差来源","online softmax 如何减少访存遍数并保持稳定"],
+  18:["LayerNorm 的均值、方差、epsilon、gamma 和 beta","Welford 算法相对两遍统计的数值与访存特点","统计、归一化、仿射融合对 kernel launch 和显存读写的影响","hidden size、block 配置、dtype 与吞吐之间的关系"],
+  19:["Triton 的 program_id、block、mask 和指针算术","Triton reduction、num_warps 与 autotune 配置","CUDA、Triton、PyTorch baseline 的公平比较方式","高层 Kernel DSL 在开发效率、可控性和可移植性上的取舍"],
+  20:["统一 correctness/performance benchmark harness 的职责","Nsight Systems 全局时间线与 Nsight Compute 单 kernel 指标的分工","从 baseline、瓶颈、优化到证据的完整性能叙事","版本冻结、环境记录、结果图表和可复现发布"],
+  21:["Autograd 拓扑排序、requires_grad、grad_fn 和梯度累积","add/mul/matmul backward 的链式法则与梯度检查","PyTorch Dispatcher 的算子 schema、dispatch key 和 kernel 选择","C++/CUDA extension 从 Python 调用到原生 kernel 的路径"],
+  22:["FX symbolic_trace、Graph、Node、GraphModule 的职责","模式匹配、节点替换、死代码清理和图合法性","eval 模式 BN folding 的数学推导与适用条件","融合前后的数值一致性、节点数和 latency 验证"],
+  23:["ONNX protobuf、opset、initializer、value_info 和 graph","模型导出、checker、shape inference 与动态维度","ONNX Runtime 与 PyTorch 输出对齐和误差容限","Netron 可视化、算子统计与安全图改写"],
+  24:["TorchDynamo、AOTAutograd、Inductor、Triton 的分层职责","graph capture、guards、graph break 和 recompilation","冷启动编译时间与稳态执行时间的区别","dynamic shapes、显存和 generated code 的观察方法"],
+  25:["Python bytecode、frame evaluation 与 FX graph 捕获","guard 的生成、缓存命中和失败重编译","数据依赖控制流、Python side effect 与 graph break","Dynamo 日志、最小复现和问题定位流程"],
+  26:["AOTAutograd 的前向/反向联合捕获与 saved tensor","functionalization 如何处理 mutation 和 view","operator decomposition 如何把复合算子展开为基础算子","训练编译中的重计算、内存占用和融合权衡"],
+  27:["Inductor 如何把 FX graph 降到生成的 Triton/C++ kernel","pointwise fusion 与 reduction schedule 的代码结构","autotune、缓存目录、shape guard 和代码特化","生成代码变化与性能回归之间的定位方法"],
+  28:["torch.compile backend 的输入输出协议和 GraphModule 生命周期","图打印、计时、pass pipeline 与 fallback","常量折叠、冗余算子消除和图正确性","unsupported op、动态 shape 和回归测试设计"],
+  29:["融合 Pass 的支持矩阵、正例、负例和回退条件","ResNet 子图模式在 eval/train、dtype、shape 下的差异","kernel launch、访存次数和端到端 latency 的关系","可复现 benchmark dashboard 与性能结论边界"],
+  30:["项目 RFC 中问题、目标用户、非目标和验收指标","算子库 API、目录分层、dispatch 和支持矩阵","硬件、shape、dtype、精度阈值与 benchmark 协议","PyTorch、CUTLASS、Triton baseline 的统一结果格式"],
+  31:["Softmax/RMSNorm 在 FP32/FP16 与极值输入下的数值风险","naive、shared、warp、Triton 多实现的 dispatch 条件","非对齐 shape、向量化访问和尾部 mask","correctness matrix、误差统计和性能回归"],
+  32:["Transformer MLP 的典型 M/N/K shape 和算量","register-blocked GEMM、mainloop 与数据复用","bias+GELU/SwiGLU epilogue fusion 的收益来源","cuBLAS、CUTLASS、Triton 在不同规模下的性能边界"],
+  33:["RoPE 的旋转位置编码数学、配对维度和数据布局","prefill 与 decode 的 shape、并行度和瓶颈差异","KV Cache 字节数、连续/分页布局和访问局部性","FlashAttention 的 IO-aware 思路与 attention 热点"],
+  34:["torch.library/C++ extension 的 schema、注册和 dispatch","fake/meta kernel 与 torch.compile 兼容性","能力判断、fallback、异常诊断和动态 shape","单 kernel 加速如何传递或无法传递到端到端收益"],
+  35:["API、支持矩阵、环境锁定和一键复现脚本","correctness/performance regression 与结果版本管理","README 架构图、优化演进、失败案例和限制","源码讲解中问题、基线、优化、证据和取舍的表达"],
+  36:["TVM IRModule、Relax、TensorIR、Runtime 的分层","PyTorch/ONNX 到 Relax 的导入和规范化","MLP/RMSNorm 子图的算子、shape 与 dtype 表示","eager、torch.compile、TVM baseline 的可比性"],
+  37:["TVMScript PrimFunc、block、buffer 和迭代变量","split、reorder、cache_read、cache_write 等 schedule primitive","block/thread 绑定、cooperative fetch、向量化和寄存器分块","schedule legality 与生成 CUDA 代码的对应关系"],
+  38:["DPL 模式描述、dataflow block 和子图边界","模式匹配、IR rewrite、前后 IR 保存和结构验证","dtype、layout、shape 支持条件与混合子图 fallback","融合对 kernel 数、访存和数值结果的影响"],
+  39:["ShapeExpr、symbolic variable 与动态 shape 约束","specialization、guard、recompile 的适用边界","MetaSchedule 的 design space、runner、database 和 cost model","训练 shape、top-k trace 与 holdout shape 的泛化验证"],
+  40:["PackedFunc、NDArray、Device API 和执行器调用链","BYOC/external codegen 的分区、能力检查和外部 kernel 调用","编译、加载、首轮、稳态 latency 的拆分","版本错配、缺算子、OOM 与 fallback 的错误诊断"],
+  41:["decoder block 中 RMSNorm、QKV、RoPE、Attention 的 shape 流","prefill/decode 的算量、访存和并行度","连续与分页 KV Cache 的布局和容量代价","融合、内存规划、kernel 数和端到端 latency"],
+  42:["vLLM custom op 或 PyTorch backend 的真实接入点","自定义 RMSNorm/Softmax/TIR/Triton kernel 的调用路径","能力检查、fallback、数值一致性与回归测试","调度、Python、launch 开销如何吞没单 kernel 收益"],
+  43:["前端导入、规范化、融合、TIR lowering、schedule、runtime 的完整 pipeline","Pass 之间的输入输出不变量和错误诊断","动态 shape、unsupported op 与 fallback 的系统设计","三组模型/shape 的端到端测试和性能报告"],
+  44:["开源 issue 筛选、最小复现和根因定位","目标测试、benchmark 与修复边界","commit、PR 描述、Code Review 和维护者反馈","上游贡献如何反哺本地项目的工程质量"],
+  45:["MLIR operation、value、type、attribute、region、block 与 SSA","Dialect 如何定义领域语义，TableGen 如何生成 Op 基础代码","Toy AST 到 MLIR 的前端转换路径","通用格式、自定义格式与 IR round-trip"],
+  46:["RewritePattern、matchAndRewrite 和 pattern benefit","canonicalization、fold 与普通 pass 的职责区别","PassManager、analysis preservation 和 pipeline","FileCheck 正例/负例与 transpose(transpose(x)) 消除"],
+  47:["affine、scf、memref 与 LLVM dialect 的层次","conversion target、legality 和 type converter","逐层 lowering 时操作、类型和内存表示的变化","为什么不同优化应放在不同 IR 层级"],
+  48:["陌生人复现需要的环境、命令、测试、数据和限制","API、测试、benchmark、框架接入和版本锁定审计","性能图表的硬件、输入、warmup 和统计口径","死代码、大文件、硬编码路径和工程整洁度"],
+  49:["简历项目描述中的问题、动作、量化结果和技术取舍","2/5/10 分钟项目叙事的不同信息密度","源码、性能、系统设计和失败案例的追问准备","STAR 结构与避免“精通、负责”等无证据表述"],
+  50:["JD 技能要求到项目证据的映射","限时 C++/LeetCode 的正确性、复杂度和表达","白板 reduction/LayerNorm 的并行设计与边界","torch.compile、Relax/TIR、MLIR lowering 的系统化讲解与面试复盘"],
+};
+
 function executionWorkspace(week: number) {
   if (week <= 12) return "ai-compiler-year-one/projects/minitensor";
   if (week <= 20) return "ai-compiler-year-one/projects/cuda-kernels";
@@ -410,6 +465,33 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
   const files = weekFileHints[week.index];
   const note = `docs/learning-log/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}.md`;
   const mainTask = task.split("；加练 LeetCode")[0];
+  const themes = weekKnowledgePoints[week.index];
+  const purposeFrame = [
+    "先建立问题边界、接口和术语模型，避免后续实现建立在模糊理解上。",
+    "做出正确可运行的 baseline，为后续优化提供不可缺少的正确性参照。",
+    "通过实验和边界输入验证你的理解，而不是停留在会复述概念。",
+    "沿调用链调试和观察中间状态，训练定位编译器与性能问题的能力。",
+    "把结果转成可比较的数据，学习用证据判断优化是否真的有效。",
+    "用视频补齐当天实现背后的原理，并通过最小实验把知识重新落回代码。",
+    "针对本周最薄弱的知识点做一次主动补强，避免带着概念缺口进入下一周。",
+  ][day];
+  const methodKnowledge = [
+    "能画出当天对象、数据或 IR 的输入→处理→输出关系，并说出 2 个边界条件。",
+    "能解释 baseline 为什么正确、复杂度或资源成本是多少，以及它将与哪个版本比较。",
+    "能设计正常、边界、失败三类用例，并知道误差或期望输出如何判定。",
+    "能使用断点、日志、IR dump、profile 中至少一种证据定位问题所在层级。",
+    "能区分延迟、吞吐、带宽、FLOPS、显存等指标，并记录可复现的测量条件。",
+    "能合上视频后独立复写最小示例，并通过改变一个变量验证讲解中的结论。",
+    "能用自己的话回答 3 个问题，并指出一个仍未解决、需要下周继续追踪的问题。",
+  ][day];
+  const purpose = `通过“${mainTask}”，完成「${week.title}」的第 ${day+1} 个能力台阶。${purposeFrame}它直接服务于本周交付物“${week.output}”，并会成为后续主项目可以复用的代码、测试或性能证据。`;
+  const knowledgePoints = [
+    `核心概念：${themes[day % themes.length]}`,
+    `关联知识：${themes[(day + 1) % themes.length]}`,
+    `动手能力：能够不照抄答案完成“${mainTask}”，并解释关键数据结构、算法或调用链。`,
+    `验证能力：${methodKnowledge}`,
+    `工程认知：知道 ${files} 各自负责什么，以及它们如何共同产出“${week.output}”。`,
+  ];
   const common = [
     `进入 ${workspace}；第一次做到这里时先创建目录，并确认 git status 没有混入无关修改。`,
     `打开或创建：${files}。先在 ${note} 写清今天的输入、预期输出和 2 个边界情况。`,
@@ -427,6 +509,8 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
   return {
     workspace,
     files,
+    purpose,
+    knowledgePoints,
     steps: day >= 5 ? study : common,
     command: validationCommand(week.index).replace("CURRENT_WEEK", String(week.index)),
     doneWhen: [
@@ -582,6 +666,8 @@ export default function Home() {
                         {dayOpen&&<div className="dayDetails">
                           <div className="executionGuide">
                             <div className="startHere"><span>今天从这里开始</span><code>{guide.workspace}</code><p>主要会改：{guide.files}</p></div>
+                            <div className="purposeCard"><span>今天学习的目的</span><p>{guide.purpose}</p></div>
+                            <div className="knowledgeCard"><span>今天必须掌握的知识点</span><ul>{guide.knowledgePoints.map(point=><li key={point}>{point}</li>)}</ul></div>
                             <span>照着做 · 每一步都能单独打勾</span>
                             <ol className="actionList">{guide.steps.map((step,index)=>{const stepId=`${id}-step-${index}`;return <li key={stepId}><label><input type="checkbox" checked={!!subtasks[stepId]} onChange={()=>toggleSubtask(stepId)}/><i>{subtasks[stepId]?"✓":index+1}</i><b>{step}</b></label></li>})}</ol>
                             <button className="completeDay" type="button" onClick={()=>completeDay(id,guide.steps.length)}>全部步骤完成，勾选今天 ✓</button>

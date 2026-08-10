@@ -132,6 +132,61 @@
 
 .dayLinks > span { margin-top: 7px; }
 
+.purposeCard,
+.knowledgeCard {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid #d8cce8;
+  background: #fffaf5;
+}
+
+.purposeCard {
+  border-left: 4px solid #ef6a4c;
+  background: #fff1eb;
+}
+
+.purposeCard span,
+.knowledgeCard span {
+  display: block;
+  margin-bottom: 8px;
+  color: #6d55a1;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.purposeCard p {
+  margin: 0;
+  color: #443c38;
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.knowledgeCard ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.knowledgeCard li {
+  position: relative;
+  padding-left: 16px;
+  color: #514851;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.knowledgeCard li::before {
+  content: "◆";
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #7e62c7;
+  font-size: 8px;
+}
+
 @media (max-width: 700px) {
   .dayDetails { grid-template-columns: 1fr; }
 }
