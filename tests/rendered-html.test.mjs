@@ -36,3 +36,13 @@ test("planner and standalone file include the requested behavior", async () => {
   assert.match(standalone, /2027\.02 开始每周约 5 道 LeetCode/);
   assert.match(standalone, /简历项目里程碑/);
 });
+
+test("C++ recovery phase and daily resources are video-first", async () => {
+  const planner = await readFile(new URL("../app/Planner.tsx", import.meta.url), "utf8");
+  const resourceBlock = planner.slice(planner.indexOf("const phaseResources"), planner.indexOf("const openSourceProjects"));
+  assert.match(planner, /C\+\+ 恢复训练：语法与函数/);
+  assert.match(planner, /C\+\+ 恢复验收：迷你张量容器/);
+  assert.match(planner, /今日可观看视频/);
+  assert.ok((resourceBlock.match(/https:\/\/www\.bilibili\.com\/video\//g) ?? []).length >= 20);
+  assert.doesNotMatch(resourceBlock, /docs\.|github\.com|youtube\.com/);
+});
