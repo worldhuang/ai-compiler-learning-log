@@ -21,8 +21,58 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
 
 (() => {
   const style = document.createElement("style");
-  style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}}";
+  style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}.projectGates{max-width:1320px;margin:0 auto 34px;padding:0 5vw;display:grid;grid-template-columns:1fr 1fr;gap:12px}.projectGate{border:1px solid #d8cce8;background:#fff;padding:20px}.projectGate small{color:#7257aa;font-weight:800;letter-spacing:.13em}.projectGate h2{font:22px Georgia,'Songti SC',serif;margin:8px 0}.projectGate p,.projectGate li{font-size:11px;line-height:1.7;color:#514851}.projectGate ul{margin:10px 0;padding-left:18px}.projectGate a{font-size:11px;color:#7257aa;text-decoration:underline}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}.projectGates{grid-template-columns:1fr}}";
   document.head.append(style);
+  const gate = document.createElement("section");
+  gate.className = "projectGates";
+  gate.innerHTML = '<article class="projectGate"><small>秋招主项目 A · GPU OPERATOR LAB</small><h2>不是 Kernel 作业，而是可接入框架的算子库</h2><p>简历上必须展示 Softmax、RMSNorm、GEMM/MLP、RoPE/KV Cache 中至少 3 类算子，并说明不同 shape/dtype 的 dispatch。</p><ul><li>PyTorch custom op 或 torch.library 接入，且有 fallback。</li><li>正确性矩阵：FP32/FP16、非对齐 shape、极值和失败路径。</li><li>与 PyTorch、Triton、CUTLASS/cuBLAS 同口径性能对比。</li><li>性能图标注 GPU、shape、dtype、warmup、P50；有失败案例。</li><li>一键测试/benchmark、架构图、10 分钟讲解与可追问源码。</li></ul><a href="https://github.com/triton-lang/triton" target="_blank" rel="noreferrer">对标 Triton</a> · <a href="https://github.com/NVIDIA/cutlass" target="_blank" rel="noreferrer">对标 CUTLASS</a> · <a href="https://github.com/Dao-AILab/flash-attention" target="_blank" rel="noreferrer">对标 FlashAttention</a></article><article class="projectGate"><small>秋招主项目 B · TRANSFORMER SUBGRAPH COMPILER</small><h2>不是 TVM 跑通，而是端到端可诊断编译器</h2><p>简历上必须展示 PyTorch/ONNX 子图进入 IR、融合、TIR schedule、runtime/fallback 和端到端性能证据。</p><ul><li>支持 RMSNorm+MLP 或 attention 子图，并写明非目标。</li><li>保存前后 IR、20+ 图测试、dtype/layout/shape 支持矩阵。</li><li>至少一个 TensorIR schedule 与项目 A kernel 进行对照。</li><li>动态 shape guard、unsupported op、OOM/版本错配均有诊断或 fallback。</li><li>与 eager、torch.compile、TVM baseline 同口径比较并可复现。</li></ul><a href="https://github.com/apache/tvm" target="_blank" rel="noreferrer">对标 Apache TVM</a> · <a href="https://github.com/mlc-ai/mlc-llm" target="_blank" rel="noreferrer">对标 MLC-LLM</a> · <a href="https://github.com/vllm-project/vllm" target="_blank" rel="noreferrer">对标 vLLM</a></article>';
+  document.querySelector(".hero").insertAdjacentElement("afterend", gate);
+
+  const detailedTopics = [
+    "CMake target、静态库、CTest|Shape/Stride/DType 的职责|连续 stride 与 numel|二维索引到线性 offset|正常/边界/失败测试|vector、引用、构造函数|从零构建与 README",
+    "栈堆与所有权图|RAII 与析构顺序|深拷贝、移动语义|shared_ptr 与 view 别名|reshape/transpose 的 stride|ASan/UBSan 定位内存错误|Rule of Five 与接口取舍",
+    "模板声明/定义位置|泛型 Tensor<T> 与类型约束|逐元素算子与 shape 检查|广播的最小规则|naive matmul 与误差阈值|参数化测试与近似比较|clang-format、warning、preset",
+    "任务队列与条件变量|线程池停止协议|输出行分块与负载均衡|warmup/P50/方差|profiler 热点与 Amdahl|tile/线程数扫描|README、性能图、发布",
+    "补码与整数溢出|IEEE754 与浮点比较|寄存器、栈帧、调用约定|-O0/-O3 汇编差异|预处理到链接的产物|静态/动态库与符号|源码—汇编证据链",
+    "cache line 与工作集|行列访问与 stride|TLB、预取、局部性|blocked transpose|带宽、miss、延迟|性能反例与噪声|Tensor stride 的硬件代价",
+    "流水线与分支预测|自动向量化报告|AVX lane/对齐/尾部|memory model 与 atomic|false sharing|任务粒度与调度|TSan 与并发不变量",
+    "块头/块脚与对齐|first-fit/split/coalesce|显式空闲链表|size class|heap checker|碎片率与吞吐|分配器接入 Tensor 的边界",
+    "公平 baseline|naive/tiled/parallel matmul|tile×线程×shape|算术强度与 roofline|profiler 归因|Eigen/PyTorch 对照|CPU Runtime 项目表达",
+    "GPU 环境与设备规格|grid/block/thread|SIMT 与 warp|host/device memory|grid-stride loop|CUDA 错误检查|H2D/kernel/D2H 计时",
+    "global/shared/register memory|coalescing|bank conflict|tiled transpose|padding|Nsight Compute 指标|非整除边界 mask",
+    "GEMM 的 M/N/K|每线程一个 C 元素|shared tile|协作加载与同步|K 尾部处理|cuBLAS 公平对照|索引图与访存分析",
+    "register tile 与 ILP|occupancy 与寄存器压力|block shape|vectorized load|对齐与 fallback|achieved TFLOPS|dispatch 条件",
+    "tree reduction|warp shuffle|stable softmax|max-subtract-exp|多 block/workspace|FP32 accumulate|NaN/极值诊断",
+    "LayerNorm mean/var|Welford|row-wise mapping|gamma/beta|FP16/BF16 累加|vector load/tail|支持矩阵与 fallback",
+    "Triton program/block/mask|CUDA 对照|Triton 调参|统一回归脚本|Python API|性能图统计口径|CUDA Kernel Lab 讲解",
+    "autograd graph|topological backward|leaf/grad_fn|in-place 风险|TensorImpl/Storage|Dispatcher/schema|有限差分梯度检查",
+    "FX GraphModule/Node|node meta shape|pattern rewrite|Conv-BN-ReLU 条件|ONNX graph/initializer|checker/Netron|Pass fallback",
+    "eager/compile|graph break|Dynamo/AOT/Inductor|IR dump|shape guard|compile vs steady time|端到端正确性",
+    "bytecode tracing|guard/recompile|alias/mutation|functionalization|AOT 分区|dynamic symbol|最小复现与 regression",
+    "Inductor scheduler|fusion group|generated kernel|autotune/cache|backend contract|constant fold/DCE|性能回归",
+    "FusionPass registry|模式支持矩阵|eval/train 条件|IR before/after|fallback|kernel 数与访存|RFC 与 README",
+    "项目 RFC|非目标与指标|operator API|dispatch/fallback|shape/dtype matrix|benchmark JSON|Triton/CUTLASS/FA 对标",
+    "RMSNorm 数学|stable softmax|warp/shared reduction|mask|FP16/BF16 误差|vector load|operator dispatch",
+    "Transformer MLP shape|GEMM blocking|tensor core 条件|bias+GELU/SwiGLU|layout/workspace|cuBLAS/CUTLASS/Triton|融合反例",
+    "RoPE 数学与配对维度|prefill/decode|KV Cache 字节数|连续/分页 layout|attention IO|FlashAttention|容量与正确性",
+    "torch.library schema|C++/Python extension|fake/meta kernel|capability check|vLLM custom op|fallback|端到端收益",
+    "API 支持矩阵|correctness regression|performance regression|环境锁定|README 架构图|失败案例|源码讲解",
+    "项目 B RFC|Relax/TensorIR/runtime|子图边界|输入模型与 baseline|IR dump|测试计划|开源对标 TVM",
+    "PrimFunc/block/buffer|TVMScript|split/reorder|cache_read/write|thread binding|cooperative fetch|生成 CUDA 对照",
+    "DPL 模式|dataflow block|pattern matching|rewrite|融合合法性|dtype/layout 条件|前后 IR 与数值测试",
+    "ShapeExpr/symbol|specialization|guard/recompile|MetaSchedule space|runner/database|cost model|holdout shape",
+    "PackedFunc/NDArray|runtime call chain|BYOC/external codegen|能力检查|编译/加载/稳态拆分|诊断信息|fallback",
+    "decoder block dataflow|RMSNorm/QKV/RoPE|prefill/decode 瓶颈|KV Cache layout|fusion/memory plan|kernel 数|端到端 latency",
+    "framework 接入点|custom kernel call path|shape/dtype guard|fallback|数值回归|profiling|单算子到端到端",
+    "frontend→runtime pipeline|Pass 不变量|unsupported op|三组模型/shape|e2e regression|性能报告|系统设计讲解",
+    "开源 issue 筛选|最小复现|根因定位|目标测试|benchmark|commit/PR 描述|维护者反馈",
+    "MLIR SSA/op/type|Dialect/TableGen|RewritePattern|canonicalization|PassManager|affine/scf/memref|lowering legality",
+    "README 审计|可复现环境|性能图口径|简历量化|2/5/10 分钟讲解|JD 证据映射|模拟面试复盘"
+  ].map((row) => row.split("|"));
+
+  function dayTopic(w, d) {
+    return detailedTopics[w.index - 1]?.[d] || w.knowledge[d % w.knowledge.length] || "本日任务的关键概念";
+  }
 
   function dayFiles(w, d) {
     if (w.index <= 9) {
@@ -111,23 +161,42 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
     const files = dayFiles(w, d);
     const note = "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D" + String(d + 1).padStart(2, "0") + ".md";
     if (w.index === 1) return weekOneContract(d, note);
+    const topic = dayTopic(w, d);
     const isStudy = /学习|阅读|视频|源码|概念|理解/.test(main);
     const isMeasure = /性能|benchmark|基准|profile|Nsight|调优|对比|扫描|吞吐|延迟/.test(main);
     const isTest = /测试|验证|正确性|边界|异常/.test(main);
+    const isDesign = /画|设计|定义|冻结|整理|写.*RFC|写.*README|列出|推导|统计|跟踪|建立.*协议/.test(main);
+    const isIntegration = /从零|复现|发布|封版|接入|打通|准备|录制|提交|贡献/.test(main);
     const base = {
       files,
-      artifact: "完成「" + main + "」对应的最小可运行改动",
-      must: "只实现今天这一个任务；不要提前写明天的功能。",
+      artifact: "围绕「" + topic + "」完成一个可运行、可验证的小交付",
+      must: "只完成：「" + main + "」。先用自己的话写出「" + topic + "」的定义、输入输出与一个边界，再实现最小正确版本；不要提前写明天的功能。",
       input: "一个正常输入 + 两个边界/失败输入",
-      expected: "构建和测试通过；输出能与预期逐项核对",
-      evidence: note + " 中保存命令、输出、边界情况和一句结论"
+      expected: "构建和测试通过；你能解释「" + topic + "」在本周模块中的作用，并逐项核对输出",
+      evidence: note + " 中保存概念定义、命令、原始输出、边界情况和一句“为什么这样设计”的结论"
     };
 
+    if (isDesign) {
+      base.artifact = "一份可执行的设计/实验说明，而不是泛泛笔记";
+      base.must = "围绕「" + topic + "」完成：「" + main + "」。说明至少包含目标、输入输出/接口、一个边界或非目标，以及它如何被下一天代码验证。";
+      base.input = "本周模块的真实数据结构、shape、IR 或 benchmark 需求";
+      base.expected = "文档或图中能找到目标、非目标、接口/数据流和一个可检验断言；随后一天可以按它直接实现。";
+      base.evidence = note + " 中保存图/表/伪代码、一个非目标和下一天的第一条实现步骤";
+      return base;
+    }
     if (isStudy) {
       base.artifact = "一份 1 页学习记录 + 一个亲手运行的最小复现";
-      base.must = "观看当天链接的一个章节；暂停复写一个示例，并只改变一个变量（shape、参数或编译选项）。";
+      base.must = "围绕「" + topic + "」阅读或观看一个章节；暂停复写一个示例，并只改变一个变量（shape、参数或编译选项）。";
       base.input = "视频/文档中的最小示例 + 你自己改动后的输入";
-      base.expected = "示例能运行；记录 3 个概念、1 个证据和 1 个未解决问题";
+      base.expected = "示例能运行；记录「" + topic + "」的定义、3 个关联概念、1 个证据和 1 个未解决问题";
+      return base;
+    }
+    if (isIntegration) {
+      base.artifact = "一个从零可运行的集成结果或发布记录";
+      base.must = "完成「" + main + "」；使用干净 build/venv 或新输入运行，不依赖本机残留产物。";
+      base.input = "全新构建目录或全新进程 + 本周代表性输入";
+      base.expected = "从零运行成功；README/日志写明命令、版本、输入、输出和一个已知限制。";
+      base.evidence = note + " 中保存从零命令、完整输出、版本号/commit 和限制说明";
       return base;
     }
     if (isMeasure) {
@@ -166,6 +235,21 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
     return { ws: workspace(w.index), files: c.files, steps, cmd: command(w.index), done };
   };
 
+  learning = function(w, d, task) {
+    const topic = dayTopic(w, d);
+    const main = task.split("；LeetCode")[0];
+    const next = dayTopic(w, (d + 1) % 7);
+    const purpose = "今天不是泛泛学习「" + w.title + "」。你只需通过「" + main + "」掌握「" + topic + "」，并留下一个能运行或能检查的证据。完成后，你应能向面试官说明它的定义、为什么需要它、以及它在本周交付物「" + w.output + "」中处于哪一层。";
+    const points = [
+      "今天的核心知识：" + topic,
+      "必须说清：它的输入、输出、关键约束或边界条件分别是什么。",
+      "必须动手：完成“" + main + "”，不能只看资料或只写笔记。",
+      "必须验证：至少用一个正常输入和一个边界/失败输入检查结果。",
+      "衔接下一天：" + next + "；今天留下的接口、数据或结论要能被下一天复用。"
+    ];
+    return { purpose, points };
+  };
+
   const previousRender = render;
   render = function() {
     previousRender();
@@ -174,8 +258,10 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
       const w = { ...DATA.weeks[parts[0] - 1], index: parts[0] };
       const task = tasks(w)[parts[1] - 1];
       const c = dailyContract(w, parts[1] - 1, task);
+      const topic = dayTopic(w, parts[1] - 1);
       const start = day.querySelector(".startHere");
       if (!start) return;
+      start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天具体要学什么</span><div class="contractGrid"><div class="contractRow"><b>核心知识</b><em>' + esc(topic) + '</em></div><div class="contractRow"><b>你要会说</b><em>定义、输入输出、一个边界条件，以及它为何服务于本周模块。</em></div><div class="contractRow"><b>你要会做</b><em>' + esc(task.split("；LeetCode")[0]) + '</em></div></div></div>');
       start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天交付什么 · 不用猜</span><div class="contractGrid"><div class="contractRow"><b>修改文件</b><code>' + esc(c.files) + '</code></div><div class="contractRow"><b>必须完成</b><em>' + esc(c.must) + '</em></div><div class="contractRow"><b>验收输入</b><em>' + esc(c.input) + '</em></div><div class="contractRow"><b>预期结果</b><em>' + esc(c.expected) + '</em></div><div class="contractRow"><b>完成证据</b><code>' + esc(c.evidence) + '</code></div></div></div>');
     });
   };
