@@ -1,13 +1,5 @@
-import { cookies } from "next/headers";
-import { COOKIE_NAME, createAccessToken } from "./access-token";
-import PasswordGate from "./PasswordGate";
-import Planner from "./Planner";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default async function Home() {
-  const cookieStore = await cookies();
-  const suppliedToken = cookieStore.get(COOKIE_NAME)?.value;
-  const expectedToken = await createAccessToken();
-  return expectedToken && suppliedToken === expectedToken ? <Planner /> : <PasswordGate />;
+export default function Home() {
+  redirect("/worldhaung_ai.html");
 }
