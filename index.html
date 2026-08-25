@@ -21,11 +21,11 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
 
 (() => {
   const style = document.createElement("style");
-  style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}.projectGates{max-width:1320px;margin:0 auto 34px;padding:0 5vw;display:grid;grid-template-columns:1fr 1fr;gap:12px}.projectGate{border:1px solid #d8cce8;background:#fff;padding:20px}.projectGate small{color:#7257aa;font-weight:800;letter-spacing:.13em}.projectGate h2{font:22px Georgia,'Songti SC',serif;margin:8px 0}.projectGate p,.projectGate li{font-size:11px;line-height:1.7;color:#514851}.projectGate ul{margin:10px 0;padding-left:18px}.projectGate a{font-size:11px;color:#7257aa;text-decoration:underline}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}.projectGates{grid-template-columns:1fr}}";
+  style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}.projectGates{max-width:1320px;margin:0 auto 34px;padding:0 5vw;display:grid;grid-template-columns:1fr 1fr;gap:12px}.projectGate{border:1px solid #d8cce8;background:#fff;padding:20px}.resumeGate{grid-column:1/-1;background:#faf7ff;border-left:4px solid #7257aa}.projectGate small{color:#7257aa;font-weight:800;letter-spacing:.13em}.projectGate h2{font:22px Georgia,'Songti SC',serif;margin:8px 0}.projectGate p,.projectGate li{font-size:11px;line-height:1.7;color:#514851}.projectGate ul{margin:10px 0;padding-left:18px}.projectGate a{font-size:11px;color:#7257aa;text-decoration:underline}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}.projectGates{grid-template-columns:1fr}.resumeGate{grid-column:auto}}";
   document.head.append(style);
   const gate = document.createElement("section");
   gate.className = "projectGates";
-  gate.innerHTML = '<article class="projectGate"><small>秋招主项目 A · GPU OPERATOR LAB</small><h2>不是 Kernel 作业，而是可接入框架的算子库</h2><p>简历上必须展示 Softmax、RMSNorm、GEMM/MLP、RoPE/KV Cache 中至少 3 类算子，并说明不同 shape/dtype 的 dispatch。</p><ul><li>PyTorch custom op 或 torch.library 接入，且有 fallback。</li><li>正确性矩阵：FP32/FP16、非对齐 shape、极值和失败路径。</li><li>与 PyTorch、Triton、CUTLASS/cuBLAS 同口径性能对比。</li><li>性能图标注 GPU、shape、dtype、warmup、P50；有失败案例。</li><li>一键测试/benchmark、架构图、10 分钟讲解与可追问源码。</li></ul><a href="https://github.com/triton-lang/triton" target="_blank" rel="noreferrer">对标 Triton</a> · <a href="https://github.com/NVIDIA/cutlass" target="_blank" rel="noreferrer">对标 CUTLASS</a> · <a href="https://github.com/Dao-AILab/flash-attention" target="_blank" rel="noreferrer">对标 FlashAttention</a></article><article class="projectGate"><small>秋招主项目 B · TRANSFORMER SUBGRAPH COMPILER</small><h2>不是 TVM 跑通，而是端到端可诊断编译器</h2><p>简历上必须展示 PyTorch/ONNX 子图进入 IR、融合、TIR schedule、runtime/fallback 和端到端性能证据。</p><ul><li>支持 RMSNorm+MLP 或 attention 子图，并写明非目标。</li><li>保存前后 IR、20+ 图测试、dtype/layout/shape 支持矩阵。</li><li>至少一个 TensorIR schedule 与项目 A kernel 进行对照。</li><li>动态 shape guard、unsupported op、OOM/版本错配均有诊断或 fallback。</li><li>与 eager、torch.compile、TVM baseline 同口径比较并可复现。</li></ul><a href="https://github.com/apache/tvm" target="_blank" rel="noreferrer">对标 Apache TVM</a> · <a href="https://github.com/mlc-ai/mlc-llm" target="_blank" rel="noreferrer">对标 MLC-LLM</a> · <a href="https://github.com/vllm-project/vllm" target="_blank" rel="noreferrer">对标 vLLM</a></article>';
+  gate.innerHTML = '<article class="projectGate"><small>秋招主项目 A · GPU OPERATOR LAB</small><h2>不是 Kernel 作业，而是可接入框架的算子库</h2><p>简历上必须展示 Softmax、RMSNorm、GEMM/MLP、RoPE/KV Cache 中至少 3 类算子，并说明不同 shape/dtype 的 dispatch。</p><ul><li>PyTorch custom op 或 torch.library 接入，且有 fallback。</li><li>正确性矩阵：FP32/FP16、非对齐 shape、极值和失败路径。</li><li>与 PyTorch、Triton、CUTLASS/cuBLAS 同口径性能对比。</li><li>性能图标注 GPU、shape、dtype、warmup、P50；有失败案例。</li><li>一键测试/benchmark、架构图、10 分钟讲解与可追问源码。</li></ul><a href="https://github.com/triton-lang/triton" target="_blank" rel="noreferrer">对标 Triton</a> · <a href="https://github.com/NVIDIA/cutlass" target="_blank" rel="noreferrer">对标 CUTLASS</a> · <a href="https://github.com/Dao-AILab/flash-attention" target="_blank" rel="noreferrer">对标 FlashAttention</a></article><article class="projectGate"><small>秋招主项目 B · TRANSFORMER SUBGRAPH COMPILER</small><h2>不是 TVM 跑通，而是端到端可诊断编译器</h2><p>简历上必须展示 PyTorch/ONNX 子图进入 IR、融合、TIR schedule、runtime/fallback 和端到端性能证据。</p><ul><li>支持 RMSNorm+MLP 或 attention 子图，并写明非目标。</li><li>保存前后 IR、20+ 图测试、dtype/layout/shape 支持矩阵。</li><li>至少一个 TensorIR schedule 与项目 A kernel 进行对照。</li><li>动态 shape guard、unsupported op、OOM/版本错配均有诊断或 fallback。</li><li>与 eager、torch.compile、TVM baseline 同口径比较并可复现。</li></ul><a href="https://github.com/apache/tvm" target="_blank" rel="noreferrer">对标 Apache TVM</a> · <a href="https://github.com/mlc-ai/mlc-llm" target="_blank" rel="noreferrer">对标 MLC-LLM</a> · <a href="https://github.com/vllm-project/vllm" target="_blank" rel="noreferrer">对标 vLLM</a></article><article class="projectGate resumeGate"><small>简历取舍 · 只写能被追问的成果</small><h2>两项主项目 + 一次真实开源协作，胜过把每周作业都写成项目</h2><p>MiniTensor 和 CUDA 实验是项目 A/B 的能力证据，不应在简历上拆成多个“项目”凑数量。</p><ul><li>简历主项目只保留 A 与 B；每个项目都要有代码、测试、性能表和一键复现命令。</li><li>第 37 周的开源贡献只有在真实提交、issue 复现或 PR 反馈存在时才写入简历；不为凑数而复制代码。</li><li>面试材料准备 2 分钟概览、5 分钟性能故事、10 分钟源码走读；每个数字都能回到原始日志。</li></ul></article>';
   document.querySelector(".hero").insertAdjacentElement("afterend", gate);
 
   const detailedTopics = [
@@ -75,23 +75,36 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
   }
 
   function dayFiles(w, d) {
-    if (w.index <= 9) {
-      const files = [
-        "CMakeLists.txt；include/、src/、tests/、benchmarks/目录",
-        "include/minitensor/tensor.hpp",
-        "include/minitensor/tensor.hpp；src/tensor.cpp；tests/tensor_test.cpp",
-        "src/tensor.cpp；examples/demo.cpp；tests/tensor_test.cpp",
-        "tests/tensor_test.cpp；CMakeLists.txt",
-        "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D06.md；labs/W" + String(w.index).padStart(2, "0") + "-D06",
-        "README.md；examples/；tests/"
-      ];
-      return files[d];
+    // fileHint is authored per week and follows the real deliverable.  Do not
+    // reuse Week 1's Tensor paths for allocator, CUDA, compiler, or portfolio
+    // work: doing so makes an otherwise good daily card actively misleading.
+    const note = "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D" + String(d + 1).padStart(2, "0") + ".md";
+    if (w.fileHint) return w.fileHint + " · " + note;
+    if (w.index <= 16) return "src/ · kernels/ · tests/ · examples/ · " + note;
+    if (w.index <= 22) return "compiler/ · passes/ · tests/ · examples/ · " + note;
+    if (w.index <= 28) return "operators/ · tests/ · benchmarks/ · examples/ · " + note;
+    if (w.index <= 37) return "compiler/ · runtime/ · operators/ · tests/ · " + note;
+    return w.index === 38 ? "lib/ · test/ · examples/ · docs/ · " + note : "README.md · resume/ · benchmarks/ · docs/ · " + note;
+  }
+
+  function pace(task) {
+    const main = task.split("；LeetCode")[0];
+    if (/性能|benchmark|基准|profile|Nsight|调优|对比|扫描|吞吐|延迟/.test(main)) {
+      return "20 分钟冻结输入与 baseline → 90 分钟完成/修改实验 → 45 分钟重复测量与记录 → 25 分钟解释结果；没有同口径 baseline 不勾选。";
     }
-    if (w.index <= 16) return d === 5 ? "labs/W" + String(w.index).padStart(2, "0") + "-D06；docs/learning-log/" : (d === 4 ? "benchmarks/；reports/；tests/" : "src/；kernels/；tests/；examples/");
-    if (w.index <= 22) return d === 5 ? "notes/；labs/；tests/" : "compiler/；passes/；tests/；examples/";
-    if (w.index <= 28) return d === 4 ? "benchmarks/；reports/；tests/" : "operators/；tests/；benchmarks/；examples/";
-    if (w.index <= 37) return d === 4 ? "benchmarks/；reports/；tests/" : "compiler/；runtime/；operators/；tests/";
-    return w.index === 38 ? "lib/；test/；examples/；docs/" : "README.md；resume/；benchmarks/；docs/";
+    if (/学习|阅读|视频|源码|概念|理解/.test(main)) {
+      return "45 分钟学习一个小节 → 60 分钟暂停复写最小示例 → 30 分钟只改一个变量验证 → 25 分钟把定义、现象和疑问写入日志。";
+    }
+    if (/测试|验证|正确性|边界|异常/.test(main)) {
+      return "30 分钟列正常/边界/失败输入 → 90 分钟写测试与实现 → 40 分钟故意让一个测试失败后修复 → 20 分钟保存完整输出。";
+    }
+    if (/画|设计|定义|冻结|整理|写.*RFC|写.*README|列出|推导|统计|跟踪|建立.*协议/.test(main)) {
+      return "30 分钟明确目标与非目标 → 75 分钟画接口、数据流或实验表 → 45 分钟用下一天的实现反推缺口 → 30 分钟写下可检验断言。";
+    }
+    if (/从零|复现|发布|封版|接入|打通|准备|录制|提交|贡献/.test(main)) {
+      return "30 分钟清理环境或创建新输入 → 100 分钟从零跑通 → 40 分钟处理一个真实失败点 → 20 分钟把复现命令和限制写进 README/日志。";
+    }
+    return "30 分钟读清接口和输入输出 → 120 分钟完成最小正确实现 → 40 分钟跑正常与边界输入 → 20 分钟保存命令、输出和一个设计取舍。";
   }
 
   function weekOneContract(d, note) {
@@ -259,10 +272,11 @@ unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sess
       const task = tasks(w)[parts[1] - 1];
       const c = dailyContract(w, parts[1] - 1, task);
       const topic = dayTopic(w, parts[1] - 1);
+      const schedule = pace(task);
       const start = day.querySelector(".startHere");
       if (!start) return;
       start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天具体要学什么</span><div class="contractGrid"><div class="contractRow"><b>核心知识</b><em>' + esc(topic) + '</em></div><div class="contractRow"><b>你要会说</b><em>定义、输入输出、一个边界条件，以及它为何服务于本周模块。</em></div><div class="contractRow"><b>你要会做</b><em>' + esc(task.split("；LeetCode")[0]) + '</em></div></div></div>');
-      start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天交付什么 · 不用猜</span><div class="contractGrid"><div class="contractRow"><b>修改文件</b><code>' + esc(c.files) + '</code></div><div class="contractRow"><b>必须完成</b><em>' + esc(c.must) + '</em></div><div class="contractRow"><b>验收输入</b><em>' + esc(c.input) + '</em></div><div class="contractRow"><b>预期结果</b><em>' + esc(c.expected) + '</em></div><div class="contractRow"><b>完成证据</b><code>' + esc(c.evidence) + '</code></div></div></div>');
+      start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天交付什么 · 不用猜</span><div class="contractGrid"><div class="contractRow"><b>修改文件</b><code>' + esc(c.files) + '</code></div><div class="contractRow"><b>建议推进</b><em>' + esc(schedule) + '</em></div><div class="contractRow"><b>必须完成</b><em>' + esc(c.must) + '</em></div><div class="contractRow"><b>验收输入</b><em>' + esc(c.input) + '</em></div><div class="contractRow"><b>预期结果</b><em>' + esc(c.expected) + '</em></div><div class="contractRow"><b>完成证据</b><code>' + esc(c.evidence) + '</code></div><div class="contractRow"><b>何时勾选</b><em>仅当预期结果成立、完成证据已写入当天日志，并且至少验证过一个边界或失败输入时，才勾选完成。</em></div></div></div>');
     });
   };
   render();

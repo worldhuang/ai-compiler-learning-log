@@ -41,6 +41,10 @@ test("standalone plan is 39 weeks and starts algorithms in December", async () =
   assert.match(standalone, /CMake target、静态库、CTest/);
 assert.match(standalone, /GPU OPERATOR LAB/);
 assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
+  assert.match(standalone, /function pace\(task\)/);
+  assert.match(standalone, /fileHint is authored per week/);
+  assert.match(standalone, /resumeGate/);
+  assert.doesNotMatch(standalone, /if \(w\.index <= 9\) \{/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
   assert.match(standalone, /020721/);
