@@ -131,13 +131,119 @@ const renderCore=render;render=function(){renderCore();weeks.querySelectorAll('.
 unlockForm.onsubmit=e=>{e.preventDefault();if(unlockInput.value==='020721'){sessionStorage.setItem('learning-log-unlocked','1');offlineGate.style.display='none'}else unlockError.textContent='密码不正确，请重试'};if(sessionStorage.getItem('learning-log-unlocked')==='1')offlineGate.style.display='none';startDate=document.getElementById('startDate').value=startDate;document.getElementById('startDate').onchange=e=>{startDate=e.target.value;persist();render()};search.oninput=e=>{query=e.target.value;render()};renderSignals();renderPhases();render();updateProgress();
 </script></body></html>`;
 
+// Every day must read like a small engineering ticket: the learner sees the
+// exact artifact, the minimum implementation, the acceptance input/output,
+// and the evidence required before the checkbox can be used.
+const deliveryLayer = String.raw`
+(() => {
+  const style = document.createElement("style");
+  style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}}";
+  document.head.append(style);
+
+  function dayFiles(w, d) {
+    if (w.index <= 9) {
+      const files = [
+        "CMakeLists.txt；include/、src/、tests/、benchmarks/目录",
+        "include/minitensor/tensor.hpp",
+        "include/minitensor/tensor.hpp；src/tensor.cpp；tests/tensor_test.cpp",
+        "src/tensor.cpp；examples/demo.cpp；tests/tensor_test.cpp",
+        "tests/tensor_test.cpp；CMakeLists.txt",
+        "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D06.md；labs/W" + String(w.index).padStart(2, "0") + "-D06",
+        "README.md；examples/；tests/"
+      ];
+      return files[d];
+    }
+    if (w.index <= 16) return d === 5 ? "labs/W" + String(w.index).padStart(2, "0") + "-D06；docs/learning-log/" : (d === 4 ? "benchmarks/；reports/；tests/" : "src/；kernels/；tests/；examples/");
+    if (w.index <= 22) return d === 5 ? "notes/；labs/；tests/" : "compiler/；passes/；tests/；examples/";
+    if (w.index <= 28) return d === 4 ? "benchmarks/；reports/；tests/" : "operators/；tests/；benchmarks/；examples/";
+    if (w.index <= 37) return d === 4 ? "benchmarks/；reports/；tests/" : "compiler/；runtime/；operators/；tests/";
+    return w.index === 38 ? "lib/；test/；examples/；docs/" : "README.md；resume/；benchmarks/；docs/";
+  }
+
+  function dailyContract(w, d, task) {
+    const main = task.split("；LeetCode")[0];
+    const files = dayFiles(w, d);
+    const note = "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D" + String(d + 1).padStart(2, "0") + ".md";
+    const isStudy = d === 5 || /学习|阅读|视频|源码|概念|理解/.test(main);
+    const isMeasure = d === 4 || /性能|benchmark|基准|profile|Nsight|调优|对比|扫描/.test(main);
+    const isTest = d === 2 || /测试|验证|正确性|边界|异常/.test(main);
+    const base = {
+      files,
+      artifact: "完成「" + main + "」对应的最小可运行改动",
+      must: "只实现今天这一个任务；不要提前写明天的功能。",
+      input: "一个正常输入 + 两个边界/失败输入",
+      expected: "构建和测试通过；输出能与预期逐项核对",
+      evidence: note + " 中保存命令、输出、边界情况和一句结论"
+    };
+
+    if (isStudy) {
+      base.artifact = "一份 1 页学习记录 + 一个亲手运行的最小复现";
+      base.must = "观看当天链接的一个章节；暂停复写一个示例，并只改变一个变量（shape、参数或编译选项）。";
+      base.input = "视频/文档中的最小示例 + 你自己改动后的输入";
+      base.expected = "示例能运行；记录 3 个概念、1 个证据和 1 个未解决问题";
+      return base;
+    }
+    if (isMeasure) {
+      base.artifact = "一份可复现 benchmark 结果（终端输出或 CSV）";
+      base.must = "固定输入规模、warmup、重复次数和硬件信息；至少比较 baseline 与一个改动版本。";
+      base.input = "同一输入、同一环境下的 baseline 与优化版本";
+      base.expected = "记录 latency/throughput 中至少一个指标，并写清是否真的变快及原因";
+      return base;
+    }
+    if (isTest) {
+      base.artifact = "新增或补齐测试，并让失败用例真正失败一次后修复";
+      base.must = "至少写 1 个正常用例、1 个边界用例、1 个非法/失败用例。";
+      base.input = "正常、边界、非法三类输入";
+      base.expected = "正常用例通过；非法输入得到明确报错或 fallback，而不是静默出错";
+      return base;
+    }
+    return base;
+  }
+
+  guide = function(w, d, task) {
+    const c = dailyContract(w, d, task);
+    const hasAlgo = task.includes("LeetCode");
+    const steps = [
+      "交付物：" + c.artifact,
+      "打开并只修改：" + c.files,
+      "必须写出：" + c.must,
+      "验收输入：" + c.input + "。预期结果：" + c.expected,
+      "保存证据：" + c.evidence + (hasAlgo ? "；另附算法题思路、复杂度和边界。" : "")
+    ];
+    const done = [
+      "目标文件已创建或更新，且内容只覆盖今天的任务。",
+      c.expected,
+      "当天日志包含实际运行命令、原始输出和至少一个边界/失败情况。",
+      hasAlgo ? "LeetCode 已记录思路、复杂度、边界和错因。" : "以上四项均完成后，才勾选今天。"
+    ];
+    return { ws: workspace(w.index), files: c.files, steps, cmd: command(w.index), done };
+  };
+
+  const previousRender = render;
+  render = function() {
+    previousRender();
+    weeks.querySelectorAll(".day").forEach(day => {
+      const parts = day.dataset.id.split("-").map(Number);
+      const w = { ...DATA.weeks[parts[0] - 1], index: parts[0] };
+      const task = tasks(w)[parts[1] - 1];
+      const c = dailyContract(w, parts[1] - 1, task);
+      const start = day.querySelector(".startHere");
+      if (!start) return;
+      start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天交付什么 · 不用猜</span><div class="contractGrid"><div class="contractRow"><b>修改文件</b><code>' + esc(c.files) + '</code></div><div class="contractRow"><b>必须完成</b><em>' + esc(c.must) + '</em></div><div class="contractRow"><b>验收输入</b><em>' + esc(c.input) + '</em></div><div class="contractRow"><b>预期结果</b><em>' + esc(c.expected) + '</em></div><div class="contractRow"><b>完成证据</b><code>' + esc(c.evidence) + '</code></div></div></div>');
+    });
+  };
+  render();
+})();`;
+
+const enhancedHtml = html.replace("</script>", deliveryLayer + "</script>");
+
 const output = path.join(root, "worldhaung_ai.html");
 const rootOutput = path.join(root, "index.html");
 const pagesOutput = path.join(root, "docs", "index.html");
 const publicOutput = path.join(root, "public", "worldhaung_ai.html");
-fs.writeFileSync(output, html, "utf8");
-fs.writeFileSync(rootOutput, html, "utf8");
+fs.writeFileSync(output, enhancedHtml, "utf8");
+fs.writeFileSync(rootOutput, enhancedHtml, "utf8");
 fs.mkdirSync(path.dirname(pagesOutput), { recursive: true });
-fs.writeFileSync(pagesOutput, html, "utf8");
-fs.writeFileSync(publicOutput, html, "utf8");
+fs.writeFileSync(pagesOutput, enhancedHtml, "utf8");
+fs.writeFileSync(publicOutput, enhancedHtml, "utf8");
 console.log(`${output}\n${rootOutput}\n${pagesOutput}\n${publicOutput}`);

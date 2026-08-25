@@ -31,6 +31,10 @@ test("standalone plan is 39 weeks and starts algorithms in December", async () =
   assert.match(standalone, /今天学习的目的/);
   assert.match(standalone, /今天必须掌握的知识点/);
   assert.match(standalone, /今天的具体执行/);
+  assert.match(standalone, /今天交付什么 · 不用猜/);
+  assert.match(standalone, /修改文件/);
+  assert.match(standalone, /验收输入/);
+  assert.match(standalone, /完成证据/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
   assert.match(standalone, /020721/);
