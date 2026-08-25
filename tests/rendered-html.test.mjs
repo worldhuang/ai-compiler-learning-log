@@ -35,6 +35,8 @@ test("standalone plan is 39 weeks and starts algorithms in December", async () =
   assert.match(standalone, /修改文件/);
   assert.match(standalone, /验收输入/);
   assert.match(standalone, /完成证据/);
+  assert.match(standalone, /今天不写 benchmark、不写 Tensor 功能/);
+  assert.match(standalone, /\{2,3,4\} 输出 numel=24、stride=\{12,4,1\}/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
   assert.match(standalone, /020721/);

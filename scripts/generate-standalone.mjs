@@ -160,13 +160,76 @@ const deliveryLayer = String.raw`
     return w.index === 38 ? "lib/；test/；examples/；docs/" : "README.md；resume/；benchmarks/；docs/";
   }
 
+  function weekOneContract(d, note) {
+    const contracts = [
+      {
+        files: "CMakeLists.txt；include/minitensor/；src/；tests/；benchmarks/；examples/",
+        artifact: "一个可构建的 MiniTensor 工程骨架",
+        must: "创建上述目录；在 CMakeLists.txt 中声明 minitensor 静态库、minitensor_demo 可执行程序和 minitensor_test 测试目标。今天不写 benchmark、不写 Tensor 功能。",
+        input: "空的最小 tensor.cpp、demo.cpp、tensor_test.cpp",
+        expected: "cmake --build build 成功；能看到 minitensor_demo 和 minitensor_test 两个 target；ctest 可以执行并返回通过。",
+        evidence: note + " 保存目录树、构建命令、ctest 输出和一句“library / demo / test 各自作用”的说明"
+      },
+      {
+        files: "include/minitensor/tensor.hpp",
+        artifact: "Tensor 的接口草图，不实现数据存储",
+        must: "声明 Shape、Stride、DType 和 Tensor；为构造函数、shape()、strides()、numel() 写出函数签名；参数使用 const reference。",
+        input: "shape={2,3,4} 与 shape={5}",
+        expected: "demo 能编译并打印接口对应的 shape；你能指出每个字段将来保存什么信息。",
+        evidence: note + " 保存接口截图/代码片段，并写清 Shape 与 Stride 的区别"
+      },
+      {
+        files: "include/minitensor/tensor.hpp；src/tensor.cpp；tests/tensor_test.cpp",
+        artifact: "可计算 numel 与连续 stride 的 Tensor",
+        must: "实现 shape 非空且维度非零的检查；实现 numel()；从最后一维向前计算连续 stride；提供 shape()/strides() 只读访问。",
+        input: "{2,3,4}、{5}、{2,0,4}",
+        expected: "{2,3,4} 输出 numel=24、stride={12,4,1}；{5} 输出 stride={1}；{2,0,4} 抛出明确异常。",
+        evidence: note + " 保存三组测试输出，并用一句话解释为什么最后一维 stride=1"
+      },
+      {
+        files: "src/tensor.cpp；examples/demo.cpp；tests/tensor_test.cpp",
+        artifact: "一维/二维索引与 fill 的最小实现",
+        must: "实现 fill(value) 与 index(i) / index(i,j)；二维下标换成连续偏移；越界必须抛异常。",
+        input: "shape={2,3}；fill(7)；访问 (1,2)、(-1 等非法输入) 或越界索引",
+        expected: "(1,2) 映射到连续偏移 5；正常读取值为 7；越界调用失败且错误信息明确。",
+        evidence: note + " 保存一次断点或打印的 index→offset 过程，以及一个越界输出"
+      },
+      {
+        files: "tests/tensor_test.cpp；CMakeLists.txt",
+        artifact: "Tensor 的第一组自动化测试",
+        must: "写 1 个正常用例、1 个单维边界用例、1 个零维度非法用例、1 个越界索引用例；把它们注册到 CTest。",
+        input: "{2,3,4}、{5}、{2,0,4} 与 shape={2,3} 的越界索引",
+        expected: "ctest --output-on-failure 全部通过；故意删掉边界检查后至少一个测试会失败。",
+        evidence: note + " 保存测试名、通过输出，以及“测试实际防住了哪种错误”的一句话"
+      },
+      {
+        files: "labs/W01-D06/；docs/learning-log/W01-D06.md",
+        artifact: "数组、引用、类三个最小 C++ 实验",
+        must: "看当天视频章节；分别写一个 vector 遍历、const reference 传参、类构造函数实验；每个实验只需 10 行以内。",
+        input: "vector<int>{1,2,3}；一个 const reference 函数；一个带成员变量的类",
+        expected: "三个程序/函数均能编译运行；日志回答“值传递与 const reference 的差别是什么”。",
+        evidence: note + " 保存三个代码片段、运行输出、3 条知识点和 1 个疑问"
+      },
+      {
+        files: "README.md；examples/demo.cpp；tests/tensor_test.cpp",
+        artifact: "Week 1 可复现交付",
+        must: "从空 build 目录重新配置、构建、跑 demo 和 ctest；README 写出三条命令、当前能力与一个已知限制。",
+        input: "删除 build 后重新执行 CMake；demo 的 {2,3,4} 示例",
+        expected: "新 build 目录也能通过所有测试；README 的命令可复制运行。",
+        evidence: note + " 保存从零构建输出、README 链接和下周要实现的 Storage 接口"
+      }
+    ];
+    return contracts[d];
+  }
+
   function dailyContract(w, d, task) {
     const main = task.split("；LeetCode")[0];
     const files = dayFiles(w, d);
     const note = "docs/learning-log/W" + String(w.index).padStart(2, "0") + "-D" + String(d + 1).padStart(2, "0") + ".md";
-    const isStudy = d === 5 || /学习|阅读|视频|源码|概念|理解/.test(main);
-    const isMeasure = d === 4 || /性能|benchmark|基准|profile|Nsight|调优|对比|扫描/.test(main);
-    const isTest = d === 2 || /测试|验证|正确性|边界|异常/.test(main);
+    if (w.index === 1) return weekOneContract(d, note);
+    const isStudy = /学习|阅读|视频|源码|概念|理解/.test(main);
+    const isMeasure = /性能|benchmark|基准|profile|Nsight|调优|对比|扫描|吞吐|延迟/.test(main);
+    const isTest = /测试|验证|正确性|边界|异常/.test(main);
     const base = {
       files,
       artifact: "完成「" + main + "」对应的最小可运行改动",
