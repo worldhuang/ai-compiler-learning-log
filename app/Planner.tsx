@@ -44,24 +44,24 @@ const weeks: Week[] = [
   { phase:2,title:"CUDA 编程模型",goal:"掌握 grid/block/thread、host/device 与错误检查",output:"vector add + 带宽基准",days:["确认 GPU/驱动/CUDA 环境；记录设备规格","学习 SIMT、warp、grid/block 映射","写 vector add kernel 与 CPU 对照测试","加入 grid-stride loop 和统一错误检查宏","测 H2D/D2H/kernel 时间与有效带宽","Nsight Systems 观察时间线并输出截图"]},
   { phase:2,title:"CUDA 内存层次",goal:"理解 coalescing、shared memory 与 bank conflict",output:"三版 transpose kernel",days:["学习 global/shared/register/constant memory","写 naive transpose，检查 global load/store 合并","写 tiled shared-memory transpose","制造并消除 bank conflict（padding）","用 Nsight Compute 看吞吐与相关指标","整理三版结果和瓶颈迁移解释"]},
   { phase:2,title:"矩阵乘法 I",goal:"从 naive GEMM 到 shared-memory tiling",output:"正确、可测的 tiled GEMM",days:["定义 M/N/K、多尺寸和误差容限测试矩阵","写 naive GEMM 与边界保护","实现 shared-memory tiled GEMM","处理非 tile 整倍数与多数据类型测试","用 CUDA Events 正确计时并算 GFLOPS","对比 cuBLAS baseline，解释差距而非追平"]},
-  { phase:2,title:"矩阵乘法 II",goal:"理解寄存器分块、占用率与指令级并行",output:"GEMM v2 + roofline 定位",days:["学习 occupancy、寄存器压力与 launch 配置","实现每线程多输出的寄存器分块","尝试向量化 load/store 并检查对齐","查看 SASS/PTX 和编译器资源报告","扫描 block/tile 参数，记录性能曲面","写 roofline 判断：算力受限还是带宽受限"]},
+  { phase:2,title:"矩阵乘法 II：Tensor Core、寄存器分块与 Occupancy",goal:"理解寄存器分块、占用率、低精度累加和 Tensor Core 路径的工程取舍",output:"GEMM v2 + FP16/BF16 正确性矩阵 + Tensor Core 路径报告",days:["学习 occupancy、寄存器压力、launch 配置与 Tensor Core 的输入/累加精度约束","实现每线程多输出的寄存器分块","为 FP16/BF16 输入与 FP32 累加写正确性测试；用 CUTLASS 或 WMMA 跑通一条 Tensor Core 对照路径","尝试向量化 load/store，检查对齐、尾部和 fallback","查看 SASS/PTX 和编译器资源报告，确认 Tensor Core 路径是否真正生成","扫描 block/tile/dtype 参数，写 roofline 判断并解释算力受限还是带宽受限"]},
   { phase:2,title:"归约与 Softmax",goal:"掌握 warp primitive 与数值稳定性",output:"reduce + online softmax kernels",days:["写多 block sum reduction 基线","用 shared memory 优化归约","用 warp shuffle 完成 warp/block reduce","实现稳定 softmax（减 max）并测误差","实现 online softmax 思路并比较访存","与 PyTorch baseline 比较多种行宽"]},
   { phase:2,title:"LayerNorm Kernel",goal:"融合统计、归一化和仿射操作",output:"手写 CUDA LayerNorm v1",days:["推导 LayerNorm、Welford 与误差来源","写标量/naive CUDA baseline","用 block reduce 合并均值与方差计算","融合 gamma/beta，优化读写次数","覆盖 128–8192 hidden size 并剖析","发布独立 benchmark 和性能折线图"]},
   { phase:2,title:"Triton 对照实验",goal:"理解高层 kernel DSL 与 CUDA 的权衡",output:"Triton LayerNorm/Softmax 对照",days:["完成 Triton vector add 教程并看生成结构","写 Triton softmax，校验数值","写 Triton LayerNorm 或复现官方实现","做 CUDA/Triton/PyTorch 三方基准","比较开发成本、可移植性与性能","整理 10 个 CUDA 高频面试问题"]},
   { phase:2,title:"CUDA 阶段项目",goal:"形成可展示的 kernel 优化故事",output:"cuda-kernels v1 + 8 分钟讲解",days:["统一 benchmark harness 与设备信息输出","补齐 GEMM/Softmax/LayerNorm 测试矩阵","做 Nsight Systems 全局定位","做 Nsight Compute 单 kernel 深挖","重跑稳定数据并生成图表/结论","录制讲解：问题→基线→优化→证据→限制"]},
-  { phase:3,title:"PyTorch Autograd 与 Dispatcher",goal:"理解 Tensor、算子注册、反向图和调度",output:"mini autograd + dispatcher 调研图",days:["复习 Tensor storage/stride/view 与广播","手写标量/小张量 autograd 拓扑排序","实现 add/mul/matmul backward 并梯度检查","阅读 PyTorch dispatcher 官方说明/代码入口","写 C++/CUDA extension 最小算子","画一次算子从 Python 到 kernel 的调用链"]},
+  { phase:3,title:"PyTorch 执行链：Autograd、Dispatcher、Extension 与 DDP",goal:"理解 Tensor、算子注册、反向图和调度；用一个最小实验认识 DDP 的梯度 AllReduce 边界",output:"mini autograd + dispatcher 调研图 + 2 进程 DDP trace",days:["复习 Tensor storage/stride/view 与广播，区分单卡张量和多进程 rank 的职责","手写标量/小张量 autograd 拓扑排序","实现 add/mul/matmul backward 并梯度检查","阅读 PyTorch dispatcher 官方说明/代码入口","写 C++/CUDA extension 最小算子","用 torchrun 启动 2 个 CPU/Gloo 进程训练小网络，打印 rank、梯度同步前后值与 AllReduce 时机；写清 DDP 不解决什么"]},
   { phase:3,title:"FX 与图变换",goal:"能捕获、检查、改写并验证计算图",output:"FX Conv-BN-ReLU 融合原型",days:["学习 FX symbolic_trace、Graph、GraphModule","打印 ResNet 子图并理解 node 元数据","写模式匹配：Conv→BN→ReLU","实现 eval 模式 BN folding 或安全替换","做数值一致性与多输入 shape 测试","统计节点数和 latency，写 Pass 设计说明"]},
   { phase:3,title:"ONNX 与模型可移植性",goal:"理解 IR、shape inference 和模型检查",output:"ResNet50 ONNX 分析包",days:["学习 ONNX protobuf、opset、initializer/value_info","导出 ResNet50，运行 checker/shape inference","用 ONNX Runtime 对齐 PyTorch 输出","用 Netron 观察结构并统计 op 分布","写脚本做一次安全图改写/常量折叠","输出导出失败与动态 shape 排错清单"]},
   { phase:3,title:"torch.compile 总览",goal:"理解 Dynamo→AOTAutograd→Inductor 的分层",output:"编译栈一页图 + 10 个实验",days:["跑 torch.compile quickstart，区分冷启动/稳态","用 explain/export 观察捕获图与 guards","制造 graph break 并定位原因","测试 dynamic shapes 与 recompilation","比较 eager/compile 的时间和显存","画全栈数据流并解释每层职责"]},
   { phase:3,title:"TorchDynamo 深入",goal:"理解 Python bytecode 捕获、guards 与 graph breaks",output:"Dynamo 调试手册",days:["阅读 Dynamo 架构与 frame evaluation 概念","观察简单函数 bytecode 与 FX graph 对应","实验数据依赖控制流和 Python side effect","实验 guard 失败与缓存重编译","用日志定位 5 类 graph break 并修复","整理可复制的最小复现模板"]},
-  { phase:3,title:"AOTAutograd 与分解",goal:"理解前后向联合捕获和 operator decomposition",output:"前/后向图解剖报告",days:["复习 autograd tape 与 saved tensor","导出训练函数并观察 forward/backward graph","比较 functionalization 前后 mutation/view","追踪一个复合算子的 decomposition","写一个自定义 decomposition 小实验","总结训练编译的内存/算力权衡"]},
+  { phase:3,title:"AOTAutograd、分解与 FSDP 边界",goal:"理解前后向联合捕获和 operator decomposition；用最小实验区分 DDP 与参数/梯度分片",output:"前/后向图解剖报告 + DDP/FSDP 对照笔记",days:["复习 autograd tape 与 saved tensor","导出训练函数并观察 forward/backward graph","比较 functionalization 前后 mutation/view","追踪一个复合算子的 decomposition","写一个自定义 decomposition 小实验","运行官方 FSDP 最小示例（无多卡时用 CPU/Gloo 只观察语义），画 DDP 与 FSDP 的参数、梯度、optimizer state 分布图；不把它包装成集群性能结论"]},
   { phase:3,title:"Inductor 与 Triton Codegen",goal:"从 FX graph 追到生成 kernel",output:"generated-code 注释样例",days:["保存 Inductor 生成代码与缓存目录","选 pointwise fusion 案例逐行标注","选 reduction 案例观察调度与 autotune","修改输入 shape 看代码和 guard 如何变化","对照 Triton 手写版本做性能/代码比较","写《一次 torch.compile 性能回归怎么查》"]},
   { phase:3,title:"自定义后端与 Pass",goal:"实现可插拔 backend 和图级优化",output:"mini torch.compile backend",days:["实现接收 FX GraphModule 的 eager backend","加入图打印、计时和 fallback","在 backend 前执行常量/冗余算子简化","处理 unsupported op 与动态 shape 边界","构造 8 个正确性/回归测试","发布 PyTorch compiler-playground"]},
   { phase:3,title:"融合项目升级",goal:"把 FX 原型变成可复现项目",output:"fusion-pass v1 + benchmark dashboard",days:["明确支持条件：eval/train、dtype、shape","补图模式匹配的负例与回退策略","覆盖 ResNet18/50 的子图测试","用 profiler 证明 kernel launch/访存变化","在不同 batch 测 eager/compile/custom pass","写项目文档与 12 个面试追问答案"]},
   { phase:3,title:"简历项目 A 立项：GPU 算子库",goal:"从 3 月开始把前期 CUDA Lab 合并为完整工程，而不是新增小 Demo",output:"项目 RFC、支持矩阵、仓库骨架与 benchmark 协议",days:["确定项目问题、目标用户、非目标和验收指标","设计 operators/backend/tests/benchmarks/docs 目录","冻结硬件、软件版本、输入 shape 与精度阈值","迁移前期 Softmax/LayerNorm/GEMM 并保留演进历史","建立 PyTorch/CUTLASS/Triton baseline 与结果格式","精读成熟算子库的测试、benchmark 与发布结构"]},
   { phase:4,title:"项目 A：Softmax 与 RMSNorm 工程化",goal:"将课堂 kernel 升级为支持多 shape/dtype 的可维护组件",output:"Softmax/RMSNorm v1 + correctness matrix",days:["重构 API、dispatch 和错误检查","覆盖 FP32/FP16、非对齐 shape 与极值输入","实现 naive/shared/warp/Triton 多版本","加入自动正确性、数值误差与回归测试","用 Nsight 解释访存、occupancy 和瓶颈迁移","精读 FlashAttention/Triton 中的归约实现"]},
   { phase:4,title:"项目 A：GEMM 与 Transformer MLP",goal:"将 GEMM、bias、activation 组合成真实 Transformer 热点",output:"GEMM/MLP benchmark suite",days:["定义 M/N/K 与 Transformer 典型 shape 集","整理 tiled/register-blocked GEMM 实现","实现 bias+GELU/SwiGLU epilogue fusion","对比 cuBLAS/CUTLASS/Triton 并控制变量","分析小矩阵、大矩阵和不同 dtype 的性能差异","精读 CUTLASS mainloop 与 epilogue 设计"]},
-  { phase:4,title:"项目 A：RoPE 与 Attention 热点",goal:"覆盖 LLM 推理中的布局、融合和 IO 问题",output:"RoPE/attention hotspot kernels + IO 分析",days:["实现 RoPE reference 与 CUDA/Triton kernel","推导 prefill/decode shape 和 KV cache 字节数","实现小型 fused attention 或关键子算子","比较连续与分页 KV 布局的访问代价","用 Roofline/Nsight 解释热点而非只报加速比","精读 FlashAttention 与 PagedAttention 论文/源码入口"]},
+  { phase:4,title:"项目 A：RoPE、Attention、KV Cache 与量化",goal:"覆盖 LLM 推理中的布局、融合、IO 与低精度容量取舍",output:"RoPE/attention hotspot kernels + KV Cache/量化 IO 分析",days:["实现 RoPE reference 与 CUDA/Triton kernel","推导 prefill/decode shape、KV cache 字节数与 FP16/INT8 容量上限","实现小型 fused attention 或关键子算子","比较连续与分页 KV 布局的访问代价","用 Roofline/Nsight 解释热点而非只报加速比","完成一个 weight-only INT8 或 KV Cache 量化的最小对照实验，记录误差、显存节省和不适用条件"]},
   { phase:4,title:"项目 A：PyTorch / vLLM 接入",goal:"证明算子库能进入真实框架调用链",output:"PyTorch custom op + vLLM 可选集成 demo",days:["用 torch.library/C++ extension 注册自定义算子","加入 fake/meta kernel 和 torch.compile 兼容检查","实现能力判断、fallback 与异常诊断","接入 mini Transformer 或 vLLM 单个 custom op","对比单 kernel 收益与端到端收益","精读 PyTorch custom op 与 vLLM 调用链"]},
   { phase:4,title:"项目 A 封版：GPU Operator Library",goal:"形成第一个可写简历、可被陌生人复现的主项目",output:"gpu-operator-lab v1.0 + 性能报告 + 10 分钟讲解",days:["冻结 API、支持矩阵、环境与一键运行脚本","跑全量 correctness/performance regression","生成跨 shape/dtype 性能图和失败案例","补架构图、优化演进、限制与复现说明","邀请他人按 README 复现并修复全部阻塞项","精读核心实现并准备 20 个源码追问"]},
   { phase:4,title:"项目 B 立项：Transformer 子图编译器",goal:"从 4 月中旬启动端到端编译器主项目",output:"编译器 RFC + PyTorch/ONNX→Relax 最小链路",days:["冻结支持的 Transformer 子图与非目标","从源码构建 TVM 并锁定版本","学习 IRModule、Relax、TensorIR 与 Runtime 分层","导入 MLP/RMSNorm 子图并保存规范化 IR","建立 eager/torch.compile/TVM baseline","精读 TVM 端到端编译流程与关键入口"]},
@@ -285,6 +285,8 @@ const openSourceProjects = [
   { phase:2, label:"triton-lang/triton", url:"https://github.com/triton-lang/triton", note:"GPU Kernel DSL" },
   { phase:2, label:"Dao-AILab/flash-attention", url:"https://github.com/Dao-AILab/flash-attention", note:"IO-aware attention" },
   { phase:3, label:"pytorch/pytorch", url:"https://github.com/pytorch/pytorch", note:"Dynamo/Inductor/FX 主仓" },
+  { phase:3, label:"microsoft/DeepSpeed", url:"https://github.com/microsoft/DeepSpeed", note:"DDP/FSDP/ZeRO 的概念与最小实验参考，不作为主项目替代品" },
+  { phase:3, label:"NVIDIA/Megatron-LM", url:"https://github.com/NVIDIA/Megatron-LM", note:"张量/流水线并行原理参考；没有集群证据不在简历宣称熟练" },
   { phase:3, label:"onnx/onnx", url:"https://github.com/onnx/onnx", note:"模型 IR 与工具链" },
   { phase:4, label:"apache/tvm", url:"https://github.com/apache/tvm", note:"张量编译器与运行时" },
   { phase:4, label:"mlc-ai/mlc-llm", url:"https://github.com/mlc-ai/mlc-llm", note:"TVM 体系的 LLM 编译与部署" },
@@ -300,9 +302,9 @@ function learningResourcesForWeek(week: number, phase: number) {
 }
 
 const jdSignals = [
+  { company:"华为", role:"AI 底层软件 / AI 编译优化", skills:"C++、Linux、MLIR/LLVM、图优化、算子融合、代码生成、CUDA/NPU Kernel、Runtime 与 Profiling", url:"https://career.huawei.com/reccampportal/portal5/social-recruitment-detail.html?dataSource=1&jobId=32189" },
   { company:"Apple", role:"On-Device ML Compiler", skills:"MLIR 编译栈、C++、PyTorch、GPU/CPU/NPU kernel 与运行时性能", url:"https://jobs.apple.com/en-us/details/200631247/on-device-ml-compiler-engineer-model-compilation-graphics-games-and-machine-learning" },
-  { company:"Apple", role:"GPU Compiler Engineer", skills:"IR、前端/中端优化、体系结构、GPU 并行语言与性能分析", url:"https://jobs.apple.com/en-ie/details/200649008/gpu-compiler-engineer-graphics-game-and-ml" },
-  { company:"NVIDIA", role:"High-Performance AI", skills:"CUDA、框架/编译器/运行时、GPU 架构、端到端性能归因", url:"https://jobs.nvidia.com/careers/job/893394948871" },
+  { company:"NVIDIA", role:"GPU-Accelerated System Software", skills:"CUDA、PyTorch、GPU 架构、端到端优化与工程交付", url:"https://jobs.nvidia.com/careers/job/893396498251?domain=nvidia.com&l=en" },
   { company:"Arm", role:"Compiler Engineer", skills:"C/C++、LLVM/GNU、低层软件、体系结构、benchmark 与开源贡献", url:"https://careers.arm.com/job/cambridge/software-engineer-compilers/33099/96158949392" },
 ];
 
@@ -314,11 +316,12 @@ function day6Knowledge(week: Week) {
 function leetcodeActive(start: string, week: number) {
   const d = new Date(`${start}T00:00:00`);
   d.setDate(d.getDate() + (week - 1) * 7);
-  return d >= new Date("2027-02-01T00:00:00");
+  return d >= new Date("2026-12-01T00:00:00");
 }
 
 function weekTasks(week: Week & { index: number }, start: string) {
-  const base = [...week.days.slice(0,5), day6Knowledge(week), "视频补漏：从本周视频中选择最薄弱的一节，整理 5 条笔记、1 个疑问和 1 个验证实验。"];
+  const closure = `周验收：在干净环境从零运行「${week.output}」；核对本周测试、代表性输入和一项已知限制，并把复现命令写入日志`;
+  const base = [...week.days.slice(0,6), closure];
   if (!leetcodeActive(start, week.index)) return base;
   const algorithm = ["；加练 LeetCode 1 题，写复杂度和边界", "", "；加练 LeetCode 1 题并复述思路", "", "；加练 LeetCode 1 题并补第二解法", "", "；完成 LeetCode 2 题并整理错题"];
   return base.map((task, index) => `${task}${algorithm[index]}`);
@@ -403,24 +406,24 @@ const weekKnowledgePoints: Record<number, string[]> = {
   13:["SIMT、warp、grid、block、thread 的层级和索引映射","host/device 内存分配、拷贝和 kernel launch 生命周期","grid-stride loop、边界保护与统一 CUDA 错误检查","H2D、D2H、kernel 时间和有效带宽的分离测量"],
   14:["global、shared、register、constant memory 的容量和访问特征","coalesced memory access 与矩阵转置读写模式","shared-memory tiling 和 bank conflict 的来源","padding 如何消除 bank conflict，以及 Nsight Compute 如何验证"],
   15:["GEMM 的 M/N/K 索引、数据布局和边界条件","shared-memory tiled GEMM 的加载、同步和计算阶段","非 tile 整倍数 shape 的保护与浮点误差检查","CUDA Events 计时、GFLOPS 计算和 cuBLAS baseline"],
-  16:["register blocking、每线程多输出和指令级并行","occupancy、寄存器压力、shared memory 与 block 配置的权衡","向量化 load/store 的对齐约束和生成指令","PTX/SASS、资源报告和 Roofline 对瓶颈的定位"],
+  16:["register blocking、每线程多输出和指令级并行","occupancy、寄存器压力、shared memory 与 block 配置的权衡","FP16/BF16 输入、FP32 累加与 Tensor Core/WMMA/CUTLASS 路径的精度和对齐约束","PTX/SASS、资源报告和 Roofline 对瓶颈的定位"],
   17:["树形归约、shared-memory reduction 和多 block 合并","warp shuffle 与 warp/block reduce 的正确写法","softmax 减 max 的数值稳定性和误差来源","online softmax 如何减少访存遍数并保持稳定"],
   18:["LayerNorm 的均值、方差、epsilon、gamma 和 beta","Welford 算法相对两遍统计的数值与访存特点","统计、归一化、仿射融合对 kernel launch 和显存读写的影响","hidden size、block 配置、dtype 与吞吐之间的关系"],
   19:["Triton 的 program_id、block、mask 和指针算术","Triton reduction、num_warps 与 autotune 配置","CUDA、Triton、PyTorch baseline 的公平比较方式","高层 Kernel DSL 在开发效率、可控性和可移植性上的取舍"],
   20:["统一 correctness/performance benchmark harness 的职责","Nsight Systems 全局时间线与 Nsight Compute 单 kernel 指标的分工","从 baseline、瓶颈、优化到证据的完整性能叙事","版本冻结、环境记录、结果图表和可复现发布"],
-  21:["Autograd 拓扑排序、requires_grad、grad_fn 和梯度累积","add/mul/matmul backward 的链式法则与梯度检查","PyTorch Dispatcher 的算子 schema、dispatch key 和 kernel 选择","C++/CUDA extension 从 Python 调用到原生 kernel 的路径"],
+  21:["Autograd 拓扑排序、requires_grad、grad_fn 和梯度累积","add/mul/matmul backward 的链式法则与梯度检查","PyTorch Dispatcher 的算子 schema、dispatch key 和 kernel 选择","C++/CUDA extension 从 Python 调用到原生 kernel 的路径","DDP 的 rank、process group、gradient bucket 与 AllReduce 时机；它不等于模型并行或显存分片"],
   22:["FX symbolic_trace、Graph、Node、GraphModule 的职责","模式匹配、节点替换、死代码清理和图合法性","eval 模式 BN folding 的数学推导与适用条件","融合前后的数值一致性、节点数和 latency 验证"],
   23:["ONNX protobuf、opset、initializer、value_info 和 graph","模型导出、checker、shape inference 与动态维度","ONNX Runtime 与 PyTorch 输出对齐和误差容限","Netron 可视化、算子统计与安全图改写"],
   24:["TorchDynamo、AOTAutograd、Inductor、Triton 的分层职责","graph capture、guards、graph break 和 recompilation","冷启动编译时间与稳态执行时间的区别","dynamic shapes、显存和 generated code 的观察方法"],
   25:["Python bytecode、frame evaluation 与 FX graph 捕获","guard 的生成、缓存命中和失败重编译","数据依赖控制流、Python side effect 与 graph break","Dynamo 日志、最小复现和问题定位流程"],
-  26:["AOTAutograd 的前向/反向联合捕获与 saved tensor","functionalization 如何处理 mutation 和 view","operator decomposition 如何把复合算子展开为基础算子","训练编译中的重计算、内存占用和融合权衡"],
+  26:["AOTAutograd 的前向/反向联合捕获与 saved tensor","functionalization 如何处理 mutation 和 view","operator decomposition 如何把复合算子展开为基础算子","训练编译中的重计算、内存占用和融合权衡","DDP 与 FSDP 在参数、梯度和 optimizer state 的复制/分片差异；最小实验不代表千卡训练经验"],
   27:["Inductor 如何把 FX graph 降到生成的 Triton/C++ kernel","pointwise fusion 与 reduction schedule 的代码结构","autotune、缓存目录、shape guard 和代码特化","生成代码变化与性能回归之间的定位方法"],
   28:["torch.compile backend 的输入输出协议和 GraphModule 生命周期","图打印、计时、pass pipeline 与 fallback","常量折叠、冗余算子消除和图正确性","unsupported op、动态 shape 和回归测试设计"],
   29:["融合 Pass 的支持矩阵、正例、负例和回退条件","ResNet 子图模式在 eval/train、dtype、shape 下的差异","kernel launch、访存次数和端到端 latency 的关系","可复现 benchmark dashboard 与性能结论边界"],
   30:["项目 RFC 中问题、目标用户、非目标和验收指标","算子库 API、目录分层、dispatch 和支持矩阵","硬件、shape、dtype、精度阈值与 benchmark 协议","PyTorch、CUTLASS、Triton baseline 的统一结果格式"],
   31:["Softmax/RMSNorm 在 FP32/FP16 与极值输入下的数值风险","naive、shared、warp、Triton 多实现的 dispatch 条件","非对齐 shape、向量化访问和尾部 mask","correctness matrix、误差统计和性能回归"],
   32:["Transformer MLP 的典型 M/N/K shape 和算量","register-blocked GEMM、mainloop 与数据复用","bias+GELU/SwiGLU epilogue fusion 的收益来源","cuBLAS、CUTLASS、Triton 在不同规模下的性能边界"],
-  33:["RoPE 的旋转位置编码数学、配对维度和数据布局","prefill 与 decode 的 shape、并行度和瓶颈差异","KV Cache 字节数、连续/分页布局和访问局部性","FlashAttention 的 IO-aware 思路与 attention 热点"],
+  33:["RoPE 的旋转位置编码数学、配对维度和数据布局","prefill 与 decode 的 shape、并行度和瓶颈差异","KV Cache 字节数、连续/分页布局和访问局部性","weight-only INT8/KV Cache 量化的显存—误差—带宽取舍与适用边界","FlashAttention 的 IO-aware 思路与 attention 热点"],
   34:["torch.library/C++ extension 的 schema、注册和 dispatch","fake/meta kernel 与 torch.compile 兼容性","能力判断、fallback、异常诊断和动态 shape","单 kernel 加速如何传递或无法传递到端到端收益"],
   35:["API、支持矩阵、环境锁定和一键复现脚本","correctness/performance regression 与结果版本管理","README 架构图、优化演进、失败案例和限制","源码讲解中问题、基线、优化、证据和取舍的表达"],
   36:["TVM IRModule、Relax、TensorIR、Runtime 的分层","PyTorch/ONNX 到 Relax 的导入和规范化","MLP/RMSNorm 子图的算子、shape 与 dtype 表示","eager、torch.compile、TVM baseline 的可比性"],
@@ -602,9 +605,9 @@ export default function Home() {
 
       <section className="principles" id="method">
         <div><span>2026.08—2027.01</span><h3>项目驱动积累期</h3><p>前 4 周用同一个 MiniTensor Runtime 按需恢复 C++，第 5 周立即进入体系结构、CUDA 与 PyTorch 编译栈；阶段产出统一标为 Lab。</p></div>
-        <div><span>2027.02</span><h3>算法启动</h3><p>每周约 5 题，安排在周一、三、五、日；与编译器学习并行。</p></div>
+        <div><span>2026.12</span><h3>算法启动</h3><p>每周固定 5 题，安排在周一、三、五、日；与编译器学习并行。</p></div>
         <div><span>2027.03</span><h3>简历项目 A</h3><p>把前期 CUDA Lab 合并为 Transformer GPU 算子库，强调框架接入与性能证据。</p></div>
-        <div><span>2027.04—06</span><h3>简历项目 B</h3><p>完成 PyTorch/ONNX→Relax→TIR→CUDA 的 Transformer 子图编译器。</p></div>
+        <div><span>2027.05—07</span><h3>简历项目 B</h3><p>完成 PyTorch/ONNX→Relax→TIR→CUDA 的 Transformer 子图编译器，并为开源协作与秋招留出质量审计时间。</p></div>
       </section>
 
       <section className="jdEvidence">
@@ -617,7 +620,7 @@ export default function Home() {
           <div className="asideTitle"><span>YEAR</span><b>路线导航</b></div>
           <button className={activePhase===0?"active":""} onClick={()=>setActivePhase(0)}><span>全部 50 周</span><b>{percent}%</b></button>
           {phases.map((p,i)=><button key={p.name} className={activePhase===i+1?"active":""} onClick={()=>setActivePhase(i+1)}><i style={{background:p.color}}/><span><small>{p.range}</small>{p.name}</span><b>{phaseDone(i+1)}%</b></button>)}
-          <div className="weeklyRhythm"><b>推荐节奏</b><span>2027 年 2 月前</span><p>每天约 3 小时，不刷 LeetCode</p><span>2027 年 2 月起</span><p>每周约 5 题</p><span>2027 年 3 月起</span><p>进入简历主项目</p></div>
+          <div className="weeklyRhythm"><b>推荐节奏</b><span>2026 年 12 月前</span><p>每天约 3 小时，不刷 LeetCode</p><span>2026 年 12 月起</span><p>每周固定 5 题</p><span>2027 年 3 月起</span><p>进入简历主项目</p></div>
         </aside>
 
         <div className="planContent">
@@ -691,10 +694,10 @@ export default function Home() {
       </section>
 
       <section className="deliverables" id="deliverables">
-        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>前期 MiniTensor、分配器、单 kernel 和 FX Pass 都是学习 Lab。到 2027 年 3–4 月再把它们合并成完整工程，避免简历堆课程型 Demo。</p></div>
+        <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>前期 MiniTensor、分配器、单 kernel 和 FX Pass 都是学习 Lab。到 2027 年 3 月后再把它们合并成完整工程，避免简历堆课程型 Demo。</p></div>
         <div className="projectGrid">
           <article><span>01 · 2027.03</span><h3>Transformer GPU Operator Library</h3><p>整合 GEMM、Softmax、RMSNorm、RoPE 和 attention 热点，覆盖多 dtype/shape、PyTorch/vLLM 接入、Nsight/Roofline 与性能回归。</p><b>W30 → W35</b></article>
-          <article className="featured"><span>02 · 2027.04—06</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→CUDA runtime，覆盖动态 shape、fallback、外部 kernel 和端到端 benchmark。</p><b>W36 → W44</b></article>
+          <article className="featured"><span>02 · 2027.05—07</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→CUDA runtime，覆盖动态 shape、fallback、外部 kernel 和端到端 benchmark。</p><b>W36 → W44</b></article>
           <article><span>03 · 持续加分</span><h3>TVM / LLVM 开源贡献</h3><p>以最小复现、源码定位、修复测试和 Code Review 证明真实工程协作；MLIR Lab 作为编译器项目的技术补充，不单列主项目。</p><b>W44 → W50</b></article>
         </div>
         <div className="repoRadar"><span className="eyebrow">OPEN SOURCE RADAR</span><h3>项目实现时对照阅读的开源仓库</h3><div>{openSourceProjects.map(project=><a href={project.url} target="_blank" rel="noreferrer" key={project.url}><b>{project.label}</b><small>{project.note}</small><i>↗</i></a>)}</div></div>

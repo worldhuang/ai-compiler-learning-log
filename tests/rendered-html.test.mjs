@@ -17,16 +17,16 @@ test("server redirects to the generated static learning log", async () => {
   assert.equal(response.headers.get("location"), "http://localhost/worldhaung_ai.html");
 });
 
-test("standalone plan is 39 weeks and starts algorithms in December", async () => {
+test("standalone plan keeps all 50 authored weeks and starts algorithms in December", async () => {
   const [standalone, publicStandalone] = await Promise.all([
     readFile(new URL("../worldhaung_ai.html", import.meta.url), "utf8"),
     readFile(new URL("../public/worldhaung_ai.html", import.meta.url), "utf8"),
   ]);
   assert.equal(publicStandalone, standalone);
-  assert.match(standalone, /39 周行动计划/);
-  assert.match(standalone, /273 天 · 39 周/);
+  assert.match(standalone, /50 周行动计划/);
+  assert.match(standalone, /350 天 · 50 周/);
   assert.match(standalone, /2026-12-01/);
-  assert.match(standalone, /全部 39 周/);
+  assert.match(standalone, /全部 50 周/);
   assert.match(standalone, /Transformer 子图编译器/);
   assert.match(standalone, /今天学习的目的/);
   assert.match(standalone, /今天必须掌握的知识点/);
@@ -39,8 +39,12 @@ test("standalone plan is 39 weeks and starts algorithms in December", async () =
   assert.match(standalone, /\{2,3,4\} 输出 numel=24、stride=\{12,4,1\}/);
   assert.match(standalone, /今天具体要学什么/);
   assert.match(standalone, /CMake target、静态库、CTest/);
-assert.match(standalone, /GPU OPERATOR LAB/);
-assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
+  assert.match(standalone, /GPU OPERATOR LAB/);
+  assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
+  assert.match(standalone, /Tensor Core/);
+  assert.match(standalone, /DDP 与 FSDP/);
+  assert.match(standalone, /weight-only INT8/);
+  assert.match(standalone, /周验收：在干净环境从零运行/);
   assert.match(standalone, /function pace\(task\)/);
   assert.match(standalone, /fileHint is authored per week/);
   assert.match(standalone, /resumeGate/);
@@ -48,6 +52,15 @@ assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
   assert.match(standalone, /020721/);
+  assert.doesNotMatch(standalone, /全部 39 周/);
+  const dataText = standalone.match(/const DATA=(\{[\s\S]*?\});\nconst dayNames/)?.[1];
+  assert.ok(dataText, "standalone page should embed its plan data");
+  const planData = JSON.parse(dataText);
+  assert.equal(planData.weeks.length, 50);
+  assert.deepEqual(planData.weeks.map((week) => week.sourceWeek), Array.from({ length: 50 }, (_, index) => index + 1));
+  assert.ok(planData.weeks.every((week) => week.days.length === 6 && week.fileHint && week.knowledge.length >= 4));
+  assert.match(planData.weeks[15].days[5], /扫描 block\/tile\/dtype/);
+  assert.match(standalone, /\.\.\.w\.days\.slice\(0,6\),weeklyClosure\(w\)/);
   const inlineScript = standalone.match(/<script>([\s\S]*)<\/script>/)?.[1];
   assert.ok(inlineScript, "standalone page should contain its interactive script");
   assert.doesNotThrow(() => new Function(inlineScript));
