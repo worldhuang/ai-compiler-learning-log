@@ -415,7 +415,7 @@ const rootOutput = path.join(root, "index.html");
 const pagesOutput = path.join(root, "docs", "index.html");
 const publicOutput = path.join(root, "public", "worldhaung_ai.html");
 fs.writeFileSync(output, enhancedHtml, "utf8");
-fs.writeFileSync(rootOutput, enhancedHtml, "utf8");
+fs.writeFileSync(rootOutput, githubPagesEntry(enhancedHtml), "utf8");
 fs.mkdirSync(path.dirname(pagesOutput), { recursive: true });
 fs.writeFileSync(pagesOutput, githubPagesEntry(enhancedHtml), "utf8");
 fs.writeFileSync(publicOutput, enhancedHtml, "utf8");
