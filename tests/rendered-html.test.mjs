@@ -53,12 +53,14 @@ assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
   assert.doesNotThrow(() => new Function(inlineScript));
 });
 
-test("static GitHub Pages entries match", async () => {
+test("GitHub Pages entry embeds the current standalone page", async () => {
   const [rootEntry, docsEntry, standalone] = await Promise.all([
     readFile(new URL("../index.html", import.meta.url), "utf8"),
     readFile(new URL("../docs/index.html", import.meta.url), "utf8"),
     readFile(new URL("../worldhaung_ai.html", import.meta.url), "utf8"),
   ]);
-  assert.equal(rootEntry, docsEntry);
   assert.equal(rootEntry, standalone);
+  assert.match(docsEntry, /DecompressionStream\("gzip"\)/);
+  assert.match(docsEntry, /AI 编译器学习日志/);
+  assert.ok(docsEntry.length < standalone.length, "compressed Pages entry should fit GitHub file updates");
 });

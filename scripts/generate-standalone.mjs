@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { gzipSync } from "node:zlib";
 import ts from "typescript";
 
 const root = process.cwd();
@@ -400,6 +401,15 @@ const deliveryLayer = String.raw`
 
 const enhancedHtml = html.replace("</script>", deliveryLayer + "</script>");
 
+// GitHub's web contents endpoint truncates the full standalone page in this
+// environment.  The Pages entry keeps the same HTML payload but stores it as
+// gzip + base64, which modern browsers expand before rendering.  The normal
+// local and app-hosted entries remain plain HTML for easy inspection.
+function githubPagesEntry(sourceHtml) {
+  const compressed = gzipSync(Buffer.from(sourceHtml, "utf8")).toString("base64");
+  return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI 编译器学习日志</title></head><body><script>(async()=>{try{const b="${compressed}",bytes=Uint8Array.from(atob(b),c=>c.charCodeAt(0)),stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));document.open();document.write(await new Response(stream).text());document.close()}catch(error){document.body.innerHTML="<main style='font-family:system-ui;padding:2rem;line-height:1.7'><h1>学习日志加载失败</h1><p>请使用最新版本的 Chrome、Edge、Safari 或 Firefox 后重试。</p></main>"}})()</script></body></html>`;
+}
+
 const output = path.join(root, "worldhaung_ai.html");
 const rootOutput = path.join(root, "index.html");
 const pagesOutput = path.join(root, "docs", "index.html");
@@ -407,6 +417,6 @@ const publicOutput = path.join(root, "public", "worldhaung_ai.html");
 fs.writeFileSync(output, enhancedHtml, "utf8");
 fs.writeFileSync(rootOutput, enhancedHtml, "utf8");
 fs.mkdirSync(path.dirname(pagesOutput), { recursive: true });
-fs.writeFileSync(pagesOutput, enhancedHtml, "utf8");
+fs.writeFileSync(pagesOutput, githubPagesEntry(enhancedHtml), "utf8");
 fs.writeFileSync(publicOutput, enhancedHtml, "utf8");
 console.log(`${output}\n${rootOutput}\n${pagesOutput}\n${publicOutput}`);
