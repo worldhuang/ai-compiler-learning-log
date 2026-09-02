@@ -17,16 +17,17 @@ test("server redirects to the generated static learning log", async () => {
   assert.equal(response.headers.get("location"), "http://localhost/worldhaung_ai.html");
 });
 
-test("standalone plan keeps all 50 authored weeks and starts algorithms in December", async () => {
+test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 10", async () => {
   const [standalone, publicStandalone] = await Promise.all([
     readFile(new URL("../worldhaung_ai.html", import.meta.url), "utf8"),
     readFile(new URL("../public/worldhaung_ai.html", import.meta.url), "utf8"),
   ]);
   assert.equal(publicStandalone, standalone);
-  assert.match(standalone, /50 周行动计划/);
-  assert.match(standalone, /350 天 · 50 周/);
-  assert.match(standalone, /2026-12-01/);
-  assert.match(standalone, /全部 50 周/);
+  assert.match(standalone, /30 周冲刺计划/);
+  assert.match(standalone, /210 天 · 30 周/);
+  assert.match(standalone, /代码随想录核心 70 题/);
+  assert.match(standalone, /Hot100 100 题/);
+  assert.match(standalone, /全部 30 周/);
   assert.match(standalone, /Transformer 子图编译器/);
   assert.match(standalone, /今天学习的目的/);
   assert.match(standalone, /今天必须掌握的知识点/);
@@ -42,7 +43,7 @@ test("standalone plan keeps all 50 authored weeks and starts algorithms in Decem
   assert.match(standalone, /GPU OPERATOR LAB/);
   assert.match(standalone, /TRANSFORMER SUBGRAPH COMPILER/);
   assert.match(standalone, /Tensor Core/);
-  assert.match(standalone, /DDP 与 FSDP/);
+  assert.match(standalone, /DDP\/FSDP\/ZeRO/);
   assert.match(standalone, /weight-only INT8/);
   assert.match(standalone, /周验收：在干净环境从零运行/);
   assert.match(standalone, /function pace\(task\)/);
@@ -52,15 +53,18 @@ test("standalone plan keeps all 50 authored weeks and starts algorithms in Decem
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
   assert.match(standalone, /020721/);
-  assert.doesNotMatch(standalone, /全部 39 周/);
+  assert.doesNotMatch(standalone, /全部 50 周/);
   const dataText = standalone.match(/const DATA=(\{[\s\S]*?\});\nconst dayNames/)?.[1];
   assert.ok(dataText, "standalone page should embed its plan data");
   const planData = JSON.parse(dataText);
-  assert.equal(planData.weeks.length, 50);
-  assert.deepEqual(planData.weeks.map((week) => week.sourceWeek), Array.from({ length: 50 }, (_, index) => index + 1));
+  assert.equal(planData.weeks.length, 30);
   assert.ok(planData.weeks.every((week) => week.days.length === 6 && week.fileHint && week.knowledge.length >= 4));
-  assert.match(planData.weeks[15].days[5], /扫描 block\/tile\/dtype/);
+  assert.match(planData.weeks[1].days[1], /实现深拷贝、移动构造和移动赋值/);
+  assert.match(planData.weeks[15].days[4], /MetaSchedule/);
+  assert.match(planData.weeks[21].days[2], /从干净环境/);
   assert.match(standalone, /\.\.\.w\.days\.slice\(0,6\),weeklyClosure\(w\)/);
+  assert.match(standalone, /代码随想录核心 #/);
+  assert.match(standalone, /LeetCode Hot 100 #/);
   const inlineScript = standalone.match(/<script>([\s\S]*)<\/script>/)?.[1];
   assert.ok(inlineScript, "standalone page should contain its interactive script");
   assert.doesNotThrow(() => new Function(inlineScript));
