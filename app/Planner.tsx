@@ -681,9 +681,9 @@ export default function Home() {
       </section>
 
       <section className="principles" id="method">
-        <div><span>2026.08—10</span><h3>基础与 CUDA</h3><p>MiniTensor、CPU 性能、Transformer/GPU 前置、CUDA/Triton；只保留后续项目真正要用的知识。</p></div>
+        <div><span>2026.08—11</span><h3>基础与 CUDA</h3><p>MiniTensor、CPU 性能、Transformer/GPU 前置、CUDA/Triton；只保留后续项目真正要用的知识。</p></div>
         <div><span>从 Day 10 起</span><h3>算法双轨</h3><p>先完成代码随想录核心 70 题，再完成 Hot100 100 题；每周日只复盘错题，不开新题。</p></div>
-        <div><span>2026.12—2027.01</span><h3>项目 A</h3><p>完成 Transformer GPU 算子库：框架接入、fallback、测试和性能证据齐全。</p></div>
+        <div><span>2027.01</span><h3>项目 A</h3><p>完成 Transformer GPU 算子库：框架接入、fallback、测试和性能证据齐全。</p></div>
         <div><span>2027.02—03</span><h3>项目 B 与秋招</h3><p>完成 Transformer 子图编译器，随后做开源协作、复现审计、模拟面试和投递。</p></div>
       </section>
 
@@ -773,7 +773,7 @@ export default function Home() {
       <section className="deliverables" id="deliverables">
         <div className="sectionIntro"><span className="eyebrow">PORTFOLIO CHECKPOINT</span><h2>简历只主打两个完整项目</h2><p>MiniTensor、CUDA 单 kernel、FX Pass 和 tiny-gpu-compiler 都是学习 Lab。主项目从已完成的核心知识中提炼而来，不把课程型 Demo 堆进简历。</p></div>
         <div className="projectGrid">
-          <article><span>01 · 2026.12—2027.01</span><h3>Transformer GPU Operator Library</h3><p>整合 GEMM、Softmax、RMSNorm、RoPE 和 attention 热点，覆盖多 dtype/shape、PyTorch 接入、fallback、Nsight/Roofline 与性能回归。</p><b>W19 → W22</b></article>
+          <article><span>01 · 2027.01</span><h3>Transformer GPU Operator Library</h3><p>整合 GEMM、Softmax、RMSNorm、RoPE 和 attention 热点，覆盖多 dtype/shape、PyTorch 接入、fallback、Nsight/Roofline 与性能回归。</p><b>W19 → W22</b></article>
           <article className="featured"><span>02 · 2027.02—03</span><h3>Transformer Subgraph Compiler</h3><p>PyTorch/ONNX→Relax→融合 Pass→TIR schedule→runtime，覆盖动态 shape、fallback、外部 kernel 和端到端 benchmark。</p><b>W23 → W27</b></article>
           <article><span>03 · 持续加分</span><h3>TVM / LLVM 开源贡献</h3><p>以最小复现、源码定位、修复测试和 Code Review 证明真实工程协作；MLIR Lab 作为编译器项目的技术补充，不单列主项目。</p><b>W44 → W50</b></article>
         </div>
