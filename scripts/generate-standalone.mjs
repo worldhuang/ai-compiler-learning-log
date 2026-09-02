@@ -51,6 +51,7 @@ const DATA = {
   phaseResources: findConst("phaseResources"), phaseReferences: findConst("phaseReferences"),
   weekLearningResources: findConst("weekLearningResources"), openSourceProjects: findConst("openSourceProjects"),
   detailSteps: findConst("detailSteps"), timePlan: findConst("timePlan"), jdSignals: findConst("jdSignals"),
+  guidePlan: findConst("aiInfraGuidePlan"),
   weekFileHints: findConst("weekFileHints"),
   weekKnowledgePoints: findConst("weekKnowledgePoints"),
 };
@@ -85,6 +86,7 @@ const deliveryLayer = String.raw`
 (() => {
   const style = document.createElement("style");
   style.textContent = ".contractCard{margin:14px 0;padding:15px 16px;border:1px solid #d8cce8;border-left:4px solid #7257aa;background:#fff}.contractCard>span{display:block;margin-bottom:11px;color:#7257aa;font-size:9px;font-weight:800;letter-spacing:.14em}.contractGrid{display:grid;gap:8px}.contractRow{display:grid;grid-template-columns:72px 1fr;gap:9px;font-size:10px;line-height:1.65}.contractRow b{color:#6d55a1}.contractRow code{overflow-wrap:anywhere;font:10px/1.65 Consolas,monospace;color:#483d58}.contractRow em{font-style:normal;color:#443c38}.projectGates{max-width:1320px;margin:0 auto 34px;padding:0 5vw;display:grid;grid-template-columns:1fr 1fr;gap:12px}.projectGate{border:1px solid #d8cce8;background:#fff;padding:20px}.resumeGate{grid-column:1/-1;background:#faf7ff;border-left:4px solid #7257aa}.projectGate small{color:#7257aa;font-weight:800;letter-spacing:.13em}.projectGate h2{font:22px Georgia,'Songti SC',serif;margin:8px 0}.projectGate p,.projectGate li{font-size:11px;line-height:1.7;color:#514851}.projectGate ul{margin:10px 0;padding-left:18px}.projectGate a{font-size:11px;color:#7257aa;text-decoration:underline}@media(max-width:600px){.contractRow{grid-template-columns:1fr;gap:2px}.projectGates{grid-template-columns:1fr}.resumeGate{grid-column:auto}}";
+  style.textContent += ".guideReadingCard{display:block;margin:14px 0;padding:14px 16px;border:1px solid #b9d6c8;border-left:4px solid #249577;background:#eff9f4;color:#1f3d34;text-decoration:none}.guideReadingCard:hover{border-color:#249577}.guideReadingCard span,.guideReadingCard small{display:block;color:#28735f;font-size:9px;font-weight:800;letter-spacing:.12em}.guideReadingCard b{display:block;margin:7px 0;font:16px Georgia,'Songti SC',serif}.guideReadingCard p{margin:0 0 8px;font-size:11px;line-height:1.7;color:#355449}";
   document.head.append(style);
   const gate = document.createElement("section");
   gate.className = "projectGates";
@@ -142,6 +144,20 @@ const deliveryLayer = String.raw`
     // over a compressed index table so a day never receives another week's IR
     // or kernel topic.
     return w.knowledge?.[d % w.knowledge.length] || detailedTopics[w.index - 1]?.[d] || "本日任务的关键概念";
+  }
+
+  function guideSource(w, d, topic) {
+    const source = DATA.guidePlan[w.index - 1];
+    const checks = [
+      "用自己的话写出定义、输入、输出和一个边界条件",
+      "画出它在调用链或数据流中的前后关系，不复制网页原句",
+      "说明它牺牲了什么、换来了什么：计算、通信、显存或工程复杂度",
+      "写下今天代码实验将验证的一个可观察现象",
+      "对照实验结果，判断网页结论在哪些输入下成立或不成立",
+      "把一个公式、伪代码或流程复写成能运行的最小示例",
+      "用本周交付物复述一个结论，并标出一个还没有解决的问题"
+    ];
+    return { source, check: "围绕“" + topic + "”，" + checks[d] + "。" };
   }
 
   function dayFiles(w, d) {
@@ -302,7 +318,9 @@ const deliveryLayer = String.raw`
   guide = function(w, d, task) {
     const c = dailyContract(w, d, task);
     const hasAlgo = task.includes("算法｜");
+    const source = guideSource(w, d, dayTopic(w, d));
     const steps = [
+      "先读 AIInfraGuide《" + source.source.title + "》（25–35 分钟）：" + source.source.readingGoal + "本日阅读问题：" + source.check + "把答案写进当天日志后，再开始写代码。",
       "交付物：" + c.artifact,
       "打开并只修改：" + c.files,
       "必须写出：" + c.must,
@@ -310,6 +328,7 @@ const deliveryLayer = String.raw`
       "保存证据：" + c.evidence + (hasAlgo ? "；另附算法题思路、复杂度和边界。" : "")
     ];
     const done = [
+      "已完成本日 AIInfraGuide 阅读问题，并在日志留下自己的答案；不能只粘贴网页原文。",
       "目标文件已创建或更新，且内容只覆盖今天的任务。",
       c.expected,
       "当天日志包含实际运行命令、原始输出和至少一个边界/失败情况。",
@@ -342,11 +361,13 @@ const deliveryLayer = String.raw`
       const task = tasks(w)[parts[1] - 1];
       const c = dailyContract(w, parts[1] - 1, task);
       const topic = dayTopic(w, parts[1] - 1);
+      const source = guideSource(w, parts[1] - 1, topic);
       const schedule = pace(task);
       const start = day.querySelector(".startHere");
       if (!start) return;
       start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天具体要学什么</span><div class="contractGrid"><div class="contractRow"><b>核心知识</b><em>' + esc(topic) + '</em></div><div class="contractRow"><b>你要会说</b><em>定义、输入输出、一个边界条件，以及它为何服务于本周模块。</em></div><div class="contractRow"><b>你要会做</b><em>' + esc(task.split("；算法｜")[0]) + '</em></div></div></div>');
       start.insertAdjacentHTML("afterend", '<div class="contractCard"><span>今天交付什么 · 不用猜</span><div class="contractGrid"><div class="contractRow"><b>修改文件</b><code>' + esc(c.files) + '</code></div><div class="contractRow"><b>建议推进</b><em>' + esc(schedule) + '</em></div><div class="contractRow"><b>必须完成</b><em>' + esc(c.must) + '</em></div><div class="contractRow"><b>验收输入</b><em>' + esc(c.input) + '</em></div><div class="contractRow"><b>预期结果</b><em>' + esc(c.expected) + '</em></div><div class="contractRow"><b>完成证据</b><code>' + esc(c.evidence) + '</code></div><div class="contractRow"><b>何时勾选</b><em>仅当预期结果成立、完成证据已写入当天日志，并且至少验证过一个边界或失败输入时，才勾选完成。</em></div></div></div>');
+      start.insertAdjacentHTML("afterend", '<a class="guideReadingCard" href="' + source.source.url + '" target="_blank" rel="noreferrer"><span>先读，再写代码 · AIInfraGuide</span><b>' + esc(source.source.title) + ' ↗</b><p>' + esc(source.source.readingGoal) + '</p><small>本日阅读问题：' + esc(source.check) + '</small></a>');
     });
   };
   render();

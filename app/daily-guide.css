@@ -32,6 +32,43 @@
   line-height: 1.6;
 }
 
+.guideReadingCard {
+  display: block;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid #b9d6c8;
+  border-left: 4px solid #249577;
+  background: #eff9f4;
+}
+
+.guideReadingCard:hover {
+  border-color: #249577;
+}
+
+.guideReadingCard span,
+.guideReadingCard small {
+  display: block;
+  color: #28735f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.guideReadingCard b {
+  display: block;
+  margin: 7px 0;
+  font: 16px Georgia, "Songti SC", serif;
+}
+
+.guideReadingCard p {
+  margin: 0 0 8px;
+  color: #355449;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
 .actionList {
   display: grid;
   gap: 7px;

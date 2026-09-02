@@ -18,9 +18,16 @@ type DailyGuide = {
   files: string;
   purpose: string;
   knowledgePoints: string[];
+  source: GuideReference;
   steps: string[];
   command: string;
   doneWhen: string[];
+};
+
+type GuideReference = {
+  title: string;
+  url: string;
+  readingGoal: string;
 };
 
 const phases = [
@@ -117,6 +124,42 @@ const weeks: Week[] = [
   { phase:5, resourceWeek:44, title:"开源协作与深度源码走读", goal:"将源码阅读转化为可验证协作：只尝试小而真实的 issue、文档或测试贡献，不为简历伪造 PR。", output:"一个可追溯 issue/PR 或完整最小复现包", files:"upstream/issue.md · upstream/reproducer.py · upstream/test_plan.md · docs/W28-source-reading.md", knowledge:["good first issue 的筛选、最小复现与根因边界","测试、benchmark、commit、PR 描述与 Code Review","TVM/MLIR/vLLM/FlashInfer 的模块化阅读方法","何种贡献可以诚实写入简历"], days:["选择一个 TVM/MLIR/vLLM/FlashInfer issue；确认范围和本地复现条件","写最小复现、预期/实际结果与环境；先不修改上游","沿调用链定位一个可能根因；记录证据和不确定性","补一个测试、文档或小修复；只运行目标测试与相关 benchmark","按社区格式准备 commit/PR 或 issue 评论；保留链接和反馈","若贡献未合并，整理复现包；简历只写已真实完成、可验证的工作"] },
   { phase:5, resourceWeek:48, title:"作品集复现审计与简历", goal:"把两个主项目变成陌生人可复现、你自己可讲清的秋招材料。", output:"两仓库审计完成 + 一页简历 + 项目问答库", files:"portfolio/checklist.md · portfolio/resume.md · gpu-operator-lab/README.md · transformer-compiler/README.md", knowledge:["环境、数据、命令、测试、性能证据与限制的审计","简历中的问题—动作—量化结果—技术取舍","2/5/10 分钟项目叙事与源码追问","不能写在简历上的夸大表述"], days:["审计项目 A：API、测试、benchmark、接入示例、硬件/shape 口径","审计项目 B：IR、Pass、fallback、runtime、版本锁定与端到端数据","统一图表、README、环境文件和一键复现命令；清理硬编码路径","写一页简历：每项目 1 句问题、2 句动作、1 句真实量化结果","为两个项目各准备 2/5/10 分钟叙事；录音并删除含糊表述","让同学按 README 复现；修复阻塞问题并记录一次改进"] },
   { phase:5, resourceWeek:50, title:"秋招冲刺：Hot100 收尾、GPU/编译器面试与投递", goal:"在 4 月前结束学习内容，把最后两周留给查漏、模拟和有针对性的投递。", output:"Hot100 完成记录 + JD 证据矩阵 + 两次模拟面试", files:"portfolio/jd-matrix.csv · portfolio/project-qa.md · portfolio/mock-interviews/ · portfolio/applications.md", knowledge:["Hot100 的复杂度、边界、模板与错因归纳","reduction/LayerNorm/GEMM 的白板实现与 GPU 边界","torch.compile、TVM/TIR、MLIR lowering 的系统表达","JD 到项目证据的匹配与诚实投递策略"], days:["完成 Hot100 最后题目并复盘最高频的数组/树/链表/DP 模板","白板写 reduction、softmax 或 LayerNorm；说清并行划分、同步和边界","模拟解释 graph break、fusion Pass、TIR schedule、MLIR lowering","针对 3 个 JD 建技能—项目证据矩阵；准备两版简历","进行一次 C++/算法模拟和一次 GPU/编译器模拟；逐题订正","完成最终复现审计与投递清单；4 月开始只按面试反馈定向补缺"] },
+];
+
+// Every week is anchored to one concrete AIInfraGuide chapter.  The daily
+// card turns the chapter into a small reading question, then asks the learner
+// to prove the answer in code.  This is deliberately not a second curriculum.
+const aiInfraGuidePlan: GuideReference[] = [
+  { title: "第1章：编程语言基础", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC1%E7%AB%A0-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/", readingGoal: "重点阅读 C/C++ 生命周期、编译/链接、CMake 与 Linux 开发基本功。" },
+  { title: "第1章：编程语言基础", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC1%E7%AB%A0-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/", readingGoal: "重点阅读 RAII、智能指针、对象生命周期与内存问题定位。" },
+  { title: "第1章：编程语言基础", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC1%E7%AB%A0-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80/", readingGoal: "重点阅读模板、容器、构建系统与性能定位的工程边界。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "先建立“图、IR、优化、代码生成”的全链路直觉，再用 CPU 实验观察源码到机器代码。" },
+  { title: "第3章：Transformer 架构详解", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC3%E7%AB%A0-transformer%E6%9E%B6%E6%9E%84%E8%AF%A6%E8%A7%A3/", readingGoal: "重点跟踪 Decoder Block 的 shape、Attention、MLP、RoPE、残差与 KV Cache。GPU 硬件部分同时查本章导航中的 GPU 基础。" },
+  { title: "CUDA 编程快速入门指南", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/cuda%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/", readingGoal: "重点阅读环境、线程层级、内存模型和向量加法，再写可验证的 CUDA 最小 kernel。" },
+  { title: "第3章：经典算子实现—Reduce", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC3%E7%AB%A0-%E7%BB%8F%E5%85%B8%E7%AE%97%E5%AD%90%E5%AE%9E%E7%8E%B0-reduce/", readingGoal: "重点阅读朴素归约、共享内存树形归约、Warp Shuffle 与数值稳定 Softmax 的联系。" },
+  { title: "第4章：经典算子实现—GEMM", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC4%E7%AB%A0-%E7%BB%8F%E5%85%B8%E7%AE%97%E5%AD%90%E5%AE%9E%E7%8E%B0-gemm/", readingGoal: "重点阅读 tiled GEMM、数据复用、Tensor Core 约束及与 cuBLAS 的公平比较。" },
+  { title: "第6章：Attention 算子", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC6%E7%AB%A0-attention%E7%AE%97%E5%AD%90/", readingGoal: "重点阅读 FlashAttention 的 IO 视角；再连接 Triton、Paged KV Cache 与量化的取舍。" },
+  { title: "第4章：PyTorch 框架", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC4%E7%AB%A0-pytorch%E6%A1%86%E6%9E%B6/", readingGoal: "重点阅读 Tensor、Autograd、训练/调试流程；把高层调用连接到自定义扩展。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "重点阅读计算图、算子融合和编译后端；用 FX/ONNX 图变换验证而不是只看图。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "重点阅读 torch.compile/Triton 的位置；用 graph break、guard 和生成 kernel 解释编译收益。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "以本章的 AI 编译器分层为参照，补齐传统 IR、CFG、SSA 与 Pass 的通用语言。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "以本章的编译流程为参照，学习 MLIR 的 dialect、rewrite 与 lowering；官方 Toy 教程仍是实现材料。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "把本章的 AI 编译器总览映射到 TVM：模型导入、Relax、TensorIR、代码生成与运行时。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "把算子优化的阅读结论落到 TensorIR schedule、搜索空间和性能证据。" },
+  { title: "第2章：集合通信原语", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%B8%89-%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/%E7%AC%AC2%E7%AB%A0-%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E5%8E%9F%E8%AF%AD/", readingGoal: "先理解 AllReduce/AllGather/ReduceScatter 的数据流与通信量，再做 DDP/FSDP/ZeRO 的最小实验。" },
+  { title: "第2章：推理引擎核心技术", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/", readingGoal: "重点阅读 prefill/decode、KV Cache、批处理与端到端性能；再用小脚本和调用链验证。" },
+  { title: "第5章：Softmax 与算子融合", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC5%E7%AB%A0-%E7%BB%8F%E5%85%B8%E7%AE%97%E5%AD%90%E5%AE%9E%E7%8E%B0-softmax%E4%B8%8E%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/", readingGoal: "以 Softmax/融合的性能模型约束项目 A 的接口、正确性矩阵和 benchmark 协议。" },
+  { title: "第5章：Softmax 与算子融合", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC5%E7%AB%A0-%E7%BB%8F%E5%85%B8%E7%AE%97%E5%AD%90%E5%AE%9E%E7%8E%B0-softmax%E4%B8%8E%E7%AE%97%E5%AD%90%E8%9E%8D%E5%90%88/", readingGoal: "用本章的数值稳定、融合和访存观点实现项目 A 的 Softmax/RMSNorm 并接入 PyTorch。" },
+  { title: "第4章：经典算子实现—GEMM", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC4%E7%AB%A0-%E7%BB%8F%E5%85%B8%E7%AE%97%E5%AD%90%E5%AE%9E%E7%8E%B0-gemm/", readingGoal: "将 tiled GEMM、Tensor Core 和性能边界用于项目 A 的 MLP/RoPE 及性能报告。" },
+  { title: "第8章：性能分析工具链", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC8%E7%AB%A0-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/", readingGoal: "用 Nsight 与固定 benchmark 口径封版项目 A；避免只报一个没有上下文的加速倍数。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "用 AI 编译器端到端流水线约束项目 B 的前端、IR、Pass、schedule 和运行时边界。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "将图优化的概念落实为可保存 IR、可回归的 TensorIR lowering 和 schedule。" },
+  { title: "第7章：AI 编译器", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-ai%E7%BC%96%E8%AF%91%E5%99%A8/", readingGoal: "用算子融合的收益和风险约束项目 B 的 pattern、dynamic shape guard 与 fallback。" },
+  { title: "第2章：推理引擎核心技术", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/", readingGoal: "把推理引擎的调度、KV Cache 与后端选择接到项目 B runtime，保留失败诊断和 fallback。" },
+  { title: "第8章：性能分析工具链", url: "https://caomaolufei.github.io/AIInfraGuide/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-cuda%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC8%E7%AB%A0-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE/", readingGoal: "以端到端 benchmark 而非单个 kernel 的偶然数据，完成项目 B 封版。" },
+  { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "从路线中选择一个与项目相关的小 issue/复现点，练习真实开源协作而不是刷贡献数。" },
+  { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "按“计算、通信、显存”的取舍审计两个项目与简历证据。" },
+  { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "用路线的分层知识树复盘 Hot100、GPU、编译器和项目，补最影响面试的缺口。" },
 ];
 
 const dayNames = ["一", "二", "三", "四", "五", "六", "日"];
@@ -546,6 +589,17 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
   const note = `docs/learning-log/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}.md`;
   const mainTask = task.split("；算法｜")[0];
   const themes = week.knowledge ?? weekKnowledgePoints[week.index];
+  const source = aiInfraGuidePlan[week.index - 1];
+  const sourceChecks = [
+    "用自己的话写出本日概念的定义、输入、输出与一个边界条件",
+    "画出它在调用链或数据流中的前后关系，不复制网页原句",
+    "说明它牺牲了什么、换来了什么（计算、通信、显存或工程复杂度）",
+    "写下代码实验将验证的一个可观察现象",
+    "对照实验结果，判断网页中的结论在哪些输入下成立或不成立",
+    "把一个公式、伪代码或流程复写成能运行的最小示例",
+    "用本周交付物复述这一章的一个结论，并标出仍未解决的问题",
+  ];
+  const readingStep = `先阅读 AIInfraGuide《${source.title}》（25–35 分钟）：${source.readingGoal}。围绕“${themes[day % themes.length]}”完成：${sourceChecks[day]}；写完再开始编码。`;
   const purposeFrame = [
     "先建立问题边界、接口和术语模型，避免后续实现建立在模糊理解上。",
     "做出正确可运行的 baseline，为后续优化提供不可缺少的正确性参照。",
@@ -591,14 +645,16 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
     files,
     purpose,
     knowledgePoints,
-    steps: day >= 5 ? study : common,
+    steps: [readingStep, ...(day >= 5 ? study : common)],
     command: validationCommand(week.index).replace("CURRENT_WEEK", String(week.index)),
     doneWhen: [
+      `能合上网页回答本日阅读问题，并在 ${note} 留下自己的答案；不能只粘贴原文。`,
       "当天主程序、实验或 IR 可以从零重新运行，不依赖口头说明。",
       "正常路径通过，并且至少验证 2 个边界情况或失败路径。",
       `存在当天日志 ${note}，里面有命令、结果、问题和结论。`,
       task.includes("算法｜") ? "算法题已写复杂度、边界和一次口头复述记录。" : "代码、测试与日志三者保持一致；现在才勾选今天。",
     ],
+    source,
   };
 }
 
@@ -746,6 +802,12 @@ export default function Home() {
                         {dayOpen&&<div className="dayDetails">
                           <div className="executionGuide">
                             <div className="startHere"><span>今天从这里开始</span><code>{guide.workspace}</code><p>主要会改：{guide.files}</p></div>
+                            <a className="guideReadingCard" href={guide.source.url} target="_blank" rel="noreferrer">
+                              <span>先读，再写代码 · AIInfraGuide</span>
+                              <b>{guide.source.title} ↗</b>
+                              <p>{guide.source.readingGoal}</p>
+                              <small>先完成第 1 个勾选项里的阅读问题；不要把“看过”当作完成。</small>
+                            </a>
                             <div className="purposeCard"><span>今天学习的目的</span><p>{guide.purpose}</p></div>
                             <div className="knowledgeCard"><span>今天必须掌握的知识点</span><ul>{guide.knowledgePoints.map(point=><li key={point}>{point}</li>)}</ul></div>
                             <span>照着做 · 每一步都能单独打勾</span>

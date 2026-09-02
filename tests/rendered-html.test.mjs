@@ -49,6 +49,9 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   assert.match(standalone, /function pace\(task\)/);
   assert.match(standalone, /fileHint is authored per week/);
   assert.match(standalone, /resumeGate/);
+  assert.match(standalone, /guideReadingCard/);
+  assert.match(standalone, /AIInfraGuide/);
+  assert.match(standalone, /guidePlan/);
   assert.doesNotMatch(standalone, /if \(w\.index <= 9\) \{/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
@@ -58,6 +61,8 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   assert.ok(dataText, "standalone page should embed its plan data");
   const planData = JSON.parse(dataText);
   assert.equal(planData.weeks.length, 30);
+  assert.equal(planData.guidePlan.length, 30);
+  assert.ok(planData.guidePlan.every((guide) => guide.title && guide.url && guide.readingGoal));
   assert.ok(planData.weeks.every((week) => week.days.length === 6 && week.fileHint && week.knowledge.length >= 4));
   assert.match(planData.weeks[1].days[1], /实现深拷贝、移动构造和移动赋值/);
   assert.match(planData.weeks[15].days[4], /MetaSchedule/);
