@@ -52,6 +52,14 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   assert.match(standalone, /guideReadingCard/);
   assert.match(standalone, /AIInfraGuide/);
   assert.match(standalone, /guidePlan/);
+  assert.match(standalone, /guideSections/);
+  assert.match(standalone, /第1章 · 第4节 C\/C\+\+：内存、生命周期与资源管理/);
+  assert.match(standalone, /第 " \+ globalDay \+ " 天/);
+  assert.match(standalone, /W" \+ String\(parts\[0\]\)\.padStart\(2, "0"\) \+ " · D/);
+  assert.match(standalone, /不需要回答提问或写阅读摘要/);
+  assert.doesNotMatch(standalone, /本日阅读问题/);
+  assert.doesNotMatch(standalone, /回答本日阅读问题/);
+  assert.doesNotMatch(standalone, /sourceChecks/);
   assert.doesNotMatch(standalone, /if \(w\.index <= 9\) \{/);
   assert.match(standalone, /class="expand"/);
   assert.match(standalone, /class="subcheck"/);
@@ -62,6 +70,8 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   const planData = JSON.parse(dataText);
   assert.equal(planData.weeks.length, 30);
   assert.equal(planData.guidePlan.length, 30);
+  assert.equal(planData.guideSections.length, 30);
+  assert.ok(planData.guideSections.every((sections) => sections.length === 7));
   assert.ok(planData.guidePlan.every((guide) => guide.title && guide.url && guide.readingGoal));
   assert.ok(planData.weeks.every((week) => week.days.length === 6 && week.fileHint && week.knowledge.length >= 4));
   assert.match(planData.weeks[1].days[1], /实现深拷贝、移动构造和移动赋值/);

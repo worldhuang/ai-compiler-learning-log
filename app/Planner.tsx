@@ -18,7 +18,7 @@ type DailyGuide = {
   files: string;
   purpose: string;
   knowledgePoints: string[];
-  source: GuideReference;
+  source: GuideReference & { section: string };
   steps: string[];
   command: string;
   doneWhen: string[];
@@ -160,6 +160,41 @@ const aiInfraGuidePlan: GuideReference[] = [
   { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "从路线中选择一个与项目相关的小 issue/复现点，练习真实开源协作而不是刷贡献数。" },
   { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "按“计算、通信、显存”的取舍审计两个项目与简历证据。" },
   { title: "AI Infra 学习路线", url: "https://caomaolufei.github.io/AIInfraGuide/guides/ai-infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/", readingGoal: "用路线的分层知识树复盘 Hot100、GPU、编译器和项目，补最影响面试的缺口。" },
+];
+
+// 每一项都对应 AIInfraGuide 页面里可见的章节/小节名称。它只规定
+// “今天看哪一节”，不把阅读变成答题或摘要作业。
+const aiInfraGuideSections: string[][] = [
+  "第1章 · 第4节 C/C++：内存、生命周期与资源管理|第1章 · 第5节 C++ 编译、链接、模板与构建系统|第1章 · 第5节：头文件、源文件与链接产物|第1章 · 第4节：类、对象与资源边界|第1章 · 第5节：CMake target 与依赖链接|第1章 · 第4节：引用、类与 RAII|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
+  "第1章 · 第4节：对象所有权与 RAII|第1章 · 第4节：拷贝、移动与对象生命周期|第1章 · 第4节：智能指针与共享所有权|第1章 · 第4节：storage/view 的内存布局|第1章 · 第5节：构建与性能基线|第1章 · 第7节 Linux 开发基本功：Sanitizer 与调试|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
+  "第1章 · 第5节：模板与泛型接口|第1章 · 第5节：容器、编译与链接边界|第1章 · 第5节：并发代码的构建边界|第1章 · 第5节：性能实验的工程组织|第1章 · 第5节：clang-format、warning 与 preset|第1章 · 第7节 Linux 开发基本功：线程与进程|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
+  "第7章 · 本章导读：AI 编译器的图—IR—代码生成链路|第7章 · Triton Block-level Programming|第7章 · torch.compile：图捕获与后端|第7章 · TVM/XLA：编译栈定位|第7章 · 本章导读：算子融合与自动调优|第7章 · 本章导读：性能证据链|第7章 · 本章导读：AI 编译器学习路线".split("|"),
+  "第3章 · 3.1 Transformer 整体架构|第3章 · 3.2 Self-Attention 与 QKV|第3章 · 3.3 FFN/MLP|第3章 · 3.4 位置编码与 RoPE|第3章 · 3.5 残差、归一化与 Decoder Block|第3章 · 3.6 KV Cache 与推理 shape|第3章 · 3.7 MHA、MQA、GQA 与 MLA".split("|"),
+  "CUDA 快速入门 · 第1章 1.1 环境与运行时检查|CUDA 快速入门 · 第1章 1.2 CUDA 编程模型|CUDA 快速入门 · 第1章 1.3 线程索引与边界保护|CUDA 快速入门 · 第1章 1.4 全局内存与合并访问|CUDA 快速入门 · 第2章 Shared Memory 与同步|CUDA 快速入门 · 第2章 bank conflict 与 padding|CUDA 快速入门 · 第2章 性能测试与 Nsight".split("|"),
+  "第3章 · 3.1 CUDA Reduce 性能优化：朴素归约|第3章 · 3.1：共享内存树形归约|第3章 · 3.1：Warp Shuffle 与 block reduce|第3章 · 3.1：数值稳定 Softmax|第3章 · 3.1：online softmax 的访存取舍|第3章 · 3.1：LayerNorm 的归约模式|第3章 · 3.1：Reduce 的性能分析".split("|"),
+  "第4章 · 4.1 CUDA GEMM 性能优化：M/N/K 与基线|第4章 · 4.1：shared-memory tiling|第4章 · 4.1：边界 tile 与正确性|第4章 · 4.1：寄存器分块与数据复用|第4章 · 4.1：Tensor Core 约束|第4章 · 4.1：cuBLAS/CUTLASS 公平对照|第4章 · 4.1：Roofline 与性能瓶颈".split("|"),
+  "第6章 · 本章导读：Attention 算子的数据流|第6章 · FlashAttention 的 IO-aware 视角|第6章 · Attention 的分块与在线 Softmax|第6章 · KV Cache 的连续布局|第6章 · Paged KV Cache 的分页布局|第6章 · Triton 与 CUDA 的实现边界|第6章 · Attention 性能分析与阶段复盘".split("|"),
+  "第4章 · Tensor 与张量基础|第4章 · Autograd 与反向传播图|第4章 · Module、训练与调试流程|第4章 · Tensor stride/view 与存储|第4章 · 自定义扩展与算子边界|第4章 · Profiler 与性能观察|第4章 · PyTorch 工程实践复盘".split("|"),
+  "第7章 · 本章导读：计算图与图变换|第7章 · torch.compile：捕获与 backend|第7章 · 本章导读：算子融合|第7章 · 本章导读：IR 与模型导入|第7章 · 本章导读：正确性与 fallback|第7章 · 本章导读：编译结果验证|第7章 · 本章导读：FX/ONNX 与后端衔接".split("|"),
+  "第7章 · torch.compile：整体分层|第7章 · torch.compile：Dynamo 图捕获|第7章 · torch.compile：graph break|第7章 · torch.compile：guard 与重编译|第7章 · torch.compile：Inductor 代码生成|第7章 · Triton Block-level Programming|第7章 · 本章导读：性能回归排查".split("|"),
+  "第7章 · 本章导读：传统编译器与 AI 编译器|第7章 · 本章导读：IR 的职责|第7章 · 本章导读：图/IR 优化与 Pass|第7章 · 本章导读：代码生成边界|第7章 · 本章导读：优化前提与正确性|第7章 · TVM/XLA：编译器栈对照|第7章 · 本章导读：编译器全链路复盘".split("|"),
+  "第7章 · 本章导读：多层 IR 与 lowering|第7章 · 本章导读：Dialect 与 operation|第7章 · 本章导读：Pattern rewrite|第7章 · 本章导读：Pass pipeline|第7章 · 本章导读：lowering 与 legality|第7章 · TVM/XLA：IR 分层对照|第7章 · 本章导读：MLIR 与 AI 编译器关系".split("|"),
+  "第7章 · TVM/XLA：模型导入与 IR|第7章 · TVM/XLA：Relax 高层图 IR|第7章 · TVM/XLA：TensorIR 与 schedule|第7章 · TVM/XLA：代码生成与 runtime|第7章 · 本章导读：模型编译的正确性|第7章 · 本章导读：编译性能的测量口径|第7章 · 本章导读：TVM 流水线复盘".split("|"),
+  "第7章 · 本章导读：算子调度与搜索空间|第7章 · 本章导读：TensorIR 的数据访问|第7章 · 本章导读：schedule primitive|第7章 · 本章导读：自动调优与代价模型|第7章 · 本章导读：调优数据库与复现|第7章 · 本章导读：性能回归分析|第7章 · 本章导读：算子优化复盘".split("|"),
+  "第2章 · 集合通信原语导读|第2章 · AllReduce|第2章 · AllGather|第2章 · ReduceScatter|第2章 · 通信量与拓扑|第2章 · DDP/FSDP/ZeRO 的通信映射|第2章 · 集合通信实验复盘".split("|"),
+  "第2章 · 2.1 PagedAttention|第2章 · 2.2 Continuous Batching|第2章 · 2.3 Prefix Caching|第2章 · 2.4 Chunked Prefill|第2章 · 2.5 后端、图模式与调度|第2章 · 端到端推理指标|第2章 · 推理引擎复盘".split("|"),
+  "第5章 · 本章导读：Softmax 与融合的性能模型|第5章 · 数值稳定 Softmax|第5章 · Reduce/Softmax 融合|第5章 · RMSNorm 的访存与归约|第5章 · shape/dtype 正确性矩阵|第5章 · PyTorch 自定义算子接入|第5章 · 项目 A 接口与测试复盘".split("|"),
+  "第5章 · Softmax baseline 与错误边界|第5章 · 融合减少 kernel launch|第5章 · 访存减少与收益条件|第5章 · FP16/FP32 精度取舍|第5章 · benchmark 口径与 baseline|第5章 · 性能数据的解释边界|第5章 · 项目 A Softmax/RMSNorm 复盘".split("|"),
+  "第4章 · 4.1 GEMM：Transformer MLP shape|第4章 · 4.1 GEMM：tiled mainloop|第4章 · 4.1 GEMM：epilogue fusion|第4章 · 4.1 GEMM：Tensor Core 对照|第4章 · 4.1 GEMM：小矩阵与大矩阵|第4章 · 4.1 GEMM：性能报告|第4章 · 4.1 GEMM：项目 A 复盘".split("|"),
+  "第8章 · 本章导读：性能分析工具链|第8章 · Nsight Systems：端到端时间线|第8章 · Nsight Compute：单 kernel 指标|第8章 · baseline、warmup 与重复次数|第8章 · latency/throughput/显存的口径|第8章 · 性能回归与失败案例|第8章 · 项目 A 封版证据".split("|"),
+  "第7章 · 本章导读：项目 B 的编译器 pipeline|第7章 · 模型导入与图规范化|第7章 · IR 与 Pass 边界|第7章 · schedule/codegen/runtime|第7章 · 正确性、guard 与 fallback|第7章 · 编译器 benchmark 口径|第7章 · 项目 B 立项复盘".split("|"),
+  "第7章 · 本章导读：图优化与 TensorIR lowering|第7章 · Relax/高层图 IR|第7章 · TensorIR/低层算子 IR|第7章 · lowering 的正确性检查|第7章 · schedule 的数据访问优化|第7章 · autotune 与性能复现|第7章 · IR/schedule 阶段复盘".split("|"),
+  "第7章 · 本章导读：融合 Pass 的支持边界|第7章 · pattern matching 与 rewrite|第7章 · fusion 的收益与风险|第7章 · dynamic shape guard|第7章 · unsupported op 与 fallback|第7章 · IR/数值回归测试|第7章 · 项目 B Pass 复盘".split("|"),
+  "第2章 · 2.1 PagedAttention：运行时布局|第2章 · 2.2 Continuous Batching：调度|第2章 · 2.5 后端与图模式|第2章 · KV Cache 与显存规划|第2章 · 自定义后端/fallback|第2章 · 端到端延迟拆分|第2章 · Runtime 接入复盘".split("|"),
+  "第8章 · 性能问题定位入口|第8章 · Nsight Systems 时间线|第8章 · Nsight Compute 指标|第8章 · 输入、warmup 与重复次数|第8章 · 端到端 vs 单 kernel 对比|第8章 · 性能结论与限制|第8章 · 项目 B 封版证据".split("|"),
+  "AI Infra 学习路线 · 编程/CUDA 前置模块|AI Infra 学习路线 · GPU 算子优化模块|AI Infra 学习路线 · AI 编译器模块|AI Infra 学习路线 · 分布式训练模块|AI Infra 学习路线 · 推理优化模块|AI Infra 学习路线 · 开源项目与复现建议|AI Infra 学习路线 · 本周开源协作复盘".split("|"),
+  "AI Infra 学习路线 · 项目验收清单|AI Infra 学习路线 · 性能分析能力|AI Infra 学习路线 · AI 编译器能力|AI Infra 学习路线 · 推理优化能力|AI Infra 学习路线 · 分布式能力边界|AI Infra 学习路线 · 项目证据与简历|AI Infra 学习路线 · 缺口复盘".split("|"),
+  "AI Infra 学习路线 · 岗位技能矩阵|AI Infra 学习路线 · 算法与 C++ 基础|AI Infra 学习路线 · GPU 算子优化|AI Infra 学习路线 · AI 编译器主线|AI Infra 学习路线 · 推理/分布式拓展|AI Infra 学习路线 · 项目与开源证据|AI Infra 学习路线 · 秋招前最终复盘".split("|"),
 ];
 
 const dayNames = ["一", "二", "三", "四", "五", "六", "日"];
@@ -590,16 +625,8 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
   const mainTask = task.split("；算法｜")[0];
   const themes = week.knowledge ?? weekKnowledgePoints[week.index];
   const source = aiInfraGuidePlan[week.index - 1];
-  const sourceChecks = [
-    "用自己的话写出本日概念的定义、输入、输出与一个边界条件",
-    "画出它在调用链或数据流中的前后关系，不复制网页原句",
-    "说明它牺牲了什么、换来了什么（计算、通信、显存或工程复杂度）",
-    "写下代码实验将验证的一个可观察现象",
-    "对照实验结果，判断网页中的结论在哪些输入下成立或不成立",
-    "把一个公式、伪代码或流程复写成能运行的最小示例",
-    "用本周交付物复述这一章的一个结论，并标出仍未解决的问题",
-  ];
-  const readingStep = `先阅读 AIInfraGuide《${source.title}》（25–35 分钟）：${source.readingGoal}。围绕“${themes[day % themes.length]}”完成：${sourceChecks[day]}；写完再开始编码。`;
+  const section = aiInfraGuideSections[week.index - 1]?.[day] ?? `${source.title} · 本章导读`;
+  const readingStep = `先阅读 AIInfraGuide《${source.title}》的「${section}」（25–35 分钟）：${source.readingGoal}。只需看懂和今天代码有关的例子；不答题、不写阅读摘要，读完直接开始编码。`;
   const purposeFrame = [
     "先建立问题边界、接口和术语模型，避免后续实现建立在模糊理解上。",
     "做出正确可运行的 baseline，为后续优化提供不可缺少的正确性参照。",
@@ -616,7 +643,7 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
     "能使用断点、日志、IR dump、profile 中至少一种证据定位问题所在层级。",
     "能区分延迟、吞吐、带宽、FLOPS、显存等指标，并记录可复现的测量条件。",
     "能合上视频后独立复写最小示例，并通过改变一个变量验证讲解中的结论。",
-    "能用自己的话回答 3 个问题，并指出一个仍未解决、需要下周继续追踪的问题。",
+    "能把本周一个最容易混淆的概念落实到一段可运行代码、测试或性能记录中。",
   ][day];
   const purpose = `通过“${mainTask}”，完成「${week.title}」的第 ${day+1} 个能力台阶。${purposeFrame}它直接服务于本周交付物“${week.output}”，并会成为后续主项目可以复用的代码、测试或性能证据。`;
   const knowledgePoints = [
@@ -634,11 +661,11 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
     `运行下方验收命令；把关键输出粘贴到 ${note}，再提交一次只包含当天工作的 Git commit。`,
   ];
   const study = [
-    `进入 ${workspace}，打开本周代码和 ${note}；先写下看视频前最想解决的 3 个问题。`,
+    `进入 ${workspace}，打开本周代码和 ${note}；先列出今天要在代码里验证的 3 个关键词。`,
     "从当天列出的直达视频中选 1 节，看到关键代码时暂停，不倍速跳过示例。",
     `在 ${files} 对应模块旁新建 labs/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}，复写一个最小示例并亲自运行。`,
     "改变一个输入、shape、线程数或编译参数，记录变化；不能只留下视频笔记。",
-    `在 ${note} 回答开头的 3 个问题，附运行命令、输出和一个仍不理解的问题。`,
+    `在 ${note} 保存代码片段、运行命令、输出和一个仍待验证的现象。`,
   ];
   return {
     workspace,
@@ -648,13 +675,13 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
     steps: [readingStep, ...(day >= 5 ? study : common)],
     command: validationCommand(week.index).replace("CURRENT_WEEK", String(week.index)),
     doneWhen: [
-      `能合上网页回答本日阅读问题，并在 ${note} 留下自己的答案；不能只粘贴原文。`,
+      `已完成指定章节阅读，并直接完成了与该小节对应的代码、实验或测试；不需要提交阅读问答。`,
       "当天主程序、实验或 IR 可以从零重新运行，不依赖口头说明。",
       "正常路径通过，并且至少验证 2 个边界情况或失败路径。",
       `存在当天日志 ${note}，里面有命令、结果、问题和结论。`,
       task.includes("算法｜") ? "算法题已写复杂度、边界和一次口头复述记录。" : "代码、测试与日志三者保持一致；现在才勾选今天。",
     ],
-    source,
+    source: { ...source, section },
   };
 }
 
@@ -787,6 +814,7 @@ export default function Home() {
                   <div className="dayGrid">
                     {tasks.map((task,di)=>{
                       const id=`${w.index}-${di+1}`; const checked=!!completed[id]; const dayOpen=!!openDays[id];
+                      const globalDay=(w.index-1)*7+di+1;
                       const guide=dailyGuide(w,di,task);
                       const videos=learningResources.videos;
                       const references=learningResources.references;
@@ -794,8 +822,8 @@ export default function Home() {
                       const referenceLinks=Array.from({length:Math.min(2,references.length)},(_,offset)=>references[(di+offset)%references.length]);
                       return <div className={`dayWrap ${checked?"checked":""} ${dayOpen?"expanded":""}`} key={id}>
                         <div className="dayTop">
-                          <label className="checkLabel" aria-label={`${checked?"取消":"完成"} Day ${di+1}`}><input type="checkbox" checked={checked} onChange={()=>toggle(id)}/><span className="box">{checked?"✓":""}</span></label>
-                          <span className="dayDate"><b>DAY {String(di+1).padStart(2,"0")}</b><small>周{dayNames[di]} · {dateLabel(startDate,w.index,di)}</small></span>
+                          <label className="checkLabel" aria-label={`${checked?"取消":"完成"}第 ${globalDay} 天`}><input type="checkbox" checked={checked} onChange={()=>toggle(id)}/><span className="box">{checked?"✓":""}</span></label>
+                          <span className="dayDate"><b>第 {globalDay} 天</b><small>W{String(w.index).padStart(2,"0")} · D{String(di+1).padStart(2,"0")} · 周{dayNames[di]} · {dateLabel(startDate,w.index,di)}</small></span>
                           <span className="task"><b>{task}</b><small>{timePlan[di]}</small></span>
                           <button className="dayExpand" type="button" onClick={()=>setOpenDays(state=>({...state,[id]:!state[id]}))} aria-expanded={dayOpen}>{dayOpen?"收起 −":"展开 +"}</button>
                         </div>
@@ -805,8 +833,8 @@ export default function Home() {
                             <a className="guideReadingCard" href={guide.source.url} target="_blank" rel="noreferrer">
                               <span>先读，再写代码 · AIInfraGuide</span>
                               <b>{guide.source.title} ↗</b>
-                              <p>{guide.source.readingGoal}</p>
-                              <small>先完成第 1 个勾选项里的阅读问题；不要把“看过”当作完成。</small>
+                              <p>指定阅读：{guide.source.section}</p>
+                              <small>{guide.source.readingGoal} 阅读后直接做下方代码；不需要回答提问或写阅读摘要。</small>
                             </a>
                             <div className="purposeCard"><span>今天学习的目的</span><p>{guide.purpose}</p></div>
                             <div className="knowledgeCard"><span>今天必须掌握的知识点</span><ul>{guide.knowledgePoints.map(point=><li key={point}>{point}</li>)}</ul></div>
