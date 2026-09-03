@@ -17,7 +17,7 @@ test("server redirects to the generated static learning log", async () => {
   assert.equal(response.headers.get("location"), "http://localhost/worldhaung_ai.html");
 });
 
-test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 10", async () => {
+test("standalone plan is a 30-week AI compiler sprint with daily algorithms from W02-D04", async () => {
   const [standalone, publicStandalone] = await Promise.all([
     readFile(new URL("../worldhaung_ai.html", import.meta.url), "utf8"),
     readFile(new URL("../public/worldhaung_ai.html", import.meta.url), "utf8"),
@@ -26,7 +26,8 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   assert.match(standalone, /30 周冲刺计划/);
   assert.match(standalone, /210 天 · 30 周/);
   assert.match(standalone, /代码随想录核心 70 题/);
-  assert.match(standalone, /Hot100 100 题/);
+  assert.match(standalone, /Hot 100/);
+  assert.match(standalone, /W02-D04（第 11 天）起每天 1 题/);
   assert.match(standalone, /全部 30 周/);
   assert.match(standalone, /Transformer 子图编译器/);
   assert.match(standalone, /今天学习的目的/);
@@ -72,14 +73,21 @@ test("standalone plan is a 30-week AI compiler sprint with algorithms from Day 1
   assert.equal(planData.guidePlan.length, 30);
   assert.equal(planData.guideSections.length, 30);
   assert.ok(planData.guideSections.every((sections) => sections.length === 7));
+  assert.equal(planData.carlProblems.length, 70);
+  assert.equal(planData.hot100Problems.length, 100);
+  assert.equal(planData.carlProblems[0], "LC704 二分查找");
+  assert.equal(planData.hot100Problems[99], "LC287 寻找重复数");
   assert.ok(planData.guidePlan.every((guide) => guide.title && guide.url && guide.readingGoal));
   assert.ok(planData.weeks.every((week) => week.days.length === 6 && week.fileHint && week.knowledge.length >= 4));
   assert.match(planData.weeks[1].days[1], /实现深拷贝、移动构造和移动赋值/);
   assert.match(planData.weeks[15].days[4], /MetaSchedule/);
   assert.match(planData.weeks[21].days[2], /从干净环境/);
   assert.match(standalone, /\.\.\.w\.days\.slice\(0,6\),weeklyClosure\(w\)/);
-  assert.match(standalone, /代码随想录核心 #/);
+  assert.match(standalone, /代码随想录 #/);
   assert.match(standalone, /LeetCode Hot 100 #/);
+  assert.match(standalone, /globalDay<11/);
+  assert.match(standalone, /限时二刷 #/);
+  assert.doesNotMatch(standalone, /if\(d===6\)/);
   const inlineScript = standalone.match(/<script>([\s\S]*)<\/script>/)?.[1];
   assert.ok(inlineScript, "standalone page should contain its interactive script");
   assert.doesNotThrow(() => new Function(inlineScript));

@@ -13,6 +13,8 @@ function valueOf(node) {
   if (node.kind === ts.SyntaxKind.TrueKeyword) return true;
   if (node.kind === ts.SyntaxKind.FalseKeyword) return false;
   if (ts.isArrayLiteralExpression(node)) return node.elements.map(valueOf);
+  if (ts.isParenthesizedExpression(node)) return valueOf(node.expression);
+  if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) return String(valueOf(node.left)) + String(valueOf(node.right));
   if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression) && node.expression.name.text === "split" && node.arguments.length === 1) {
     return String(valueOf(node.expression.expression)).split(String(valueOf(node.arguments[0])));
   }
@@ -55,6 +57,7 @@ const DATA = {
   weekLearningResources: findConst("weekLearningResources"), openSourceProjects: findConst("openSourceProjects"),
   detailSteps: findConst("detailSteps"), timePlan: findConst("timePlan"), jdSignals: findConst("jdSignals"),
   guidePlan: findConst("aiInfraGuidePlan"), guideSections: findConst("aiInfraGuideSections"),
+  carlProblems: findConst("carlProblems"), hot100Problems: findConst("hot100Problems"),
   weekFileHints: findConst("weekFileHints"),
   weekKnowledgePoints: findConst("weekKnowledgePoints"),
 };
@@ -68,12 +71,18 @@ const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><met
 </style></head><body>
 <div class="offlineGate" id="offlineGate"><section><span class="eyebrow">AI COMPILER · LEARNING LOG</span><h2>进入你的<br><em>学习日志</em></h2><p>输入 6 位数访问密码。勾选进度会保存在当前浏览器。</p><form id="unlockForm"><input id="unlockInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••••" autofocus><button>进入 →</button></form><span class="error" id="unlockError"></span></section></div>
 <header class="top"><div class="brand"><span class="mark">AC</span><span>AI COMPILER<br><b>LEARNING LOG</b></span></div><div class="progress"><span id="doneTop">0/210</span><div class="bar"><i id="topBar"></i></div><b id="percentTop">0%</b></div></header>
-<section class="hero"><div><span class="eyebrow">210 天 · 30 周 · 2 个简历主项目 + 1 次开源协作</span><h1>AI 编译器<br><em>冲刺学习日志</em></h1><p>从 2026 年 8 月末到 2027 年 3 月底：完成 AI 编译器方向的核心知识、两个可复现主项目与秋招材料。Day 10 起先刷代码随想录核心 70 题，再完成 Hot100 100 题；项目 A 于 2027 年 1 月完成，项目 B 于 2—3 月完成。</p></div><div class="stat"><span class="eyebrow">计划进度</span><strong id="percentBig">0%</strong><span id="doneBig">已完成 0 个任务</span><label>计划开始日 <input id="startDate" type="date" value="2026-08-31"></label></div></section>
+<section class="hero"><div><span class="eyebrow">210 天 · 30 周 · 2 个简历主项目 + 1 次开源协作</span><h1>AI 编译器<br><em>冲刺学习日志</em></h1><p>从 2026 年 8 月末到 2027 年 3 月底：完成 AI 编译器方向的核心知识、两个可复现主项目与秋招材料。W02-D04（第 11 天）起每天 1 题：先完成代码随想录核心 70 题，再完整完成 Hot 100，最后 30 天按指定题目限时二刷。</p></div><div class="stat"><span class="eyebrow">计划进度</span><strong id="percentBig">0%</strong><span id="doneBig">已完成 0 个任务</span><label>计划开始日 <input id="startDate" type="date" value="2026-08-31"></label></div></section>
 <section class="signals" id="signals"></section><section class="tools"><div class="phases" id="phaseButtons"></div><label class="search"><input id="search" placeholder="搜索 CUDA、LayerNorm、Pass…"></label></section><main class="content" id="weeks"></main><footer>密码：020721 · 坚持不是堆时长，而是每周交付可运行、可复现、可解释的证据。</footer>
 <script>const DATA=${data};
 const dayNames=["一","二","三","四","五","六","日"];let saved={};try{saved=JSON.parse(localStorage.getItem("ai-compiler-standalone-v3")||"{}")||{}}catch{}let completed=saved.completed||{},subtasks=saved.subtasks||{},startDate=saved.startDate||"2026-08-31",active=0,query="",openWeeks=new Set([1]),openDays=new Set();const total=DATA.weeks.length*7;
 function dateLabel(w,d){const x=new Date(startDate+"T00:00:00");x.setDate(x.getDate()+(w-1)*7+d);return (x.getMonth()+1)+"/"+x.getDate()}function persist(){localStorage.setItem("ai-compiler-standalone-v3",JSON.stringify({completed,subtasks,startDate}))}function updateProgress(){const done=Object.values(completed).filter(Boolean).length,p=Math.round(done/total*100);doneTop.textContent=done+"/"+total;percentTop.textContent=p+"%";percentBig.textContent=p+"%";doneBig.textContent="已完成 "+done+" 个任务";topBar.style.width=p+"%"}
-function weeklyClosure(w){return "周验收：在干净环境从零运行「"+w.output+"」；核对本周测试、代表性输入和一项已知限制，并把复现命令写入日志"}function carlTopic(n){return n<=10?"数组与二分":n<=18?"链表":n<=26?"哈希与字符串":n<=34?"栈与队列":n<=50?"二叉树":n<=60?"回溯与贪心":"动态规划"}function hotTopic(n){return["哈希与双指针","滑动窗口与子串","链表","二叉树","栈与单调栈","二分与矩阵","回溯","贪心","动态规划","图与综合"][Math.min(9,Math.floor((n-1)/10))]}function algorithmSuffix(w,d){if(w<2||(w===2&&d<2))return"";if(d===6)return"；算法｜复盘本周错题 2 道：口述思路、复杂度与边界，不开新题";const n=(w-1)*6+d-8+1;if(n<=70)return"；算法｜代码随想录核心 #"+n+"/70（"+carlTopic(n)+"）：独立写出 + 记录复杂度和边界";const hot=n-70;if(hot<=100)return"；算法｜LeetCode Hot 100 #"+hot+"/100（"+hotTopic(hot)+"）：独立写出 + 记录复杂度和边界";return"；算法｜Hot100 错题回炉：限时重做 1 题并口述两种解法"}function tasks(w){const core=[...w.days.slice(0,6),weeklyClosure(w)];return core.map((task,index)=>task+algorithmSuffix(w.index,index))}function resources(w){return DATA.weekLearningResources.find(x=>x.week===w.index)||{videos:DATA.phaseResources[w.phase-1],references:DATA.phaseReferences[w.phase-1]}}function picks(items,d){return Array.from({length:Math.min(2,items.length)},(_,offset)=>items[(d+offset)%items.length])}
+function weeklyClosure(w){return "周验收：在干净环境从零运行「"+w.output+"」；核对本周测试、代表性输入和一项已知限制，并把复现命令写入日志"}
+function carlTopic(n){return n<=10?"数组与二分":n<=18?"链表":n<=26?"哈希与字符串":n<=34?"栈与队列":n<=50?"二叉树":n<=60?"回溯与贪心":"动态规划"}
+function hotTopic(n){return["哈希与双指针","滑动窗口与子串","链表","二叉树","栈与单调栈","二分与矩阵","回溯","贪心","动态规划","图与综合"][Math.min(9,Math.floor((n-1)/10))]}
+function algorithmSuffix(w,d){const globalDay=(w-1)*7+d+1;if(globalDay<11)return"";const n=globalDay-10;if(n<=DATA.carlProblems.length)return"；算法｜代码随想录 #"+n+"/70（"+carlTopic(n)+"）："+DATA.carlProblems[n-1]+"，独立写出 + 记录复杂度和边界";const hot=n-70;if(hot<=DATA.hot100Problems.length)return"；算法｜LeetCode Hot 100 #"+hot+"/100（"+hotTopic(hot)+"）："+DATA.hot100Problems[hot-1]+"，独立写出 + 记录复杂度和边界";const reviewIndex=(n-171)%170,reviewProblem=reviewIndex<70?DATA.carlProblems[reviewIndex]:DATA.hot100Problems[reviewIndex-70];return"；算法｜限时二刷 #"+(n-170)+"/30："+reviewProblem+"，25 分钟独立重做 + 复盘错因"}
+function tasks(w){const core=[...w.days.slice(0,6),weeklyClosure(w)];return core.map((task,index)=>task+algorithmSuffix(w.index,index))}
+function resources(w){return DATA.weekLearningResources.find(x=>x.week===w.index)||{videos:DATA.phaseResources[w.phase-1],references:DATA.phaseReferences[w.phase-1]}}
+function picks(items,d){return Array.from({length:Math.min(2,items.length)},(_,offset)=>items[(d+offset)%items.length])}
 function workspace(w){if(w<=4)return"ai-compiler-year-one/projects/minitensor";if(w===5)return"ai-compiler-year-one/labs/transformer-gpu";if(w<=9)return"ai-compiler-year-one/projects/cuda-kernels";if(w<=12)return"ai-compiler-year-one/projects/compiler-playground";if(w===13)return"ai-compiler-year-one/labs/compiler-core";if(w===14)return"ai-compiler-year-one/projects/mlir-toy-lab";if(w<=18)return"ai-compiler-year-one/labs/ai-infra-stack";if(w<=22)return"ai-compiler-year-one/projects/gpu-operator-lab";if(w<=27)return"ai-compiler-year-one/projects/transformer-compiler";return"ai-compiler-year-one/portfolio"}function command(w){if(w<=4)return"cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug\\ncmake --build build -j\\nctest --test-dir build --output-on-failure";if(w===5)return"python labs/transformer/decoder_shapes.py\\npython labs/gpu_microarch/kv_cache_bytes.py";if(w<=9)return"cmake -S . -B build -DCMAKE_BUILD_TYPE=Release\\ncmake --build build -j\\nctest --test-dir build --output-on-failure";if(w<=12)return"python -m pytest -q\\npython examples/run_week.py --week "+w;if(w===13)return"python -m pytest compiler_core -q\\npython compiler_core/ir.py --dump-cfg";if(w===14)return"cmake --build build --target check-mlir\\nbuild/bin/mlir-opt <当天的 .mlir 文件> --verify-diagnostics";if(w<=18)return"python -m pytest -q\\npython examples/run_week.py --week "+w;if(w<=22)return"python -m pytest -q\\npython benchmarks/run.py --quick";if(w<=27)return"python -m pytest tests -q\\npython benchmarks/e2e.py --quick";return"git status --short\\ngit diff --check"}function esc(x){return String(x).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")}function guide(w,d,t){const ws=workspace(w.index),files=w.fileHint,note="docs/learning-log/W"+String(w.index).padStart(2,"0")+"-D"+String(d+1).padStart(2,"0")+".md",main=t.split("；算法｜")[0],modes=["定义输入、输出和接口边界","实现最小正确版本","用正常与边界输入验证","定位一次中间状态或错误","记录可比较的结果","专题学习并复写最小示例","在干净环境复现本周交付"];const hasAlgo=t.includes("算法｜"),steps=["今天的唯一任务："+main,"按「"+modes[d]+"」执行；只修改与该任务直接相关的文件："+files,"在 "+note+" 记录本次输入、实际输出、一个失败现象（或风险）及其原因。","运行下方命令；若失败，只修复本任务相关问题后再运行。"+(hasAlgo?" 完成算法题并写时间/空间复杂度。":"")];const done=["能从零运行今天产物，并得到可核对的输出、测试结果或 IR。","能用一句话说明：今天改动解决了什么具体问题。","当天日志含输入、输出、命令和一个边界/失败情况。",hasAlgo?"算法题已记录思路、复杂度和边界。":"代码与验收结果一致后再勾选今天。"];return{ws,files,steps,cmd:command(w.index),done}}
 function learning(w,d,t){const main=t.split("；算法｜")[0],themes=w.knowledge,files=w.fileHint,focus=["接口和数据边界","正确性 baseline","边界与数值验证","调试证据","性能或可比较数据","源码/视频到代码的迁移","模块集成与可复现交付"][d],purpose="今天只解决「"+main+"」。目的不是完成打卡，而是得到一份关于「"+focus+"」的可检查证据；它会直接推进本周交付物「"+w.output+"」。",points=["核心概念："+themes[d%themes.length],"关联概念："+themes[(d+1)%themes.length],"动手结果：不看答案完成“"+main+"”。","验证要求：输出、测试、IR 或 profile 至少保留一种客观证据。","工程位置：理解 "+files+" 中本次修改与「"+w.output+"」的关系。 "];return{purpose,points}}
 function renderSignals(){signals.innerHTML=DATA.jdSignals.map(x=>'<a class="signal" href="'+x.url+'" target="_blank" rel="noreferrer"><small>'+x.company+'</small><b>'+x.role+'</b><span>'+x.skills+'</span></a>').join('')}function renderPhases(){phaseButtons.innerHTML='<button data-p="0" class="'+(active===0?'active':'')+'">全部 30 周</button>'+DATA.phases.map((p,i)=>'<button data-p="'+(i+1)+'" class="'+(active===i+1?'active':'')+'">'+p.range+' · '+p.name+'</button>').join('');phaseButtons.querySelectorAll('button').forEach(b=>b.onclick=()=>{active=Number(b.dataset.p);renderPhases();render()})}
@@ -313,6 +322,7 @@ const deliveryLayer = String.raw`
   guide = function(w, d, task) {
     const c = dailyContract(w, d, task);
     const hasAlgo = task.includes("算法｜");
+    const algorithmTask = task.split("；算法｜")[1];
     const source = guideSource(w, d, dayTopic(w, d));
     const steps = [
       "先读 AIInfraGuide《" + source.source.title + "》的「" + source.section + "」（25–35 分钟）：" + source.source.readingGoal + "不答题、不写阅读摘要；读完直接开始编码。",
@@ -320,7 +330,8 @@ const deliveryLayer = String.raw`
       "打开并只修改：" + c.files,
       "必须写出：" + c.must,
       "验收输入：" + c.input + "。预期结果：" + c.expected,
-      "保存证据：" + c.evidence + (hasAlgo ? "；另附算法题思路、复杂度和边界。" : "")
+      "保存证据：" + c.evidence + (hasAlgo ? "；另附算法题思路、复杂度和边界。" : ""),
+      ...(algorithmTask ? ["算法题（45–60 分钟）：" + algorithmTask + "。先口述思路，再独立编码并通过样例；在当天日志记录时间/空间复杂度、边界和错因。"] : [])
     ];
     const done = [
       "已完成指定章节阅读，并直接完成与该小节对应的代码、实验或测试；不需要提交阅读问答。",

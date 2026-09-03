@@ -165,9 +165,9 @@ const aiInfraGuidePlan: GuideReference[] = [
 // 每一项都对应 AIInfraGuide 页面里可见的章节/小节名称。它只规定
 // “今天看哪一节”，不把阅读变成答题或摘要作业。
 const aiInfraGuideSections: string[][] = [
-  "第1章 · 第4节 C/C++：内存、生命周期与资源管理|第1章 · 第5节 C++ 编译、链接、模板与构建系统|第1章 · 第5节：头文件、源文件与链接产物|第1章 · 第4节：类、对象与资源边界|第1章 · 第5节：CMake target 与依赖链接|第1章 · 第4节：引用、类与 RAII|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
+  "第1章 · 第5节 C++ 编译、链接、模板与构建系统|第1章 · 第4节 C/C++：内存、生命周期与资源管理|第1章 · 第4节：数组、循环、函数与命名空间|第1章 · 第4节：类、对象与资源边界|第1章 · 第5节：CMake target 与依赖链接|第1章 · 第4节：引用、类与 RAII|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
   "第1章 · 第4节：对象所有权与 RAII|第1章 · 第4节：拷贝、移动与对象生命周期|第1章 · 第4节：智能指针与共享所有权|第1章 · 第4节：storage/view 的内存布局|第1章 · 第5节：构建与性能基线|第1章 · 第7节 Linux 开发基本功：Sanitizer 与调试|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
-  "第1章 · 第5节：模板与泛型接口|第1章 · 第5节：容器、编译与链接边界|第1章 · 第5节：并发代码的构建边界|第1章 · 第5节：性能实验的工程组织|第1章 · 第5节：clang-format、warning 与 preset|第1章 · 第7节 Linux 开发基本功：线程与进程|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
+  "第1章 · 第5节：模板与泛型接口|第1章 · 第4节：容器、所有权与非拥有视图|第1章 · 第7节 Linux 开发基本功：线程与进程|第1章 · 第5节：性能实验的工程组织|第1章 · 第5节：clang-format、warning 与 preset|第1章 · 第7节：线程调试与进程观察|第1章 · 第9节 Git 协作与问题定位方法".split("|"),
   "第7章 · 本章导读：AI 编译器的图—IR—代码生成链路|第7章 · Triton Block-level Programming|第7章 · torch.compile：图捕获与后端|第7章 · TVM/XLA：编译栈定位|第7章 · 本章导读：算子融合与自动调优|第7章 · 本章导读：性能证据链|第7章 · 本章导读：AI 编译器学习路线".split("|"),
   "第3章 · 3.1 Transformer 整体架构|第3章 · 3.2 Self-Attention 与 QKV|第3章 · 3.3 FFN/MLP|第3章 · 3.4 位置编码与 RoPE|第3章 · 3.5 残差、归一化与 Decoder Block|第3章 · 3.6 KV Cache 与推理 shape|第3章 · 3.7 MHA、MQA、GQA 与 MLA".split("|"),
   "CUDA 快速入门 · 第1章 1.1 环境与运行时检查|CUDA 快速入门 · 第1章 1.2 CUDA 编程模型|CUDA 快速入门 · 第1章 1.3 线程索引与边界保护|CUDA 快速入门 · 第1章 1.4 全局内存与合并访问|CUDA 快速入门 · 第2章 Shared Memory 与同步|CUDA 快速入门 · 第2章 bank conflict 与 padding|CUDA 快速入门 · 第2章 性能测试与 Nsight".split("|"),
@@ -196,6 +196,30 @@ const aiInfraGuideSections: string[][] = [
   "AI Infra 学习路线 · 项目验收清单|AI Infra 学习路线 · 性能分析能力|AI Infra 学习路线 · AI 编译器能力|AI Infra 学习路线 · 推理优化能力|AI Infra 学习路线 · 分布式能力边界|AI Infra 学习路线 · 项目证据与简历|AI Infra 学习路线 · 缺口复盘".split("|"),
   "AI Infra 学习路线 · 岗位技能矩阵|AI Infra 学习路线 · 算法与 C++ 基础|AI Infra 学习路线 · GPU 算子优化|AI Infra 学习路线 · AI 编译器主线|AI Infra 学习路线 · 推理/分布式拓展|AI Infra 学习路线 · 项目与开源证据|AI Infra 学习路线 · 秋招前最终复盘".split("|"),
 ];
+
+// W02-D04 开始每天一道新题：先完成代码随想录核心 70 题，再完整走完
+// LeetCode Hot 100。剩余 30 天继续给出明确题目做限时二刷。
+const carlProblems = (
+  "LC704 二分查找|LC27 移除元素|LC977 有序数组的平方|LC209 长度最小的子数组|LC59 螺旋矩阵 II|LC35 搜索插入位置|LC34 在排序数组中查找元素首末位置|LC69 x 的平方根|LC367 有效的完全平方数|LC283 移动零|" +
+  "LC203 移除链表元素|LC707 设计链表|LC206 反转链表|LC24 两两交换链表中的节点|LC19 删除链表的倒数第 N 个结点|LC142 环形链表 II|LC160 相交链表|LC21 合并两个有序链表|" +
+  "LC242 有效的字母异位词|LC349 两个数组的交集|LC202 快乐数|LC1 两数之和|LC454 四数相加 II|LC383 赎金信|LC15 三数之和|LC18 四数之和|" +
+  "LC232 用栈实现队列|LC225 用队列实现栈|LC20 有效的括号|LC1047 删除字符串中的所有相邻重复项|LC150 逆波兰表达式求值|LC239 滑动窗口最大值|LC347 前 K 个高频元素|LC155 最小栈|" +
+  "LC144 二叉树的前序遍历|LC145 二叉树的后序遍历|LC94 二叉树的中序遍历|LC102 二叉树的层序遍历|LC226 翻转二叉树|LC101 对称二叉树|LC104 二叉树的最大深度|LC111 二叉树的最小深度|LC222 完全二叉树的节点个数|LC110 平衡二叉树|LC257 二叉树的所有路径|LC404 左叶子之和|LC513 找树左下角的值|LC112 路径总和|LC106 从中序与后序遍历序列构造二叉树|LC654 最大二叉树|" +
+  "LC77 组合|LC216 组合总和 III|LC17 电话号码的字母组合|LC39 组合总和|LC40 组合总和 II|LC131 分割回文串|LC93 复原 IP 地址|LC78 子集|LC46 全排列|LC455 分发饼干|" +
+  "LC509 斐波那契数|LC70 爬楼梯|LC746 使用最小花费爬楼梯|LC62 不同路径|LC63 不同路径 II|LC343 整数拆分|LC96 不同的二叉搜索树|LC416 分割等和子集|LC1049 最后一块石头的重量 II|LC494 目标和"
+).split("|");
+
+const hot100Problems = (
+  "LC1 两数之和|LC49 字母异位词分组|LC128 最长连续序列|LC283 移动零|LC11 盛最多水的容器|LC15 三数之和|LC42 接雨水|LC3 无重复字符的最长子串|LC438 找到字符串中所有字母异位词|LC560 和为 K 的子数组|" +
+  "LC239 滑动窗口最大值|LC76 最小覆盖子串|LC53 最大子数组和|LC56 合并区间|LC189 轮转数组|LC238 除自身以外数组的乘积|LC41 缺失的第一个正数|LC73 矩阵置零|LC54 螺旋矩阵|LC48 旋转图像|LC240 搜索二维矩阵 II|" +
+  "LC160 相交链表|LC206 反转链表|LC234 回文链表|LC141 环形链表|LC142 环形链表 II|LC21 合并两个有序链表|LC2 两数相加|LC19 删除链表的倒数第 N 个结点|LC24 两两交换链表中的节点|LC25 K 个一组翻转链表|LC138 随机链表的复制|LC148 排序链表|LC23 合并 K 个升序链表|LC146 LRU 缓存|" +
+  "LC94 二叉树的中序遍历|LC104 二叉树的最大深度|LC226 翻转二叉树|LC101 对称二叉树|LC543 二叉树的直径|LC102 二叉树的层序遍历|LC108 将有序数组转换为二叉搜索树|LC98 验证二叉搜索树|LC230 二叉搜索树中第 K 小的元素|LC199 二叉树的右视图|LC114 二叉树展开为链表|LC105 从前序与中序遍历序列构造二叉树|LC437 路径总和 III|LC236 二叉树的最近公共祖先|LC124 二叉树中的最大路径和|" +
+  "LC200 岛屿数量|LC994 腐烂的橘子|LC207 课程表|LC208 实现 Trie 前缀树|LC46 全排列|LC78 子集|LC17 电话号码的字母组合|LC39 组合总和|LC22 括号生成|LC79 单词搜索|LC131 分割回文串|LC51 N 皇后|" +
+  "LC35 搜索插入位置|LC74 搜索二维矩阵|LC34 在排序数组中查找元素首末位置|LC33 搜索旋转排序数组|LC153 寻找旋转排序数组中的最小值|LC4 寻找两个正序数组的中位数|LC20 有效的括号|LC155 最小栈|LC394 字符串解码|LC739 每日温度|LC84 柱状图中最大的矩形|" +
+  "LC215 数组中的第 K 个最大元素|LC347 前 K 个高频元素|LC295 数据流的中位数|LC121 买卖股票的最佳时机|LC55 跳跃游戏|LC45 跳跃游戏 II|LC763 划分字母区间|" +
+  "LC70 爬楼梯|LC118 杨辉三角|LC198 打家劫舍|LC279 完全平方数|LC322 零钱兑换|LC139 单词拆分|LC300 最长递增子序列|LC152 乘积最大子数组|LC416 分割等和子集|LC32 最长有效括号|" +
+  "LC62 不同路径|LC64 最小路径和|LC5 最长回文子串|LC1143 最长公共子序列|LC72 编辑距离|LC136 只出现一次的数字|LC169 多数元素|LC75 颜色分类|LC31 下一个排列|LC287 寻找重复数"
+).split("|");
 
 const dayNames = ["一", "二", "三", "四", "五", "六", "日"];
 const timePlan = ["理论 45m · 编码 105m · 记录 30m", "复习 20m · 编码 130m · 测试 30m", "理论 30m · 实验 120m · 复盘 30m", "编码 120m · 调试 40m · 记录 20m", "实验 120m · 性能分析 40m · 记录 20m", "视频学习 60m · 复写代码 90m · 验证 30m", "视频补漏 60m · 随堂实验 60m，其余时间休息"];
@@ -449,16 +473,15 @@ function weekTasks(week: Week & { index: number }, start: string) {
 }
 
 function algorithmSuffix(week: number, day: number) {
-  // Day 9 是 W02-D02：此前的进度不追溯补题，算法从下一天 W02-D03 启动。
-  if (week < 2 || (week === 2 && day < 2)) return "";
-  if (day === 6) return "；算法｜复盘本周错题 2 道：口述思路、复杂度与边界，不开新题";
-  const startSlot = 8; // W02-D03 在每周 6 个主任务中的位置
-  const slot = (week - 1) * 6 + day;
-  const number = slot - startSlot + 1;
-  if (number <= 70) return `；算法｜代码随想录核心 #${number}/70（${carlTopic(number)}）：独立写出 + 记录复杂度和边界`;
+  const globalDay = (week - 1) * 7 + day + 1;
+  if (globalDay < 11) return ""; // 第 11 天 = W02-D04
+  const number = globalDay - 10;
+  if (number <= carlProblems.length) return `；算法｜代码随想录 #${number}/70（${carlTopic(number)}）：${carlProblems[number - 1]}，独立写出 + 记录复杂度和边界`;
   const hot = number - 70;
-  if (hot <= 100) return `；算法｜LeetCode Hot 100 #${hot}/100（${hotTopic(hot)}）：独立写出 + 记录复杂度和边界`;
-  return "；算法｜Hot100 错题回炉：限时重做 1 题并口述两种解法";
+  if (hot <= hot100Problems.length) return `；算法｜LeetCode Hot 100 #${hot}/100（${hotTopic(hot)}）：${hot100Problems[hot - 1]}，独立写出 + 记录复杂度和边界`;
+  const reviewIndex = (number - 171) % 170;
+  const reviewProblem = reviewIndex < 70 ? carlProblems[reviewIndex] : hot100Problems[reviewIndex - 70];
+  return `；算法｜限时二刷 #${number - 170}/30：${reviewProblem}，25 分钟独立重做 + 复盘错因`;
 }
 
 function carlTopic(number: number) {
@@ -623,6 +646,7 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
   const files = week.files ?? weekFileHints[week.index];
   const note = `docs/learning-log/W${String(week.index).padStart(2,"0")}-D${String(day+1).padStart(2,"0")}.md`;
   const mainTask = task.split("；算法｜")[0];
+  const algorithmTask = task.split("；算法｜")[1];
   const themes = week.knowledge ?? weekKnowledgePoints[week.index];
   const source = aiInfraGuidePlan[week.index - 1];
   const section = aiInfraGuideSections[week.index - 1]?.[day] ?? `${source.title} · 本章导读`;
@@ -672,7 +696,7 @@ function dailyGuide(week: Week & { index: number }, day: number, task: string): 
     files,
     purpose,
     knowledgePoints,
-    steps: [readingStep, ...(day >= 5 ? study : common)],
+    steps: [readingStep, ...(day >= 5 ? study : common), ...(algorithmTask ? [`算法题（45–60 分钟）：${algorithmTask}。先口述思路，再独立编码并通过样例；在 ${note} 记录时间/空间复杂度、边界和错因。`] : [])],
     command: validationCommand(week.index).replace("CURRENT_WEEK", String(week.index)),
     doneWhen: [
       `已完成指定章节阅读，并直接完成了与该小节对应的代码、实验或测试；不需要提交阅读问答。`,
@@ -765,7 +789,7 @@ export default function Home() {
 
       <section className="principles" id="method">
         <div><span>2026.08—11</span><h3>基础与 CUDA</h3><p>MiniTensor、CPU 性能、Transformer/GPU 前置、CUDA/Triton；只保留后续项目真正要用的知识。</p></div>
-        <div><span>从 Day 10 起</span><h3>算法双轨</h3><p>先完成代码随想录核心 70 题，再完成 Hot100 100 题；每周日只复盘错题，不开新题。</p></div>
+        <div><span>从 W02-D04 起</span><h3>算法双轨</h3><p>每天 1 题：先完成代码随想录核心 70 题，再完整完成 Hot 100；最后 30 天按指定题目限时二刷。</p></div>
         <div><span>2027.01</span><h3>项目 A</h3><p>完成 Transformer GPU 算子库：框架接入、fallback、测试和性能证据齐全。</p></div>
         <div><span>2027.02—03</span><h3>项目 B 与秋招</h3><p>完成 Transformer 子图编译器，随后做开源协作、复现审计、模拟面试和投递。</p></div>
       </section>
@@ -780,7 +804,7 @@ export default function Home() {
           <div className="asideTitle"><span>YEAR</span><b>路线导航</b></div>
           <button className={activePhase===0?"active":""} onClick={()=>setActivePhase(0)}><span>全部 30 周</span><b>{percent}%</b></button>
           {phases.map((p,i)=><button key={p.name} className={activePhase===i+1?"active":""} onClick={()=>setActivePhase(i+1)}><i style={{background:p.color}}/><span><small>{p.range}</small>{p.name}</span><b>{phaseDone(i+1)}%</b></button>)}
-          <div className="weeklyRhythm"><b>推荐节奏</b><span>Day 10 起</span><p>主线 3 小时 + 算法 60 分钟</p><span>W02-D03—W13</span><p>代码随想录核心 70 题</p><span>W14—W30-D04</span><p>Hot100 100 题；随后只复盘与模拟</p></div>
+          <div className="weeklyRhythm"><b>推荐节奏</b><span>W02-D04 起</span><p>主线 3 小时 + 算法 45–60 分钟</p><span>W02-D04—W12-D03</span><p>代码随想录核心 70 题，每天 1 题</p><span>W12-D04—W26-D05</span><p>Hot 100 全部 100 题，每天 1 题</p><span>W26-D06—W30-D07</span><p>每天 1 道指定错题限时二刷</p></div>
         </aside>
 
         <div className="planContent">
