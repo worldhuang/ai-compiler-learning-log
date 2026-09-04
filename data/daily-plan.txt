@@ -1,0 +1,241 @@
+# 格式：阅读定位 | 今日知识点（分号分隔） | 唯一主任务 | 验收结果。每周严格 7 行。
+# W01
+cpp@5.1,5.2,5.7|声明与定义;library、demo、test 的依赖;CTest 注册|创建 MiniTensor 目录；写返回固定名称的 Tensor 类、demo 和一个断言测试；用 CMake 链接静态库|全新 build 中构建成功；demo 打印名称；ctest 至少发现并通过 1 项测试；今天不做性能测试
+cpp@4.2,4.7,5.6|vector 表示动态维度;const 引用参数;shape 与 dtype 是元数据|为 Tensor 增加 shape()、dtype()；构造时保存 {2,3}，暂不分配数据|打印 shape=[2,3]；const Tensor 可读 shape；负维度构造明确拒绝
+cpp@4.2,4.8|维度乘积;行主序 stride;零维度与溢出检查|实现 numel() 和连续 stride；明确标量空 shape 的约定|{2,3,4} 得到 numel=24、stride={12,4,1}；{2,0} 为 0；过大乘积报错
+cpp@4.2,4.8|线性 offset;逐维边界检查;引用返回值|为连续 Tensor 实现 at(i,j) 和 fill；先仅支持二维|2×3 填入 0…5 后 at(1,2)=5；访问 (2,0) 报错；fill(7) 后全部为 7
+cpp@5.7,4.8|断言与测试退出码;正常、边界和非法输入|将前三天示例转为独立 CTest；增加零元素和索引越界测试|至少 3 项测试被发现；故意改错一个预期会返回失败；修复后全部通过
+cpp@4.1,4.7|值传递与引用传递;const 成员函数;作用域|在 examples 中写一个小程序，比较按值修改与按引用修改 vector|按值调用后原值不变；按引用后改变；const 示例编译通过，不可修改示例被编译器拒绝
+cpp@5.2,9.2|目标链接关系;工作区与构建产物分离|补一份只含安装前提、构建、运行、测试四步的 README；用另一个 build 目录复现|无需已有 demo.exe 即可运行；删除链接库设置能重现 undefined reference，恢复后通过
+# W02
+cpp@4.3,4.4|生命周期;RAII;异常时自动释放|实现 Storage 的连续 float 缓冲区与构造/析构；先不泛型化|创建/离开作用域只分配释放各一次；零长度合法；不返回悬空指针
+cpp@4.6|深拷贝与移动;std::move 只是转换;移动后有效状态|为 Storage 实现深拷贝和移动；写复制独立性和移动后重用测试|改副本不影响原数据；移动不复制缓冲区；移动后对象可析构、可重新赋值
+cpp@4.5,4.7|shared_ptr 共享所有权;offset;const 视图接口|Tensor 与 View 共同持有 shared_ptr<Storage>；实现 view 的单元素读写|改 view 可见于 Tensor；销毁原 Tensor 后 view 仍可读；最后一个持有者销毁时释放
+torch@1.2;cpp@4.2,4.5|shape 不等于物理布局;transpose 交换 stride;view 的别名语义|先运行 PyTorch reshape/permute 小例子，再为 MiniTensor 写 transpose 和仅连续输入的 reshape|2×3 转置为 3×2，stride 从 {3,1} 到 {1,3}；值不复制；非连续 reshape 在本项目中明确拒绝
+cpp@4.2,5.6|矩阵乘法 M/N/K;三重循环索引;正确性优先|只实现 naive CPU matmul；A 为 2×3、B 为 3×2；今天不加 tiled、不做性能报告|A=[[1,2,3],[4,5,6]]，B=[[7,8],[9,10],[11,12]]，C=[[58,64],[139,154]]；K 不匹配报错
+cpp@4.8,7.8|越界与 use-after-free;Debug 符号;Sanitizer 报告|为 MiniTensor 增加 ASan/UBSan 构建选项；在独立故障示例中复现越界并修复|故障示例能定位源文件行号；修复后同输入不再报错；故障不混入正常测试
+cpp@4.5,4.6;torch@1.2|拷贝和视图的差别;非连续布局的读取|补共享 view 与深拷贝的对照测试，覆盖原对象先析构和转置后访问|复制值独立、视图值共享，两类断言均通过；此前已完成日不要求重做
+# W03
+cpp@5.5,5.6|模板实例化;类型参数;同 shape 逐元素运算|将 Storage/Tensor 改为模板；只实现同 shape 的 add/mul，暂不实现广播|float/double 两种实例可编译；[1,2]+[3,4]=[4,6]；shape 不同明确拒绝
+cpp@4.2;gemm@4.1,4.2|分块复用思想;CPU cache 与 GPU shared memory 的区别;尾块处理|把 W02 的 naive matmul 改写出 CPU tiled 版本；只借鉴分块思想，不照搬 CUDA 线程代码|tile=4 时 5×7 乘 7×3 与 naive 一致；边界 tile 不越界；保留两版函数
+cpp@5.8|mutex 与条件变量;任务队列;停止后 join|写最小固定线程池：提交无返回值任务、等待结束、析构停止；暂不接入矩阵乘|提交 100 次计数任务最后为 100；空队列析构不挂起；禁止忙等循环
+cpp@5.8,3.6|互不重叠的输出行;同步等待;并行粒度|用线程池按输出行分块调用 matmul；等待所有任务后返回|1/2/4 线程结果一致；M 小于线程数不漏行；小矩阵允许变慢，不要求加速
+cpp@3.6,5.7|warmup;重复计时与中位数;Release 对比|给 naive/tiled/parallel 写同一计时入口；测小、中两组 shape，先校验再计时|记录编译选项、CPU、shape、线程数、warmup 和重复次数；输出 3 版中位延迟；不编造提升
+cpp@5.5,5.6|右对齐广播;维度为 1 的复用;非法广播|只实现二维 add 广播 [M,N]+[1,N]；为模板版本增加参数化测试|[2,3]+[1,3] 结果正确；[2,3]+[2,2] 被拒绝；float/double 均通过
+cpp@5.7,9.1|可复现构建;warning;接口支持范围|整理 MiniTensor v0.1：README、CTest 和 Debug/Release 配置；不新增算子|全新目录可构建；明确只支持的 dtype/广播/reshape；测试与 benchmark 命令均可执行
+# W04
+cpp@4.2,3.6|连续访问与跨步访问;工作集;测量噪声|用同一二维数组分别按行和按列求和；扫描 3 个规模|两种求和一致；记录相同元素数的耗时；不把复杂度相同当成耗时相同
+cpp@4.2;gemm@4.1|CPU 分块转置;局部性;边界 tile|在 CPU 上写 naive 与 blocked transpose；只改变 tile 大小|5×7 非方阵转置正确；大矩阵比较 8/16/32 三种 tile；结果包含不变快的情况
+cpp@5.1|预处理、汇编、目标文件;优化级别;循环向量化|用 g++ -S 分别生成小型 add 循环的 -O0/-O3 汇编，标出循环体|保留源文件和两个汇编产物；若未向量化，记录实际编译器反馈，不假定一定生成 SIMD
+cpp@5.8|数据竞争;atomic;false sharing 与共享数据区分|比较两个线程更新各自相邻计数器和填充后计数器；先保证无数据竞争|两个计数值正确；记录相同迭代数耗时；知道填充不会修复真正的数据竞争
+cpp@5.1;compiler@本章简介|源码到 IR 到机器码;优化必须保持语义|为一个 if/else 表达式写三地址码，并用 Python 小解释器执行|正负两组输入与原表达式相同；原文只是编译器概览，三地址码解释器是扩展练习
+cpp@3.6,3.7|重复采样;热点占比;Amdahl 上限|在 MiniTensor benchmark 中区分初始化与算子时间；定位最长的一段|报告不把分配算进纯 kernel 时间；给出热点比例和理论上限，非实测的数字明确标识
+cpp@9.4|最小复现;一次只改一个变量|修复本周一个真实结果异常；保留最小输入和回归测试|问题、触发输入、修复后输出可复现；若没有异常，则补一个非整 tile 回归
+# W05
+torch@1.1,1.2,1.4;attn@3.1|Tensor shape;Q/K/V 投影;矩阵乘维度|用 PyTorch 创建 B=2,S=4,H=8 的输入与三个权重，生成 Q/K/V|打印三个 [2,4,8] 张量；错误权重维度会报错；不在第一天拼完整 Decoder
+attn@3.2,3.3,3.4,3.5,10|缩放点积;softmax 轴;causal mask|实现单头 causal attention 的 PyTorch reference|未来位置概率为 0；每行概率和约 1；与手动小矩阵计算一致
+norm@3.2,3.3;ffn@2.3|LayerNorm 与 RMSNorm 区别;FFN 两层投影;残差 shape|分别实现 RMSNorm 与小 FFN，然后写 x+FFN(norm(x))|输出 shape 不变；全零输入无 NaN；RMSNorm 与 torch reference 在阈值内一致
+rope@5.1,5.5;decoder@2|旋转位置编码;配对维度;Decoder 数据流|为 Q/K 加最小 RoPE；拼一个不带训练的 Decoder Block|位置 0 旋转前后相同；奇数 head_dim 拒绝；Block 输出仍为 [B,S,H]
+generate@4,5,6.3,6.4|prefill 与 decode;缓存键值;KV 容量公式|为小 Decoder 加连续 KV cache；逐 token 输出与一次性 causal 前向对照|固定输入、eval 模式，两种 logits 在阈值内一致；缓存长度每步加 1；记录实际字节数
+gpu@2.2,2.3,3.1,4.1|SM 与 warp;寄存器/shared/HBM;Tensor Core 不是通用线程|查询可用 GPU，写设备规格小脚本；没有 GPU 时用明确标注的公开规格计算|记录设备与可用性；估算一个矩阵的运算量/字节数；不要求实现 tiny-gpu 硬件
+gpu@3.3;infer@4.1,4.3|算术强度;计算瓶颈与带宽瓶颈;batch 影响|对 B=1/4、S=16/128 计算小 Decoder 的 KV 容量与主要矩阵 FLOPs|表格随 batch、序列长增长合理；区分理论估算与测量结果；保留 Python 公式脚本
+# W06
+env@1,5,6,7|驱动与 Toolkit;nvcc;host/device 编译|建立 CUDA CMake 工程并跑 hello kernel；记录真实设备版本|编译及同步检查通过；GPU 不可用时只完成环境排错，不冒充 kernel 已运行
+model@3.2,3.4,4.4;vector@2|global index;grid-stride loop;launch 错误检查|写 vector add 并和 CPU 对照；支持任意 N|N=1/1003/65536 均一致；N=0 不非法启动；所有 CUDA API 检查返回值
+memory@3.2;access@2.5|合并访问;行列映射;不连续写的代价|写 naive CUDA transpose，并画出相邻线程读取/写入地址|17×31 非方阵正确；列出一个 warp 的地址步长；今天只做正确基线
+memory@4.1;sync@2.1,2.3;access@5.1|共享 tile;协作读写;条件分支外同步|实现 shared-memory tiled transpose，处理非整 tile 边界|同输入与 naive 一致；所有线程到达需要的同步；用 compute-sanitizer 检查
+access@3.1,3.3,3.4,3.6|bank conflict;padding;指标与因果|对 tile[32][32] 和 tile[32][33] 两版转置做对照|正确性相同；记录 bank 指标和延迟；无对应计数器时说明硬件/工具限制
+vector@5.2,5.3,7.3|CUDA Event;异步执行;传输与计算分离|给 vector add 和 transpose 加统一 GPU 计时入口|区分 H2D、kernel、D2H 与端到端；固定 warmup/重复次数；计时前后正确同步
+occupancy@1.1,3.3,5.1|block 大小;occupancy;高占用率不保证更快|扫描 vector add 的 block=128/256/512，结合 profiler 查看资源|三组结果一致；保留延迟和资源数据；结论只针对当前 shape/设备
+# W07
+reduce@1.1,2.1,2.2;sync@2.3|树形归约;每 block 的部分和;跨 block 不能直接同步|写两阶段 sum reduction：先输出各 block 部分和，再归约|N=1/1003/65536 与 CPU 参考一致；不使用未定义跨 block 同步
+warp@4.2,4.5,6.1|warp shuffle;活跃 mask;block 两级归约|用 warp shuffle 改造 reduction，尾部线程以零参与|31/32/33 元素都通过；保留原版；不盲用不参与线程的值
+softmax@1.2,1.3,3.1,3.2|减最大值;溢出;按行归约|写稳定 softmax baseline；先保证 FP32 正确|[1000,1001] 不溢出；行和约 1；常量行输出均匀；拒绝空行
+online@2.1,2.2,3.2|在线最大值与指数和;缩放修正;数值误差|先在 Python 写 online softmax，和三遍 reference 比较|随机、极值、长度 1 的输出一致；不要求今天同时写 GPU 优化版
+norm@3.2,5.1;reduce@8.2|均值与方差;epsilon;FP32 累加|实现简单 CUDA LayerNorm，重用归约；只支持连续 FP32 行|hidden=128/513 两类输入对齐 PyTorch；常量行无 NaN；声明支持范围
+occupancy@3.1,3.2,6.2|寄存器压力;共享内存限制;测量单变量|为 reduction 选两种 block 大小，采集 latency 和一个资源指标|不同时改算法与 launch 参数；记录至少一个无收益或退化条件
+softmax@6.1,6.2|融合减少读写;正确性回归|把 softmax 的中间计算合进一个 kernel，保留 baseline|输出仍与 reference 一致；记录 kernel 数变化；吞吐不提升也保留结果
+# W08
+gemm@1.1,3.1|M/N/K;每线程一个输出;矩阵尾部保护|写 FP32 naive CUDA GEMM|2×3 乘 3×2 对齐手算；17×19 乘 19×23 对齐 CPU；维度错明确拒绝
+gemm@4.1,4.2,4.4,4.5|block tile;沿 K 累加;协作加载与同步|在 naive 基础上添加 shared-memory tiling|三个非整 tile shape 与参考一致；边界位置零填充；每轮重用前正确同步
+gemm@5.2,5.3,5.4|每线程多个输出;寄存器复用;资源预算|为一个固定 shape 实现小型 register tile，保留通用 fallback|输出与 shared 版一致；记录每线程寄存器数；不支持 shape 走原版
+gpu@4.1,4.2;gemm@10.4|Tensor Core 输入格式;FP32 累加;库实现与自己实现的区别|运行一个 CUTLASS GEMM 示例或受支持的 WMMA 例子，作为外部基线|记录 GPU 架构、dtype、shape；不支持 Tensor Core 时记录能力检查，不伪造结果
+vector@5.2;gemm@1.3,2.1|GFLOPS;kernel 时间;公平 cuBLAS 基线|统一 naive/tiled/cuBLAS 的计时与数值检查|同 shape/dtype/精度设置，分开初始化与计时；报告重复次数、P50、误差和硬件
+gemm@12.3;occupancy@5.1,5.2|计算与带宽瓶颈;occupancy 取舍;退化条件|仅扫描 tile=16/32 或两个 register tile，解释一组性能差异|保留正确性和资源数据；报告支持边界，不要求超过 cuBLAS
+gemm@9.1,10.1,10.2|双缓冲;异步拷贝;架构能力边界|画两阶段加载/计算时间线；在支持硬件上运行一个官方流水线示例|标明等待/可覆盖位置；本日是补充机制验证，不要求手写 Hopper 高级流水线
+# W09
+!triton-add|program_id;block 数组;mask|按官方 Vector Addition 写 Triton add，验证尾部 mask|N=1/1003 均对齐 torch；输出不越界；记录 triton 与设备版本
+!triton-softmax|tl.max/tl.sum;融合;block 大小|写 Triton stable softmax，只支持连续行|行长 33/128/513 输出正确；解释 padding mask 填值；与 CUDA baseline 同输入比较
+!triton-norm|行归约;广播;eps|实现 Triton RMSNorm，和 W07 CUDA/torch 基线对照|连续 FP32/FP16 输入通过误差阈值；不支持 layout 明确 fallback
+flash@1.1,1.2,2.1,3.2|不物化 S×S 矩阵;online 统计量;IO-aware|用 Python 写分块 attention reference，先不用 Triton|S=7、block=4 与 dense attention 对齐；不创建完整概率矩阵；保存误差
+flash@4.1,5.2;flash2@4.1,4.2|Q/K/V 分块;在线输出修正;沿 Q 并行|阅读并运行官方 Triton attention 示例的一组小输入，和前日 reference 对照|因果/非因果两种结果正确；标明引用代码与自己修改部分，不声称自研 FlashAttention
+!triton-matmul|autotune 配置;编译成本;holdout shape|为已有 Triton kernel 只选择 2–3 种配置，固定小搜索预算|调参 shape 和未参与调参 shape 都测；报告首轮/稳态；不拿编译时间冒充计算延迟
+flash@7.1,7.2|IO 估算与测量的差别;对照协议|统一 kernel-lab 的正确性入口，保留 softmax/norm/GEMM 的结果表|一条入口能跑至少三类测试；每个性能数字能定位原始数据；缓冲补齐本周未过测试
+# W10
+torch@2.1,2.2|计算图节点;拓扑排序;链式法则|写标量 autograd 的 add/mul 和 backward；先不做矩阵梯度|y=x*x+2*x，x=3 时梯度为 8；重复使用同一节点能正确累积
+torch@2.3|梯度累积;zero_grad;数值梯度|为 autograd 添加清零与中心差分检查；覆盖共享子图|两次 backward 累积结果符合约定；清零后恢复；与有限差分误差在阈值内
+!torch-custom|算子 schema;dispatcher 注册;CPU/CUDA 实现边界|按官方 custom operator 教程追踪一个调用，先写最小 CPU 自定义 add|从 Python 调用能得到正确值；记录 schema 和注册实现位置，不只画泛泛调用链
+cpp@6.3;!torch-custom|跨语言边界;Tensor device;编译扩展|把 W07 的一个 CUDA kernel 接入 PyTorch extension，先只支持连续 FP32|Python 能调用；输出对齐 reference；CPU 输入明确 fallback 或拒绝
+!torch-custom;torch@1.2,1.4|shape/dtype/layout 检查;fake tensor;错误路径|为自定义算子加入输入检查和 fake/meta 注册，保留 native fallback|非连续/非法 dtype 不静默错算；fake 推断形状一致；记录当前版本 API
+torch@6.1,6.2|profiler CPU/CUDA 活动;调用次数;数据拷贝|采集一个 custom op 的 profiler trace，定位 Python 到 kernel 的实际调用|trace 中能找到 kernel 和拷贝；运行耗时单独测，不使用 profiler 时间作最终 benchmark
+torch@1.2;cpp@6.4|零拷贝的条件;所有权;连续与兼容 stride|对 transpose、切片、contiguous 三种输入测试 custom op|三类输入的支持/拒绝路径明确；保留至少一个非连续输入回归，不背诵问题列表
+# W11
+!fx|GraphModule;node 的 args/users;拓扑顺序|symbolic_trace 捕获小型 eval 模型，逐节点打印 op/target/inputs|能重建输入到输出依赖；GraphModule 与原模型结果相同
+!fx|模式匹配;eval 时 BN 折叠;融合前提|只实现 eval 模式 Conv+BN 权重折叠；ReLU 保持独立，别称为三算子单 kernel 融合|保存前后图；Conv+BN 节点变成单 Conv；权重/偏置计算可追踪
+!fx|训练状态;多用户节点;数值回归|给折叠 Pass 补正常与不匹配测试|eval 正例等价；train 模式和多分支不安全例拒绝改写；图 lint 通过
+!onnx|opset;initializer;shape inference|导出小型 MLP 到 ONNX，运行 checker 与 shape inference|得到可加载模型；输入输出 shape 正确；记录导出工具版本与 opset
+!onnx|Runtime 对照;浮点容差;固定随机输入|用 ONNX Runtime 与 PyTorch 对同一个模型跑 3 组输入|数值误差有阈值；不把文件成功导出等同于正确执行
+!fx|常量折叠;副作用;死节点清理|为纯常量 add 实现安全折叠，拒绝带随机性/副作用的节点|正例图少一个计算节点；随机节点不改写；运行结果保持一致
+!fx|Pass 幂等性;管线顺序;负例保护|连续运行两次已有 Pass，增加前后图快照测试|第二次图不再变化；全套正负例通过；当天不再新增优化
+# W12
+!compile|Dynamo/Inductor 分层;编译与稳态|对小 MLP 跑 eager 和 torch.compile，分开首次调用与后续运行|记录版本、输入、首次/稳态时间；输出与 eager 一致
+!compile|guard;specialization;图捕获边界|开启编译日志，只修改 batch 大小，保存 guards/recompile 现象|相同输入复用与变 shape 的行为可区分；不承诺每次变 shape 都重编译
+!compile|graph break;Python 数据依赖;fullgraph|构造一次数据依赖分支导致的 graph break，再改写为支持的张量操作|日志能定位原始位置；修改后对两种分支输入验证一致
+!compile|动态维度;支持范围;多次编译|比较静态与动态 shape 配置在三个 batch 上的行为|记录捕获图数/重编译记录和数值；只在当前版本支持范围内下结论
+!compile|生成 kernel;pointwise fusion;launch 开销|导出 Inductor 生成代码，定位 x*y+z 的融合实现|标出输入、输出和 mask；对照 eager 的算子数量，不将注释当代码执行证据
+backend@5,6.1,6.2|编译与图捕获的区别;不透明算子;切图|在自定义算子例子中对比 eager/compile，说明不能跨越的边界|正确执行或有明确失败定位；原文解释 vLLM 场景，本地例子是迁移验证
+!compile|最小复现;回归用例;冷启动代价|为本周一次 graph break/重编译异常整理可独立运行的 regression|新进程可重现；环境、预期、实际三项齐全；缓冲处理尚未通过的实验
+# W13
+!llvm|SSA value;基本块;终结指令|用 Python 定义 Value/Instruction/Block，表示一个 if 程序|IR 可打印；所有 block 有终结指令；引用未定义值被 verifier 拒绝
+!llvm|CFG 前驱后继;可达性;支配关系|为 IR 建 CFG，计算可达块和简单支配集合|菱形 CFG 的入口支配所有块；不可达块单独列出；边一致性测试通过
+!llvm|SSA 重命名;phi 入边;use-def|手工构造 if 合流点的 phi，并让小解释器按前驱取值|两条分支输入输出正确；phi 少一条入边时 verifier 报错
+!llvm|常量折叠;DCE;副作用保留|为纯算术节点实现 constant folding 和 dead-code elimination|结果相同、死纯节点被删；带打印或写内存的节点不被误删
+!llvm|活跃区间;寄存器数量有限;spill|用一个小 IR 计算临时值活跃区间，写最小线性扫描分配模拟|两个可复用区间使用同一寄存器；预算不足时显示 spill，不假称真实 GPU 分配器
+!fx;!llvm|图 IR 与控制流 IR;表达能力;优化边界|把同一算术表达式写成 FX 图和三地址码，用测试对照结果|各有可运行表示；明确 Python 控制流无法一概由 symbolic_trace 捕获
+!llvm|Pass 顺序;verifier;幂等性|给小编译实验建立 verify→fold→DCE→verify 管线|非法 IR 在优化前被拒绝；运行两次结果相同；保留 pass 前后 IR
+# W14
+!toy1|AST;语法树到 IR;构建版本|按 MLIR Toy 第 1 章构建并运行已有示例；今天以运行理解为主|保存编译器版本、命令、AST 输出；不同时从零重造 Toy
+!toy2|operation/type/attribute;region/block;verifier|按 Toy 第 2 章生成一段 MLIR，修改一处类型触发 verifier|合法例可解析；非法例有诊断；能对应一个 operation 的声明和输出
+!toy3|RewritePattern;匹配条件;替换|基于 Toy 实现或复现双重 transpose 消除，再添加一个不匹配用例|前后 IR 显示消除；单 transpose 不消除；数值输出一致
+!toy4|接口;shape inference;泛型 Pass|跑 Toy 形状推断，保存推断前后的 tensor 类型|输入 shape 改变后输出推断正确；错误维度得到诊断
+!toy5|partial lowering;合法 dialect;循环与内存|把 Toy 的矩阵计算部分降到低层 dialect，保存前后 IR|目标高层 op 消失；仍需保留的 op 不被误删；合法性检查通过
+!toy6|LLVM lowering;代码生成;运行时|把前日例子继续降到 LLVM 并运行，和 Python reference 对照|小矩阵输出一致；保留完整 lowering 命令；不要求同时完成 tiny-gpu-compiler
+!toy3;!toy5|rewrite 正负例;lowering 边界|补 MLIR 回归测试，明确本周仅掌握 Toy 管线；tiny-gpu-compiler 作为选修|至少双转置正例/负例与一次完整 lowering 通过；不过度扩展教学项目
+# W15
+!tvm|IRModule;Relax/TIR/runtime;版本锁定|选择一个有对应文档的 TVM 版本，运行最小加法教程|记录 tag/commit、Python/LLVM/CUDA；教程代码与版本一致；不要混抄旧 Relay API
+!tvm|Relax 数据流;模型导入;常量参数|导入固定 shape 的两层 MLP 到 Relax，保存导入 IR|输入/输出 shape 和权重正确；只选当前版本支持的前端，不同时接两种
+!tvm|normalize;shape/dtype;dataflow|运行规范化与类型/shape 推断，逐条检查 MLP 的 call|每个节点有预期 shape；错误权重维度被拒绝；保留前后 IR
+!tvm|unsupported op;能力检查;fallback|构造一个不支持的模型节点，在编译前提供清晰拒绝或 eager fallback|支持输入能运行；不支持输入不静默替换语义；日志说明原因
+!tvm;vector@5.2|编译、加载与稳态;baseline 对齐|跑 MLP 的 eager/compile/TVM 基线，先小 shape 后代表性 shape|三者同输入、同精度设置；数值先过再计时；单列编译成本
+!tvm|Relax→TIR→runtime;模块边界|为当前版本的执行路径保存一组 IR 和生成代码，标出对应函数|可从模型节点追到实际执行入口；不写没有运行过的模块名称
+!tvm|构建可复现;输入支持矩阵|在新进程加载保存的编译产物并执行，记录限制|模型参数无需手动补丁；不支持 shape 明确报错；记录是否依赖固定设备
+# W16
+!tvm|PrimFunc;buffer/block;归约轴|用当前版本 TVMScript 写 matmul baseline，先不调度|2×3 乘 3×2 对齐 reference；IR 可解析、可编译
+!tvm;gemm@4.1,4.2|split/reorder;缓存层次;循环映射|对 baseline 逐个加入分块/重排/缓存，每一步保存 IR|每一步都通过数值测试；能定位改变的循环，不一次粘贴最终 schedule
+!tvm;model@3.3;sync@2.3|thread binding;协作加载;边界谓词|将一个合法 schedule 绑定到 GPU block/thread，覆盖非整 shape|17×19 乘 19×23 正确；无越界；不支持情况走基线
+!tvm;gemm@5.2|寄存器 tile;表达方式与性能|对照 TIR 生成 CUDA 与手写 tiled GEMM，比较循环和 load/store|至少标明三处对应结构；同输入正确且公平计时；不要求谁一定更快
+!tvm|搜索空间;测量预算;调优数据库|仅对一个 matmul shape 跑有上限的小型 MetaSchedule 搜索|记录 trial 数、硬件、最佳 trace 和总调优时间；能重放最佳配置
+!tvm|holdout shape;调优过拟合;fallback|用两个未调参 shape 验证前日策略，保留通用 schedule|正确性均通过；性能可能退化但记录真实；不把单 shape 结果泛化
+!tvm|schedule 合法性;回归测试;版本漂移|整理最小 TIR schedule 库和版本锁定，复现三组输入|命令能重放；不合法 schedule 有最小失败例；完成后才进入主项目
+# W17
+comm@3.4;ddp@1|rank/world size;AllReduce;进程初始化|用 CPU/Gloo 两进程对 [rank+1] 做 sum all-reduce|两进程结果都为 3；只有一台电脑也可做，注明是 CPU 演示
+ddp@2.1,2.2|梯度同步;数据切分;DDP 更新|跑 CPU 两进程线性模型 DDP，使用正确的样本分配|一次更新后各 rank 参数相同；等效全局 batch 与单进程结果近似一致
+optim@3;ddp@3.1|参数、梯度、优化器状态;ZeRO 分片|写 AdamW 显存估算器，对照参数字节与实际状态张量|记录精度、参数量、分片份数；不把公式估算称为真实多卡节省
+ddp@3.2,3.3,3.4|FSDP all-gather/reduce-scatter;临时全参数|有合适 GPU 则运行最小 FSDP；否则用数组模拟分片与还原|输出每 rank 的持有范围；模拟与真运行清楚区分；不伪造通信性能
+comm@3.5,3.6,3.7|AllGather/ReduceScatter/AllToAll;分片轴|用两进程小张量验证 gather/scatter 的输入输出，写参数分片图|还原后顺序正确；对应各进程张量尺寸；不把支持机制等同掌握大规模策略
+ddp@6|梯度累积;同步次数;死锁排查|在 DDP 中对比每步同步与累积后同步，固定等效 batch|更新接近一致；记录同步次数；一个 rank 提前退出能被定位，不无限等待
+ddp@4,5|原理与设备约束;训练 Infra 能力边界|整理可运行两进程入口，增加环境检查与超时提示|README 明确 CPU/GPU、进程数和未覆盖的 TP/PP/千卡实践；不填问答作业
+# W18
+infer@1.2,2.2;generate@6.3|prefill/decode;缓存生命周期|重用 W05 Decoder，给 prefill/decode 分开计时|固定 token 输入；缓存递增正确；单列首轮与后续 token 延迟
+paged@2,3|页块;block table;逻辑与物理索引|用 Python 数组模拟 KV 分页，写 logical token→block/offset 查找|跨页索引正确；释放后块能复用；不宣称实现 GPU PagedAttention
+batch@3,4|迭代级调度;请求完成退出;新请求加入|写三个不同长度请求的 continuous batching 调度模拟|每个请求生成长度正确；完成请求退出；空槽可接新请求
+prefix@3.1,3.2,4|前缀匹配;引用计数;回收条件|给模拟缓存添加相同 prefix 的块复用和引用计数|两请求共享块不重复分配；一个结束不提前释放；最后一个结束可回收
+chunk@2,3,4|token budget;chunked prefill;延迟与吞吐取舍|给调度器加 token budget，把长 prefill 拆为多次迭代|每步预算不超限；新 decode 不因整段 prefill 永久饥饿；输出顺序正确
+vllm@4.1,6.2;infer@3.1,3.2|实际引擎入口;采样参数;TTFT/吞吐|有条件运行小模型 vLLM；否则在自己的 Decoder 上测同类指标并明确标注|记录模型、版本、硬件与 token 数；不虚构 vLLM 成功部署；只测实际运行系统
+backend@4,5|CUDA Graph;地址/shape 约束;compile 的区别|用固定 shape 小模型尝试图捕获，比较重复执行开销|先验证输出；不兼容条件有明确记录；量化与完整推理服务暂列选修，避免一周包打天下
+# W19
+norm@3.3;softmax@1.3|算子契约;LLM 场景;非目标|为项目 A 写 RFC：核心只做 Softmax、RMSNorm、RoPE，GEMM 为复用基线|写明支持设备/dtype/layout/shape、误差阈值、非目标；不承诺超越官方库
+cpp@5.7,9.1|目录边界;依赖锁定;可重复测试|建立 operators/tests/benchmarks/bindings/docs 和环境检查脚本|一条命令可跑空骨架的 smoke test；缺 GPU 时给清晰提示，不静默跳过全部测试
+vector@5.2;softmax@7.2|基准协议;统计量;精度先行|冻结三类算子的 shape 表、reference 和计时协议|包含小/大/非对齐输入；结果字段有 GPU/dtype/误差/P50/warmup/重复次数
+softmax@3.2;norm@3.3|正确基线;模块接口;迁移不等于复制堆积|迁入已验证的 Softmax/RMSNorm baseline，统一签名和错误返回|原实验与项目函数对同输入一致；移除硬编码 shape；有最小调用示例
+torch@1.2,1.4|支持矩阵;极值;非法输入|为连续 FP32 和 FP16 建 correctness matrix，加入非连续/空行/NaN 策略|每个支持格有测试；每个拒绝格有明确路径；NaN 行为写进契约
+rope@5.1,5.5|旋转维度;position;reference|给 RoPE 写独立 Python reference 与测试数据生成器|position=0 不变；位置变化保持配对向量范数；非法 head_dim 拒绝
+cpp@9.4|失败最小化;输入种子;回归保护|审计项目 A 三类 reference 与协议，修复本周最小失败例|失败输入可用种子重建；核心接口无歧义；未通过项不标里程碑完成
+# W20
+softmax@4.1,4.2|warp 归约;尾部 mask;版本选择|将 Softmax 改为 warp 优化版；保留 baseline 并声明选择条件|支持行长全部数值通过；不支持的超长行走 baseline；不丢尾元素
+norm@3.3,5.1;reduce@8.2|RMSNorm 归约;FP32 累加;epsilon|实现 RMSNorm 的 block-reduce 版，保留简单 reference|常量/极值/非对齐行通过；epsilon 与 reference 相同；记录误差
+softmax@5.1,5.2;access@4.4|向量化加载;指针对齐;scalar fallback|只给一个算子加向量化路径；用 runtime 条件选择|对齐输入命中快路径；不对齐输入走安全路径；两者均正确
+!torch-custom|schema;CPU/CUDA dispatch;Python API|为项目 A 注册 PyTorch custom op，让调用者不用处理裸指针|Python API 可调用两类算子；device/dtype 不支持时错误清晰
+!torch-custom|fake/meta;compile 兼容;输入守卫|补 fake 实现和框架回归，用 torch.compile 调用项目 A|shape 推断正确；compile 正常或明确 fallback；不隐式改变数值语义
+occupancy@6.2;vector@5.2|资源指标;单变量优化;统计稳定|选一个算子、两组 shape 对比 baseline 与优化，采集性能证据|输出原始计时数组与资源指标；重复试验；保留至少一组退化/无收益条件
+softmax@7.2;norm@5.3|精度回归;支持边界;稳定性|在三种行长上补 FP16/FP32 回归并固定 dispatch 表|所有声明支持输入通过；失败路径可追踪；今天只修复，不加新优化
+# W21
+rope@5.5,8.1|配对加载;位置广播;尾部条件|实现项目 A 的 CUDA 或 Triton RoPE，接入统一 API|与 Python reference 对齐；position=0/不同位置两类通过；非法维度拒绝
+rope@8.1;access@2.1|连续布局;合并访问;布局契约|选择并实现一种 RoPE 内存布局，另外一种走 fallback|输出位置与 reference 一致；转换成本单独记录；不把 layout 转换漏出 benchmark
+ffn@4.4,9|SwiGLU;逐元素融合;GEMM 调库|做可选 SwiGLU pointwise fusion，GEMM 继续调用现有库|与未融合版本同输入一致；明确自写的是逐元素阶段，不是完整高性能 GEMM
+vector@5.2;infer@3|同口径 baseline;原始数据;结果版本|统一 PyTorch/Triton/项目 A 的三类算子 benchmark，覆盖预设 shape|每条结果带版本、shape、dtype、误差、P50；不能比较的实现标 N/A
+occupancy@5.1;access@6.3|退化分析;资源压力;错误归因|选择最慢的两个 shape，只对一个原因做验证实验|保留改前/改后数据和其他固定参数；结论区分测量、推断与尚未证实
+infer@4.1,4.2|算术强度;性能图坐标;边界|从真实 CSV 生成三类算子性能图和一张架构图|曲线可由脚本重建；含单位和硬件；不挑单点倍数代替完整范围
+cpp@9.4|复现包;随机种子;失败输入|补非对齐、极值和 capability check 回归，收束项目 A 功能|核心 Softmax/RMSNorm/RoPE 都可用；选修未完成不影响核心验收
+# W22
+decoder@2;norm@5.2|真实模型接入;算子替换;残差误差|把项目 A 的 RMSNorm/RoPE 接入小 Decoder，保留原生路径|同权重/输入的最终输出一致；trace 能看到自定义 kernel 被实际调用
+infer@3.1,3.2;torch@6.1|端到端与单 kernel;launch 开销;峰值显存|测原生与自定义 Decoder，分 prefill/decode、计算与拷贝|同输入与 batch；记录峰值显存及端到端延迟；没有端到端提升也如实展示
+cpp@5.7,9.4|环境检查;新进程;依赖锁定|从干净环境按文档复现项目 A，修复一个真实阻塞点|无需未提交文件；测试与基准都能跑；缺硬件时不把未测项当通过
+cpp@9.1|README;支持矩阵;结果溯源|整理项目 A 的使用例子、设计、性能、限制四节|陌生人能找到 API、复现命令、原始 CSV；注明借鉴项目及许可证
+infer@4.2|性能故事;因果证据;限制表达|录一段 8–10 分钟项目讲解，从一个慢 shape 走到代码与测量|讲解中的每个数字能对应 CSV；说清未提升案例；不以背八股替代源码
+cpp@9.2|版本封版;未完成项;可追溯变更|仅在核心测试通过后建立本地 v1.0 标签和 release checklist|标签对应正确代码；不发布或改动第三方仓库；核心未过就继续修复
+cpp@9.4|故障注入;诊断信息;入口稳定|换一个未测过的合法 shape，验证安装、API、benchmark 全链路|新输入通过或明确不支持；没有静默错误；项目 A 才算结束
+# W23
+compiler@本章简介;!tvm|子图范围;编译器 pipeline;非目标|为项目 B 写 RFC：固定 RMSNorm+MLP 子图，TVM/Relax 主后端，不另造通用框架|目标、输入格式、支持 dtype/shape、baseline、fallback 写全；Attention 全图为选修
+!tvm|frontend 导入;参数绑定;规范化|导入项目 B 子图到当前版本 Relax，保存原始和规范化 IR|同输入模型可加载；权重和 shape 正确；前端范围固定为一种
+!tvm|layout/dtype 契约;能力检查|写支持矩阵与入口检查，构造三个拒绝输入|非法 dtype、layout、rank 均有具体报错；不靠运行后崩溃识别输入
+!tvm;!compile|基线统一;编译成本;稳态延迟|建立 eager/torch.compile/未优化 TVM 三条基线|同权重/输入/精度；数值通过后测量；结果含编译、首轮和稳态
+!tvm|importer 回归;权重常量;不支持 op|为导入器增加正常、错误 shape、unsupported op 测试|IR 快照与数值结果同时检查；失败路径有可读原因
+!tvm|IR 不变量;Pass 边界;执行入口|保存一次 frontend→Relax→TIR→runtime 的完整产物索引|每层能找到真实文件；注明哪些为自己代码、哪些来自 TVM
+!tvm|最小编译产物;版本锁定;测试数据|完成可复现 compile/run 命令，不新增优化|新进程能编译运行子图；初始性能表和精度阈值固定，避免之后换基线
+# W24
+!tvm;norm@3.3|RMSNorm PrimFunc;归约轴;epsilon|为 RMSNorm 写项目 B 的 TIR baseline，先做连续 FP32|对三种 hidden size 数值通过；IR 可检查；不混入 schedule 优化
+!tvm;gemm@4.1|循环分块;cache scope;合法性|逐步给 TIR 加 split/reorder/cache，各保留一个中间 IR|每步数值回归通过；能指明新增的数据复用
+!tvm;model@3.3|thread binding;尾部谓词;协作加载|绑定 GPU 线程，针对非整行长验证 mask|hidden=513 等边界通过；不支持路径显式 fallback
+!tvm;occupancy@3.1|向量化;寄存器压力;局部优化|只加一个向量化或寄存器分块变化并测量|结果正确；保留两组 shape 的时间与资源数据；不追求无证据的复杂 schedule
+!tvm;access@2.1|手写与生成 kernel;等价循环;访存结构|对照项目 A 与 TIR 输出的 CUDA，标记归约、加载、写回路径|说明三处相同/不同的具体位置；同输入数值和计时可复现
+!tvm|trace 重放;回归;支持范围|为 schedule 建测试集和重放脚本，固定当前设备参数|同 trace 能重建 kernel；边界输入与拒绝路径均有测试
+!tvm|模块化 schedule;通用 fallback|把 baseline/optimized schedule 整理成两条清晰入口|关闭优化时结果一致；切换无需改模型；项目能继续进入 Pass 阶段
+# W25
+!tvm|模式结构;外部使用者;安全条件|只选一个明确模式实现匹配，先列匹配正例/负例|至少正常、额外使用者、错误 dtype 三类；记录不匹配原因
+!tvm|rewrite;IRModule 更新;结构验证|实现该模式的重写，保存前后 IR 和节点变化|合法性检查通过；只有满足条件的模式被替换；不误伤外部分支
+!tvm|误差阈值;layout;shape 回归|对 Pass 前后跑参数化数值测试|FP32/FP16 与非对齐 shape 覆盖；至少 10 个图测试，含拒绝/不匹配例
+!tvm|符号维度;specialization;guard|支持有限 batch 集合的 guard 与特化，暂不承诺任意动态 shape|支持 batch 走对应编译产物；其他 batch 明确 fallback；缓存键包含 shape/dtype/device
+!tvm|混合图;fallback;诊断|对不支持节点保留 eager 路径或整图 fallback，清楚固定一种方案|不支持输入不改变结果；日志说明 fallback 原因；不无限重试编译
+!tvm;infer@3.1|融合收益;kernel 数;稳态对比|测 Pass 开关对 kernel 数和端到端延迟的影响|同模型同输入；记录一次融合无收益条件；不把图节点少等同执行 kernel 少
+!tvm|幂等性;Pass 顺序;回归覆盖|将图测试补到至少 20 个，覆盖两次运行 Pass|第二次 IR 不再变化；历史错误有回归；所有支持/拒绝路径符合 RFC
+# W26
+!tvm|runtime module;调用入口;设备数组|从实际运行追踪 module load 到算子调用，记录对应代码位置|代码路径与选定 TVM 版本一致；给出一次真实执行输出
+!torch-custom;!tvm|外部 kernel ABI;输入所有权;调用成本|接入项目 A 的一个算子作为外部实现；先只支持单个固定接口|与 TIR/原生实现一致；调用链能证明外部 kernel 真被执行；明确接入方式
+!tvm|capability check;版本错配;诊断|加入加载前的版本/设备/算子能力检查|缺实现和设备不支持能在入口被发现；fallback 结果正确
+infer@3.1,3.2|加载/编译/首轮/稳态;峰值显存|测 runtime 各阶段耗时，避免将缓存后的编译产物当首次编译|各阶段分栏；固定 workload；报告缓存是否命中
+decoder@2;!tvm|模型级接入;子图边界;数值传播|把编译后 RMSNorm+MLP 接入小 Decoder，其余部分保持原生|端到端输出对齐；trace 证实使用编译子图；不把单独跑子图称完整模型部署
+!tvm|OOM 风险;不支持 shape;安全失败|通过受控过小内存预算或非法输入模拟资源不足，验证诊断|不制造系统失控 OOM；错误明确、无静默错算；保留最小用例
+!tvm|缓存生命周期;重复加载;资源释放|重复创建、运行、释放编译模块，检查资源趋势|多次执行结果稳定；显存/资源不持续无界增长；说明缓存保留与泄漏区别
+# W27
+!tvm|范围冻结;未完成项隔离;版本可追溯|冻结项目 B 子图/dtype/shape，隔离选修分支|README 与实际 capability check 一致；半成品不列为已支持
+!tvm|全链路不变量;统一入口|从输入模型一键完成导入、Pass、TIR、runtime 与数值检查|输出、IR 和运行日志都落盘；不依赖手工复制中间文件
+!tvm|图测试与数值测试;历史 bug|在新进程跑全套 20+ 回归，再补一个历史失败输入|测试覆盖支持与拒绝路径；输出测试计数和失败原因；不是凑断言数量
+infer@3.1,3.2;vector@5.2|可比较 workload;统计;端到端指标|对小 batch、大 batch、非对齐 hidden 三组跑完整基线对照|误差先过；记录编译与稳态；原始数据可重建图表
+cpp@9.4|陌生环境复现;README 可执行|从新环境复现项目 B；有同学协助时记录真实反馈，没有就自行干净复现|没有隐含路径；失败修复有记录；不虚构他人评审
+cpp@9.2|版本封版;项目表述;可追问证据|核心通过后做本地 v1.0 标签；准备简短源码演示|每条功能能现场运行；每个性能数字有数据；不承诺秋招录取
+!tvm|能力回归;基线可信;范围控制|抽查一个支持输入和一个 fallback 输入，全链路重新运行|两个路径结果正确；说明未支持动态 shape、完整服务等限制
+# W28
+cpp@9.1,9.4|issue 范围;复现条件;上游协作|在 TVM/Triton/MLIR 选一个与项目相关的小 issue，先核对是否仍存在|记录 issue 链接、版本与复现条件；不因标题简单就开始大改
+cpp@9.4|最小输入;预期与实际;环境|编写可独立运行的复现包，去除无关依赖|别人能看到同样行为或明确设备前提；没有复现就不写已定位
+cpp@9.4|调用链;假设验证;根因边界|沿输入到错误处定位两到三个关键函数，验证一个假设|证据指向具体代码；区分已证实根因和猜测
+cpp@9.1|回归测试;最小补丁;影响范围|在本地 fork 写测试或文档修正，先不向上游发送|改前测试失败、改后通过，或文档示例实测通过；不扩大成重构
+cpp@9.1|贡献规范;审阅材料;公开发送边界|准备 PR/issue 草稿和测试说明；实际发送前自行确认|草稿包含问题、变更、测试、限制；没有公开提交就不声称 PR 已提交
+cpp@9.2|review 反馈;未合并与已合并区别|有真实反馈就处理；否则继续缩小复现与改善测试|保留实际状态；不为简历伪造贡献、合并或反馈
+cpp@9.4|可追溯协作成果;代码署名|整理源码走读与复现包，链接原始 issue/代码|本地结果和公开结果分别说明；即使未合并也能讲清复现工作
+# W29
+cpp@9.4|算子项目审计;证据链|审计项目 A 的 API、测试、性能、真实接入与限制|缺项逐条列出并修复最严重的一项；已有数据可复现
+!tvm|编译器项目审计;IR/Pass/runtime|审计项目 B 的支持矩阵、IR、guard、fallback 和端到端结果|每项有代码/测试/日志位置；不能解释的功能不写简历
+cpp@9.1|环境一致性;脚本入口;数据组织|统一两项目 README、依赖文件和结果目录，清理本地绝对路径|复制到不同目录仍可按说明执行；不删除必要原始证据
+compiler@本章简介|岗位能力与证据;简历边界|写一页简历：每项目只写问题、自己实现、真实结果和限制|不将教程运行写成自研编译器；未测性能不写倍数；不称千卡训练经验
+infer@4.2|因果说明;源码演示;简洁表达|分别录制两项目 2 分钟概览与 5 分钟深入版本|说明一个具体失败/退化例；技术术语能指向代码和数据
+cpp@9.4|可复现性;新输入检查|请同学复现或自行换环境，修复一个入口问题|保留真实反馈或自测记录；未获得外部反馈如实说明
+cpp@9.2|成果归档;版本状态|检查两仓库的 license、引用、环境、测试和结果是否齐全|产物与简历描述一致；所有性能图能由已保存 CSV 生成
+# W30
+cpp@4.4,4.6,5.7|RAII;拷贝移动;构建链接|限时重写一个最小 RAII 类和 CMake library/demo/test 骨架|拷贝/移动语义清楚、无泄漏；link 关系正确；不查看旧实现也能完成
+reduce@8.2;softmax@1.3|归约并行划分;mask;数值稳定|白板设计 reduction/softmax，再用现有测试验证代码|线程划分和同步正确；非整大小与极值通过；记录真实错误
+!tvm;!compile|图捕获;融合前提;schedule 与 runtime|从自己的项目选一个输入，讲解全链路并现场关闭一个优化|关闭后结果一致；能解释性能变化与 guard，不背不存在的支持能力
+compiler@本章简介|JD 到证据映射;岗位范围|找 3 个当前有效岗位，逐条匹配已完成项目证据与缺口|每项写已证明/了解/未覆盖；不把学习计划当已掌握能力
+cpp@9.4|限时调试;问题分层;最小复现|做一次 C++/算法模拟和一次 GPU/编译器项目模拟，优先修错|保留计时和具体错误；可独立修复至少一个失败例
+cpp@9.1|投递材料;可访问性;项目可运行|检查简历、项目链接和演示入口，形成投递清单|链接可打开、联系方式正确、演示可运行；不自动对外投递
+cpp@9.4|查漏与边界;后续维护|只处理最后一个最影响面试的缺口，并归档 30 周实际完成情况|未完成清楚标出，不因日历结束自动标完成；4 月起按真实面试反馈补缺

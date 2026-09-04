@@ -3,8 +3,19 @@ import "./globals.css";
 import "./daily-guide.css";
 
 export const metadata: Metadata = {
-  title: "AI 编译器学习日志｜50 周秋招计划",
-  description: "面向 AI Infra 中 AI 编译器岗位的 50 周学习日志、每日任务、官方知识链接与硬核项目。",
+  title: "AI 编译器学习日志｜30 周核对版",
+  description: "30 周逐日学习、真实原文章节与配套代码验收；从栈与队列继续代码随想录，再完成 Hot 100。",
+  openGraph: {
+    title: "AI 编译器学习日志",
+    description: "30 周 · 从基础到项目",
+    images: ["https://ai-compiler-year-one.worldhuang2002.chatgpt.site/og.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AI 编译器学习日志",
+    description: "30 周 · 从基础到项目",
+    images: ["https://ai-compiler-year-one.worldhuang2002.chatgpt.site/og.png"],
+  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",

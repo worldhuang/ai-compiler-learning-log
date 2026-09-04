@@ -1,0 +1,5606 @@
+{
+  "checkedAt": "2026-09-04",
+  "repository": "https://github.com/caomaolufei/AIInfraGuide",
+  "revision": "8b0fac01d2f3c8760a6587065028eb83bab7d2d6",
+  "sources": {
+    "AI Infra学习路线": {
+      "path": "docs/guides/AI Infra学习路线.md",
+      "title": "AI Infra学习路线",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/AI%20Infra%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 16
+        },
+        {
+          "heading": "🗺️ 全景概览：三层架构",
+          "line": 28
+        },
+        {
+          "heading": "📖 第零层：前置知识",
+          "line": 43
+        },
+        {
+          "heading": "0.1 知识点",
+          "line": 47
+        },
+        {
+          "heading": "0.2 推荐资料",
+          "line": 87
+        },
+        {
+          "heading": "0.3 检验标准",
+          "line": 101
+        },
+        {
+          "heading": "💻 第一层：CUDA编程与算子优化",
+          "line": 115
+        },
+        {
+          "heading": "1.1 知识点",
+          "line": 119
+        },
+        {
+          "heading": "1.2 推荐资料",
+          "line": 158
+        },
+        {
+          "heading": "1.3 检验标准",
+          "line": 184
+        },
+        {
+          "heading": "🏋️ 第二层：分布式训练",
+          "line": 200
+        },
+        {
+          "heading": "2.1 知识点",
+          "line": 204
+        },
+        {
+          "heading": "2.2 推荐资料",
+          "line": 251
+        },
+        {
+          "heading": "2.3 检验标准",
+          "line": 264
+        },
+        {
+          "heading": "🚀 第三层：推理与部署",
+          "line": 276
+        },
+        {
+          "heading": "3.1 LLM 推理基础",
+          "line": 280
+        },
+        {
+          "heading": "3.2 推理引擎",
+          "line": 303
+        },
+        {
+          "heading": "3.3 量化",
+          "line": 344
+        },
+        {
+          "heading": "3.4 Speculative Decoding",
+          "line": 382
+        },
+        {
+          "heading": "3.5 系统架构：Prefill/Decode 解耦",
+          "line": 411
+        },
+        {
+          "heading": "3.6 性能分析与 Benchmark",
+          "line": 440
+        },
+        {
+          "heading": "3.7 优化选型决策树",
+          "line": 473
+        },
+        {
+          "heading": "🧭 新人破局指南",
+          "line": 539
+        },
+        {
+          "heading": "推荐学习路径",
+          "line": 541
+        },
+        {
+          "heading": "核心思维模型",
+          "line": 568
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 583
+        },
+        {
+          "heading": "论文",
+          "line": 585
+        },
+        {
+          "heading": "教程与视频",
+          "line": 612
+        },
+        {
+          "heading": "开源项目与工具",
+          "line": 618
+        },
+        {
+          "heading": "官方文档",
+          "line": 629
+        }
+      ]
+    },
+    "gpu-basics": {
+      "path": "docs/guides/模块一-前置知识/gpu/gpu-basics.md",
+      "title": "gpu-basics",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/gpu/gpu-basics.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. CPU vs GPU：为什么深度学习选择了 GPU",
+          "line": 32
+        },
+        {
+          "heading": "1.1 架构哲学的根本差异",
+          "line": 40
+        },
+        {
+          "heading": "1.2 深度学习为什么天然适合 GPU",
+          "line": 52
+        },
+        {
+          "heading": "2. GPU 硬件架构剖析",
+          "line": 71
+        },
+        {
+          "heading": "2.1 GPC → TPC → SM 的层级结构",
+          "line": 75
+        },
+        {
+          "heading": "2.2 SM：GPU 的基本调度单元",
+          "line": 99
+        },
+        {
+          "heading": "2.3 Warp：GPU 执行的最小单位",
+          "line": 117
+        },
+        {
+          "heading": "3. 显存层次与带宽",
+          "line": 136
+        },
+        {
+          "heading": "3.1 GPU 存储层级金字塔",
+          "line": 140
+        },
+        {
+          "heading": "3.2 HBM：高带宽显存",
+          "line": 152
+        },
+        {
+          "heading": "3.3 Roofline 模型：算力 vs 带宽的平衡点",
+          "line": 165
+        },
+        {
+          "heading": "4. Tensor Core：AI 加速的核心引擎",
+          "line": 186
+        },
+        {
+          "heading": "4.1 工作原理",
+          "line": 190
+        },
+        {
+          "heading": "4.2 精度格式演进",
+          "line": 206
+        },
+        {
+          "heading": "4.3 Tensor Core 的算力倍增",
+          "line": 222
+        },
+        {
+          "heading": "5. CUDA 编程模型",
+          "line": 236
+        },
+        {
+          "heading": "5.1 线程层级：Grid → Block → Thread",
+          "line": 240
+        },
+        {
+          "heading": "5.2 一个简单的 CUDA Kernel 示例",
+          "line": 253
+        },
+        {
+          "heading": "5.3 内存模型与存储对应",
+          "line": 283
+        },
+        {
+          "heading": "5.4 用 PyTorch 感受 GPU 计算",
+          "line": 297
+        },
+        {
+          "heading": "6. GPU 关键性能指标",
+          "line": 339
+        },
+        {
+          "heading": "6.1 四大核心指标",
+          "line": 343
+        },
+        {
+          "heading": "6.2 算力计算公式",
+          "line": 352
+        },
+        {
+          "heading": "7. 主流 AI GPU 横向对比",
+          "line": 368
+        },
+        {
+          "heading": "8. 显存管理：AI Infra 的核心挑战",
+          "line": 385
+        },
+        {
+          "heading": "8.1 训练时显存都用在哪里",
+          "line": 389
+        },
+        {
+          "heading": "8.2 常用显存优化策略",
+          "line": 404
+        },
+        {
+          "heading": "9. 多卡互联：从单机到集群",
+          "line": 420
+        },
+        {
+          "heading": "9.1 互联技术对比",
+          "line": 424
+        },
+        {
+          "heading": "9.2 典型多卡拓扑",
+          "line": 434
+        },
+        {
+          "heading": "📝 总结",
+          "line": 453
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 470
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 485
+        }
+      ]
+    },
+    "nvidia-gpu-evolution": {
+      "path": "docs/guides/模块一-前置知识/gpu/nvidia-gpu-evolution.md",
+      "title": "nvidia-gpu-evolution",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/gpu/nvidia-gpu-evolution.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 11
+        },
+        {
+          "heading": "1. 为什么要了解 GPU 架构演进",
+          "line": 28
+        },
+        {
+          "heading": "2. 架构演进全景图",
+          "line": 34
+        },
+        {
+          "heading": "3. Volta 架构（2017）——AI 加速的开端",
+          "line": 56
+        },
+        {
+          "heading": "3.1 背景：GPU 凭什么做 AI？",
+          "line": 58
+        },
+        {
+          "heading": "3.2 关键创新：Tensor Core",
+          "line": 62
+        },
+        {
+          "heading": "3.3 V100 关键规格",
+          "line": 74
+        },
+        {
+          "heading": "3.4 实践意义",
+          "line": 87
+        },
+        {
+          "heading": "4. Turing 架构（2018）——RT Core 与推理加速",
+          "line": 107
+        },
+        {
+          "heading": "4.1 解决的问题",
+          "line": 109
+        },
+        {
+          "heading": "4.2 关键创新",
+          "line": 113
+        },
+        {
+          "heading": "4.3 T4 关键规格",
+          "line": 119
+        },
+        {
+          "heading": "4.4 实践意义",
+          "line": 132
+        },
+        {
+          "heading": "5. Ampere 架构（2020）——数据中心 AI 的分水岭",
+          "line": 145
+        },
+        {
+          "heading": "5.1 解决的问题",
+          "line": 147
+        },
+        {
+          "heading": "5.2 关键创新",
+          "line": 154
+        },
+        {
+          "heading": "TF32 —— \"不用改代码的加速\"",
+          "line": 156
+        },
+        {
+          "heading": "MIG —— 一卡多用",
+          "line": 169
+        },
+        {
+          "heading": "第三代 Tensor Core",
+          "line": 189
+        },
+        {
+          "heading": "5.3 A100 关键规格",
+          "line": 193
+        },
+        {
+          "heading": "5.4 实践意义",
+          "line": 205
+        },
+        {
+          "heading": "6. Hopper 架构（2022）——为大模型而生",
+          "line": 219
+        },
+        {
+          "heading": "6.1 解决的问题",
+          "line": 221
+        },
+        {
+          "heading": "6.2 关键创新",
+          "line": 230
+        },
+        {
+          "heading": "FP8 训练 —— 精度再压一刀",
+          "line": 232
+        },
+        {
+          "heading": "Transformer Engine —— 自动驾驶级精度管理",
+          "line": 243
+        },
+        {
+          "heading": "NVLink 4.0 与 NVSwitch",
+          "line": 259
+        },
+        {
+          "heading": "其他重要特性",
+          "line": 269
+        },
+        {
+          "heading": "6.3 H100 关键规格",
+          "line": 274
+        },
+        {
+          "heading": "6.4 实践意义",
+          "line": 288
+        },
+        {
+          "heading": "7. Blackwell 架构（2024）——万亿参数时代的基石",
+          "line": 304
+        },
+        {
+          "heading": "7.1 解决的问题",
+          "line": 306
+        },
+        {
+          "heading": "7.2 关键创新",
+          "line": 310
+        },
+        {
+          "heading": "双芯封装（Dual-Die）",
+          "line": 312
+        },
+        {
+          "heading": "第五代 Tensor Core",
+          "line": 316
+        },
+        {
+          "heading": "NVLink 5.0",
+          "line": 320
+        },
+        {
+          "heading": "其他亮点",
+          "line": 329
+        },
+        {
+          "heading": "7.3 B200 / GB200 关键规格",
+          "line": 335
+        },
+        {
+          "heading": "8. 核心技术纵向对比",
+          "line": 348
+        },
+        {
+          "heading": "8.1 Tensor Core 算力演进",
+          "line": 350
+        },
+        {
+          "heading": "8.2 显存与带宽演进",
+          "line": 362
+        },
+        {
+          "heading": "8.3 关键特性引入时间线",
+          "line": 373
+        },
+        {
+          "heading": "9. 如何选择合适的 GPU",
+          "line": 384
+        },
+        {
+          "heading": "训练场景",
+          "line": 388
+        },
+        {
+          "heading": "推理场景",
+          "line": 396
+        },
+        {
+          "heading": "📝 总结",
+          "line": 407
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 417
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 428
+        }
+      ]
+    },
+    "PyTorch框架入门": {
+      "path": "docs/guides/模块一-前置知识/pyroch/PyTorch框架入门.md",
+      "title": "PyTorch框架入门",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/pyroch/PyTorch%E6%A1%86%E6%9E%B6%E5%85%A5%E9%97%A8.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Tensor：PyTorch 的基本数据单元",
+          "line": 29
+        },
+        {
+          "heading": "1.1 创建 Tensor 的常用方式",
+          "line": 35
+        },
+        {
+          "heading": "1.2 形状操作：view, reshape, permute, squeeze, unsqueeze",
+          "line": 53
+        },
+        {
+          "heading": "1.3 设备管理：CPU 与 GPU 数据搬运",
+          "line": 76
+        },
+        {
+          "heading": "1.4 dtype 与内存：fp32, fp16, bf16",
+          "line": 94
+        },
+        {
+          "heading": "2. 自动微分（autograd）",
+          "line": 121
+        },
+        {
+          "heading": "2.1 什么是计算图",
+          "line": 125
+        },
+        {
+          "heading": "2.2 requires_grad 和 backward()",
+          "line": 131
+        },
+        {
+          "heading": "2.3 梯度累积与清零",
+          "line": 145
+        },
+        {
+          "heading": "代码示例：手动梯度下降学习 y = 2x + 1",
+          "line": 165
+        },
+        {
+          "heading": "3. nn.Module：模型的组织方式",
+          "line": 190
+        },
+        {
+          "heading": "3.1 定义模型：继承 nn.Module，实现 \\_\\_init\\_\\_ 和 forward",
+          "line": 194
+        },
+        {
+          "heading": "3.2 参数管理：parameters(), named_parameters(), state_dict()",
+          "line": 215
+        },
+        {
+          "heading": "3.3 常用层",
+          "line": 232
+        },
+        {
+          "heading": "代码示例：两层 MLP",
+          "line": 252
+        },
+        {
+          "heading": "4. 完整训练循环",
+          "line": 276
+        },
+        {
+          "heading": "4.1 数据加载：Dataset 和 DataLoader",
+          "line": 280
+        },
+        {
+          "heading": "4.2 标准训练流程",
+          "line": 304
+        },
+        {
+          "heading": "4.3 学习率调度",
+          "line": 308
+        },
+        {
+          "heading": "4.4 Checkpoint 保存与恢复",
+          "line": 320
+        },
+        {
+          "heading": "代码示例：完整 MNIST 训练脚本",
+          "line": 337
+        },
+        {
+          "heading": "5. GPU 训练基础",
+          "line": 399
+        },
+        {
+          "heading": "5.1 将模型和数据搬到 GPU",
+          "line": 401
+        },
+        {
+          "heading": "5.2 混合精度训练入门",
+          "line": 413
+        },
+        {
+          "heading": "5.3 显存查看",
+          "line": 448
+        },
+        {
+          "heading": "代码示例：混合精度 vs fp32 显存对比",
+          "line": 463
+        },
+        {
+          "heading": "6. 性能分析入门",
+          "line": 517
+        },
+        {
+          "heading": "6.1 torch.profiler 基本用法",
+          "line": 521
+        },
+        {
+          "heading": "6.2 如何读懂 profiler 输出",
+          "line": 540
+        },
+        {
+          "heading": "6.3 常见性能问题",
+          "line": 555
+        },
+        {
+          "heading": "代码示例：用 profiler 分析一个训练 step",
+          "line": 576
+        },
+        {
+          "heading": "📝 总结",
+          "line": 618
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 633
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 646
+        }
+      ]
+    },
+    "3.1 AI Infra工程师为什么必须懂Transformer": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.1 AI Infra工程师为什么必须懂Transformer.md",
+      "title": "3.1 AI Infra工程师为什么必须懂Transformer",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.1%20AI%20Infra%E5%B7%A5%E7%A8%8B%E5%B8%88%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E6%87%82Transformer.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 什么是 AI Infra",
+          "line": 27
+        },
+        {
+          "heading": "1.1 一句话定义",
+          "line": 29
+        },
+        {
+          "heading": "1.2 AI Infra 在技术栈中的位置",
+          "line": 35
+        },
+        {
+          "heading": "1.3 AI Infra 工程师的日常工作",
+          "line": 43
+        },
+        {
+          "heading": "2. Transformer 如何成为通用底座",
+          "line": 65
+        },
+        {
+          "heading": "2.1 Transformer 之前的世界：RNN/LSTM 的困境",
+          "line": 67
+        },
+        {
+          "heading": "2.2 Attention Is All You Need：范式转换",
+          "line": 81
+        },
+        {
+          "heading": "2.3 从原始 Transformer 到 LLM 家族",
+          "line": 95
+        },
+        {
+          "heading": "3. AI Infra 各层级与 Transformer 模块的对应关系",
+          "line": 111
+        },
+        {
+          "heading": "3.1 CUDA 算子优化层",
+          "line": 134
+        },
+        {
+          "heading": "3.2 分布式训练层",
+          "line": 152
+        },
+        {
+          "heading": "3.3 推理部署层",
+          "line": 166
+        },
+        {
+          "heading": "4. 端到端案例：一次 LLM 推理请求的完整旅程",
+          "line": 186
+        },
+        {
+          "heading": "4.1 Tokenize 与 Embedding",
+          "line": 192
+        },
+        {
+          "heading": "4.2 Prefill 阶段：并行处理整个 Prompt",
+          "line": 201
+        },
+        {
+          "heading": "4.3 Decode 阶段：逐 Token 生成",
+          "line": 266
+        },
+        {
+          "heading": "4.4 全链路示意",
+          "line": 299
+        },
+        {
+          "heading": "5. 学习建议：如何构建完整的知识体系",
+          "line": 309
+        },
+        {
+          "heading": "5.1 先\"见树\"再\"见林\"",
+          "line": 313
+        },
+        {
+          "heading": "5.2 持续关注架构演进",
+          "line": 323
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 329
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 341
+        },
+        {
+          "heading": "论文",
+          "line": 343
+        },
+        {
+          "heading": "教程与博客",
+          "line": 355
+        }
+      ]
+    },
+    "3.2 Transformer全貌及代码实现": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.2 Transformer全貌及代码实现.md",
+      "title": "3.2 Transformer全貌及代码实现",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.2%20Transformer%E5%85%A8%E8%B2%8C%E5%8F%8A%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么需要先看全貌",
+          "line": 32
+        },
+        {
+          "heading": "2. 原始 Transformer：Encoder-Decoder 架构",
+          "line": 47
+        },
+        {
+          "heading": "2.1 设计动机：为机器翻译而生",
+          "line": 51
+        },
+        {
+          "heading": "2.2 整体架构图",
+          "line": 60
+        },
+        {
+          "heading": "2.3 三种注意力机制的分工",
+          "line": 66
+        },
+        {
+          "heading": "3. Encoder 内部结构详解",
+          "line": 84
+        },
+        {
+          "heading": "3.1 输入处理",
+          "line": 88
+        },
+        {
+          "heading": "3.2 单个 Encoder 层的数据流",
+          "line": 102
+        },
+        {
+          "heading": "3.3 Encoder Self-Attention 的关键特性",
+          "line": 110
+        },
+        {
+          "heading": "3.4 多层堆叠的信息流动",
+          "line": 127
+        },
+        {
+          "heading": "4. Decoder 内部结构详解",
+          "line": 135
+        },
+        {
+          "heading": "4.1 单个 Decoder 层的数据流",
+          "line": 139
+        },
+        {
+          "heading": "4.2 Masked Self-Attention：不能偷看未来",
+          "line": 145
+        },
+        {
+          "heading": "4.3 Cross-Attention：连接 Encoder 和 Decoder 的桥梁",
+          "line": 162
+        },
+        {
+          "heading": "4.4 为什么 Decoder 层有三个子模块",
+          "line": 181
+        },
+        {
+          "heading": "5. 架构演化：三条分岔路",
+          "line": 195
+        },
+        {
+          "heading": "5.1 Encoder-only：BERT 路线",
+          "line": 199
+        },
+        {
+          "heading": "5.2 Encoder-Decoder：T5 路线",
+          "line": 224
+        },
+        {
+          "heading": "5.3 Decoder-only：GPT 路线",
+          "line": 239
+        },
+        {
+          "heading": "6. Decoder-only：当前大模型的端到端结构",
+          "line": 260
+        },
+        {
+          "heading": "6.1 端到端数据流",
+          "line": 264
+        },
+        {
+          "heading": "6.2 五大组件拆解",
+          "line": 341
+        },
+        {
+          "heading": "6.3 与原始 Encoder-Decoder 的结构对比",
+          "line": 374
+        },
+        {
+          "heading": "7. 从配置文件看真实模型结构",
+          "line": 391
+        },
+        {
+          "heading": "7.1 LLaMA-2 系列",
+          "line": 395
+        },
+        {
+          "heading": "7.2 从配置反推模型结构",
+          "line": 413
+        },
+        {
+          "heading": "7.3 模型规模与层数/宽度的关系",
+          "line": 452
+        },
+        {
+          "heading": "8. 三种架构的工程特性对比",
+          "line": 473
+        },
+        {
+          "heading": "8.1 计算特性对比",
+          "line": 477
+        },
+        {
+          "heading": "8.2 并行策略差异",
+          "line": 486
+        },
+        {
+          "heading": "8.3 为什么 Decoder-only 对工程最友好",
+          "line": 494
+        },
+        {
+          "heading": "9. PyTorch 代码实现：从零搭建 Transformer",
+          "line": 511
+        },
+        {
+          "heading": "9.1 掩码机制：三种 Mask 的实现",
+          "line": 523
+        },
+        {
+          "heading": "9.2 Multi-Head Attention",
+          "line": 581
+        },
+        {
+          "heading": "9.3 正弦位置编码",
+          "line": 661
+        },
+        {
+          "heading": "9.4 Position-wise FFN",
+          "line": 686
+        },
+        {
+          "heading": "9.5 EncoderLayer 与 Encoder",
+          "line": 714
+        },
+        {
+          "heading": "9.6 DecoderLayer 与 Decoder",
+          "line": 771
+        },
+        {
+          "heading": "9.7 组装完整 Transformer",
+          "line": 842
+        },
+        {
+          "heading": "9.8 前向验证",
+          "line": 887
+        },
+        {
+          "heading": "📝 总结",
+          "line": 925
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 950
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 966
+        }
+      ]
+    },
+    "3.3 Self-Attention机制深入理解": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.3 Self-Attention机制深入理解.md",
+      "title": "3.3 Self-Attention机制深入理解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.3%20Self-Attention%E6%9C%BA%E5%88%B6%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Attention 的历史演进",
+          "line": 34
+        },
+        {
+          "heading": "1.1 Bahdanau Attention (2014)：开山之作",
+          "line": 38
+        },
+        {
+          "heading": "1.2 Luong Attention (2015)：简化计算",
+          "line": 46
+        },
+        {
+          "heading": "1.3 Self-Attention (2017)：Attention Is All You Need",
+          "line": 52
+        },
+        {
+          "heading": "2. 从信息检索角度理解 QKV",
+          "line": 65
+        },
+        {
+          "heading": "2.1 图书馆检索的类比",
+          "line": 69
+        },
+        {
+          "heading": "2.2 三元组的形式化定义",
+          "line": 79
+        },
+        {
+          "heading": "3. Scaled Dot-Product Attention 详解",
+          "line": 91
+        },
+        {
+          "heading": "3.1 第一步：线性投影",
+          "line": 95
+        },
+        {
+          "heading": "3.2 第二步：计算原始注意力分数",
+          "line": 117
+        },
+        {
+          "heading": "3.3 第三步：缩放",
+          "line": 129
+        },
+        {
+          "heading": "3.4 第四步：Softmax 归一化",
+          "line": 139
+        },
+        {
+          "heading": "3.5 第五步：加权求和",
+          "line": 149
+        },
+        {
+          "heading": "3.6 完整公式",
+          "line": 159
+        },
+        {
+          "heading": "4. PyTorch 手动实现",
+          "line": 171
+        },
+        {
+          "heading": "4.1 Single-Head Self-Attention",
+          "line": 175
+        },
+        {
+          "heading": "4.2 Multi-Head Self-Attention",
+          "line": 223
+        },
+        {
+          "heading": "5. 详细维度推导",
+          "line": 284
+        },
+        {
+          "heading": "5.1 参数设定",
+          "line": 288
+        },
+        {
+          "heading": "5.2 逐步跟踪",
+          "line": 298
+        },
+        {
+          "heading": "6. 为什么要除以 $\\sqrt{d_k}$：方差稳定性的数学推导",
+          "line": 377
+        },
+        {
+          "heading": "6.1 问题提出",
+          "line": 381
+        },
+        {
+          "heading": "6.2 推导过程",
+          "line": 393
+        },
+        {
+          "heading": "6.3 结论",
+          "line": 423
+        },
+        {
+          "heading": "7. Softmax 的数值稳定性",
+          "line": 439
+        },
+        {
+          "heading": "7.1 溢出问题",
+          "line": 443
+        },
+        {
+          "heading": "7.2 减最大值技巧",
+          "line": 453
+        },
+        {
+          "heading": "7.3 Online Softmax",
+          "line": 471
+        },
+        {
+          "heading": "8. Multi-Head Attention",
+          "line": 500
+        },
+        {
+          "heading": "8.1 为什么需要多头",
+          "line": 502
+        },
+        {
+          "heading": "8.2 数学原理",
+          "line": 510
+        },
+        {
+          "heading": "8.3 参数量分析",
+          "line": 526
+        },
+        {
+          "heading": "8.4 多头的工程意义",
+          "line": 540
+        },
+        {
+          "heading": "9. MHA vs MQA vs GQA vs MLA",
+          "line": 549
+        },
+        {
+          "heading": "9.1 MHA (Multi-Head Attention)",
+          "line": 553
+        },
+        {
+          "heading": "9.2 MQA (Multi-Query Attention)",
+          "line": 560
+        },
+        {
+          "heading": "9.3 GQA (Grouped-Query Attention)",
+          "line": 569
+        },
+        {
+          "heading": "9.4 对比表格",
+          "line": 579
+        },
+        {
+          "heading": "9.5 MLA (Multi-Latent Attention)",
+          "line": 596
+        },
+        {
+          "heading": "10. Causal Mask 的作用与实现",
+          "line": 609
+        },
+        {
+          "heading": "10.1 为什么需要遮蔽",
+          "line": 611
+        },
+        {
+          "heading": "10.2 实现方式",
+          "line": 615
+        },
+        {
+          "heading": "11. Self-Attention 的计算瓶颈分析",
+          "line": 649
+        },
+        {
+          "heading": "11.1 计算量分析",
+          "line": 653
+        },
+        {
+          "heading": "11.2 Compute Bound vs Memory Bound",
+          "line": 670
+        },
+        {
+          "heading": "11.3 $O(N^2)$ 的显存瓶颈",
+          "line": 692
+        },
+        {
+          "heading": "12. FlashAttention 的核心思想",
+          "line": 706
+        },
+        {
+          "heading": "12.1 GPU 存储层次回顾",
+          "line": 710
+        },
+        {
+          "heading": "12.2 Tiling：分块计算",
+          "line": 719
+        },
+        {
+          "heading": "12.3 Online Softmax 的关键作用",
+          "line": 739
+        },
+        {
+          "heading": "12.4 为什么能减少 HBM 访问",
+          "line": 765
+        },
+        {
+          "heading": "12.5 FlashAttention-2 和 FlashAttention-3",
+          "line": 784
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 798
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 813
+        },
+        {
+          "heading": "论文",
+          "line": 815
+        },
+        {
+          "heading": "教程与博客",
+          "line": 827
+        }
+      ]
+    },
+    "3.4 Transformer前馈网络FFN深入理解": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.4 Transformer前馈网络FFN深入理解.md",
+      "title": "3.4 Transformer前馈网络FFN深入理解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.4%20Transformer%E5%89%8D%E9%A6%88%E7%BD%91%E7%BB%9CFFN%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. FFN 在 Transformer 中的角色定位",
+          "line": 31
+        },
+        {
+          "heading": "2. FFN 的\"展开-压缩\"结构",
+          "line": 50
+        },
+        {
+          "heading": "2.1 基本结构",
+          "line": 52
+        },
+        {
+          "heading": "2.2 为什么采用\"先升维后降维\"的瓶颈结构",
+          "line": 76
+        },
+        {
+          "heading": "2.3 PyTorch 实现：标准 FFN",
+          "line": 88
+        },
+        {
+          "heading": "3. 激活函数详解",
+          "line": 156
+        },
+        {
+          "heading": "3.1 ReLU（Rectified Linear Unit）",
+          "line": 160
+        },
+        {
+          "heading": "3.2 GELU（Gaussian Error Linear Unit）",
+          "line": 195
+        },
+        {
+          "heading": "3.3 Swish",
+          "line": 235
+        },
+        {
+          "heading": "3.4 对比总结",
+          "line": 264
+        },
+        {
+          "heading": "4. SwiGLU：当前大模型的主流选择",
+          "line": 279
+        },
+        {
+          "heading": "4.1 GLU 门控机制的思想",
+          "line": 281
+        },
+        {
+          "heading": "4.2 SwiGLU 的完整定义",
+          "line": 301
+        },
+        {
+          "heading": "4.3 为什么门控机制有效",
+          "line": 320
+        },
+        {
+          "heading": "4.4 PyTorch 实现：SwiGLU FFN",
+          "line": 330
+        },
+        {
+          "heading": "5. 参数量计算与对比",
+          "line": 401
+        },
+        {
+          "heading": "5.1 标准 FFN vs SwiGLU FFN 参数量对比",
+          "line": 405
+        },
+        {
+          "heading": "5.2 对比分析",
+          "line": 426
+        },
+        {
+          "heading": "5.3 与 Attention 模块的参数量对比",
+          "line": 439
+        },
+        {
+          "heading": "6. FFN 中间维度的选择：为什么是 4x 和 8/3x",
+          "line": 452
+        },
+        {
+          "heading": "6.1 标准 FFN 为什么选择 4 倍扩展",
+          "line": 454
+        },
+        {
+          "heading": "6.2 SwiGLU 为什么用 8/3 倍扩展",
+          "line": 466
+        },
+        {
+          "heading": "7. 张量并行切分 FFN",
+          "line": 492
+        },
+        {
+          "heading": "7.1 Megatron-LM 的列切分 + 行切分策略",
+          "line": 496
+        },
+        {
+          "heading": "7.2 SwiGLU 的切分",
+          "line": 550
+        },
+        {
+          "heading": "7.3 工程考量",
+          "line": 570
+        },
+        {
+          "heading": "8. MoE：将 FFN 拆分为多个专家",
+          "line": 576
+        },
+        {
+          "heading": "8.1 核心思想",
+          "line": 578
+        },
+        {
+          "heading": "8.2 路由机制（Router）",
+          "line": 590
+        },
+        {
+          "heading": "8.3 负载均衡",
+          "line": 614
+        },
+        {
+          "heading": "8.4 AI Infra 关联：Expert Parallelism",
+          "line": 638
+        },
+        {
+          "heading": "9. CUDA Kernel 融合在 FFN 中的应用",
+          "line": 648
+        },
+        {
+          "heading": "9.1 为什么需要 Kernel 融合",
+          "line": 650
+        },
+        {
+          "heading": "9.2 FFN 中的典型融合场景",
+          "line": 661
+        },
+        {
+          "heading": "9.3 性能影响",
+          "line": 697
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 706
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 721
+        },
+        {
+          "heading": "论文",
+          "line": 723
+        },
+        {
+          "heading": "教程与博客",
+          "line": 734
+        }
+      ]
+    },
+    "3.5 Transformer位置编码深入理解": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.5 Transformer位置编码深入理解.md",
+      "title": "3.5 Transformer位置编码深入理解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.5%20Transformer%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么 Transformer 需要位置信息",
+          "line": 30
+        },
+        {
+          "heading": "1.1 语序对语义的决定性影响",
+          "line": 32
+        },
+        {
+          "heading": "1.2 Attention 的排列等变性：数学视角",
+          "line": 49
+        },
+        {
+          "heading": "2. 绝对位置编码 vs 相对位置编码",
+          "line": 93
+        },
+        {
+          "heading": "2.1 绝对位置编码",
+          "line": 97
+        },
+        {
+          "heading": "2.2 相对位置编码",
+          "line": 109
+        },
+        {
+          "heading": "2.3 两种思路的对比",
+          "line": 117
+        },
+        {
+          "heading": "3. Sinusoidal 位置编码",
+          "line": 130
+        },
+        {
+          "heading": "3.1 数学公式",
+          "line": 132
+        },
+        {
+          "heading": "3.2 多频率信号的直觉：收音机调谐的比喻",
+          "line": 148
+        },
+        {
+          "heading": "3.3 Python 实现：生成并可视化 Sinusoidal 位置编码",
+          "line": 163
+        },
+        {
+          "heading": "3.4 相对位置可通过线性变换得到",
+          "line": 229
+        },
+        {
+          "heading": "3.5 局限性",
+          "line": 252
+        },
+        {
+          "heading": "4. 可学习位置编码",
+          "line": 264
+        },
+        {
+          "heading": "4.1 基本思路",
+          "line": 266
+        },
+        {
+          "heading": "4.2 代表模型",
+          "line": 278
+        },
+        {
+          "heading": "4.3 优势与不足",
+          "line": 284
+        },
+        {
+          "heading": "5. RoPE：旋转位置编码",
+          "line": 300
+        },
+        {
+          "heading": "5.1 从二维旋转说起：指南针的比喻",
+          "line": 304
+        },
+        {
+          "heading": "5.2 二维情形的数学推导",
+          "line": 322
+        },
+        {
+          "heading": "5.3 推广到高维",
+          "line": 354
+        },
+        {
+          "heading": "5.4 为什么内积只依赖相对位置差：高维情形的证明",
+          "line": 380
+        },
+        {
+          "heading": "5.5 高效实现：避免显式构造旋转矩阵",
+          "line": 414
+        },
+        {
+          "heading": "5.6 RoPE 与 Sinusoidal 的联系和区别",
+          "line": 515
+        },
+        {
+          "heading": "6. ALiBi：带线性偏置的注意力",
+          "line": 539
+        },
+        {
+          "heading": "6.1 核心思想",
+          "line": 543
+        },
+        {
+          "heading": "6.2 优势与局限",
+          "line": 561
+        },
+        {
+          "heading": "7. 长上下文扩展技术",
+          "line": 578
+        },
+        {
+          "heading": "7.1 位置编码外推的挑战",
+          "line": 582
+        },
+        {
+          "heading": "7.2 位置插值（Position Interpolation）",
+          "line": 588
+        },
+        {
+          "heading": "7.3 NTK-aware Scaling",
+          "line": 602
+        },
+        {
+          "heading": "7.4 YaRN 的改进",
+          "line": 619
+        },
+        {
+          "heading": "7.5 动态 NTK",
+          "line": 633
+        },
+        {
+          "heading": "8. AI Infra 工程实践",
+          "line": 648
+        },
+        {
+          "heading": "8.1 RoPE 在 CUDA kernel 中的融合",
+          "line": 652
+        },
+        {
+          "heading": "8.2 长上下文对 KV Cache 的影响",
+          "line": 667
+        },
+        {
+          "heading": "8.3 不同位置编码方案的工程对比",
+          "line": 691
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 704
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 719
+        },
+        {
+          "heading": "论文",
+          "line": 721
+        },
+        {
+          "heading": "博客与教程",
+          "line": 731
+        }
+      ]
+    },
+    "3.6 LayerNorm与残差连接深入理解": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.6 LayerNorm与残差连接深入理解.md",
+      "title": "3.6 LayerNorm与残差连接深入理解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.6%20LayerNorm%E4%B8%8E%E6%AE%8B%E5%B7%AE%E8%BF%9E%E6%8E%A5%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 深度网络训练的根本挑战",
+          "line": 28
+        },
+        {
+          "heading": "1.1 梯度消失与梯度爆炸",
+          "line": 32
+        },
+        {
+          "heading": "1.2 退化问题（Degradation Problem）",
+          "line": 50
+        },
+        {
+          "heading": "2. 残差连接：梯度的高速公路",
+          "line": 58
+        },
+        {
+          "heading": "2.1 从 ResNet 到 Transformer：残差连接的历史",
+          "line": 60
+        },
+        {
+          "heading": "2.2 数学分析：为什么残差连接能保证梯度流",
+          "line": 94
+        },
+        {
+          "heading": "2.3 PyTorch 实现：带残差连接的 Transformer 子层",
+          "line": 132
+        },
+        {
+          "heading": "3. 归一化方法全景",
+          "line": 195
+        },
+        {
+          "heading": "3.1 BatchNorm：开山之作，但不适合 NLP",
+          "line": 199
+        },
+        {
+          "heading": "3.2 LayerNorm：Transformer 的标准配置",
+          "line": 234
+        },
+        {
+          "heading": "3.3 RMSNorm：大模型时代的新宠",
+          "line": 313
+        },
+        {
+          "heading": "3.4 三种归一化方法对比",
+          "line": 400
+        },
+        {
+          "heading": "4. Pre-Norm vs Post-Norm：一个影响深远的设计选择",
+          "line": 415
+        },
+        {
+          "heading": "4.1 两种架构的数据流对比",
+          "line": 419
+        },
+        {
+          "heading": "4.2 梯度流分析：为什么 Pre-Norm 更稳定",
+          "line": 446
+        },
+        {
+          "heading": "4.3 训练稳定性：实验证据",
+          "line": 472
+        },
+        {
+          "heading": "4.4 为什么大模型时代 Pre-Norm 成为默认选择",
+          "line": 480
+        },
+        {
+          "heading": "4.5 DeepNorm：一种混合方案",
+          "line": 493
+        },
+        {
+          "heading": "5. CUDA 优化视角：工程落地的关键考量",
+          "line": 513
+        },
+        {
+          "heading": "5.1 LayerNorm Kernel 的实现挑战",
+          "line": 517
+        },
+        {
+          "heading": "5.2 Residual Add + LayerNorm 融合",
+          "line": 541
+        },
+        {
+          "heading": "5.3 FP16/BF16 下的数值精度问题",
+          "line": 567
+        },
+        {
+          "heading": "6. 大模型的归一化选择一览",
+          "line": 608
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 637
+        },
+        {
+          "heading": "自检清单",
+          "line": 639
+        },
+        {
+          "heading": "动手练习",
+          "line": 650
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 656
+        }
+      ]
+    },
+    "3.7 Transformer Decoder Block完整解析": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.7 Transformer Decoder Block完整解析.md",
+      "title": "3.7 Transformer Decoder Block完整解析",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.7%20Transformer%20Decoder%20Block%E5%AE%8C%E6%95%B4%E8%A7%A3%E6%9E%90.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 架构选型：为什么 Decoder-only 成为主流",
+          "line": 31
+        },
+        {
+          "heading": "1.1 三种 Transformer 架构回顾",
+          "line": 33
+        },
+        {
+          "heading": "1.2 Decoder-only 胜出的原因",
+          "line": 45
+        },
+        {
+          "heading": "2. Decoder Block 完整数据流",
+          "line": 61
+        },
+        {
+          "heading": "3. Causal Mask：因果掩码详解",
+          "line": 77
+        },
+        {
+          "heading": "3.1 为什么需要因果掩码",
+          "line": 79
+        },
+        {
+          "heading": "3.2 掩码矩阵的可视化",
+          "line": 87
+        },
+        {
+          "heading": "3.3 实现方式",
+          "line": 117
+        },
+        {
+          "heading": "4. PyTorch 实现：从零搭建 Decoder Block",
+          "line": 152
+        },
+        {
+          "heading": "5. 主流模型维度配置对比",
+          "line": 332
+        },
+        {
+          "heading": "6. 参数量手算教学",
+          "line": 354
+        },
+        {
+          "heading": "6.1 通用公式推导",
+          "line": 358
+        },
+        {
+          "heading": "6.2 详细计算：以 LLaMA-2-7B 为例",
+          "line": 412
+        },
+        {
+          "heading": "6.3 练习：LLaMA-2-13B 参数量",
+          "line": 461
+        },
+        {
+          "heading": "6.4 Weight Tying 技术",
+          "line": 482
+        },
+        {
+          "heading": "7. 计算量（FLOPs）估算",
+          "line": 497
+        },
+        {
+          "heading": "7.1 矩阵乘法的 FLOPs",
+          "line": 501
+        },
+        {
+          "heading": "7.2 单次前向传播的 FLOPs",
+          "line": 508
+        },
+        {
+          "heading": "7.3 训练 vs 推理的 FLOPs",
+          "line": 522
+        },
+        {
+          "heading": "7.4 估算实例",
+          "line": 547
+        },
+        {
+          "heading": "8. 显存规划详解",
+          "line": 558
+        },
+        {
+          "heading": "8.1 模型权重显存",
+          "line": 562
+        },
+        {
+          "heading": "8.2 训练态显存：四大组成部分",
+          "line": 577
+        },
+        {
+          "heading": "8.3 推理态显存：权重 + KV Cache",
+          "line": 630
+        },
+        {
+          "heading": "8.4 完整规划案例",
+          "line": 660
+        },
+        {
+          "heading": "9. 主流开源模型架构对比",
+          "line": 694
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 722
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 735
+        },
+        {
+          "heading": "论文",
+          "line": 737
+        },
+        {
+          "heading": "教程与博客",
+          "line": 748
+        }
+      ]
+    },
+    "3.8 从Transformer到LLM自回归生成深入理解": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.8 从Transformer到LLM自回归生成深入理解.md",
+      "title": "3.8 从Transformer到LLM自回归生成深入理解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.8%20%E4%BB%8ETransformer%E5%88%B0LLM%E8%87%AA%E5%9B%9E%E5%BD%92%E7%94%9F%E6%88%90%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 语言模型的本质：预测下一个词",
+          "line": 32
+        },
+        {
+          "heading": "1.1 条件概率视角",
+          "line": 34
+        },
+        {
+          "heading": "1.2 从 Transformer 输出到概率分布",
+          "line": 50
+        },
+        {
+          "heading": "1.3 自回归 vs 非自回归",
+          "line": 70
+        },
+        {
+          "heading": "2. 自回归生成的工作机制",
+          "line": 80
+        },
+        {
+          "heading": "2.1 生成循环",
+          "line": 82
+        },
+        {
+          "heading": "2.2 停止条件",
+          "line": 115
+        },
+        {
+          "heading": "3. Token 采样策略",
+          "line": 125
+        },
+        {
+          "heading": "3.1 Greedy Decoding（贪心解码）",
+          "line": 129
+        },
+        {
+          "heading": "3.2 Temperature 缩放",
+          "line": 139
+        },
+        {
+          "heading": "3.3 Top-K 采样",
+          "line": 157
+        },
+        {
+          "heading": "3.4 Top-P 采样（Nucleus Sampling）",
+          "line": 169
+        },
+        {
+          "heading": "4. Prefill 阶段：一次吃下整个 Prompt",
+          "line": 190
+        },
+        {
+          "heading": "4.1 Prefill 的计算过程",
+          "line": 192
+        },
+        {
+          "heading": "4.2 为什么 Prefill 是 Compute Bound",
+          "line": 206
+        },
+        {
+          "heading": "4.3 TTFT：用户感知的第一个指标",
+          "line": 218
+        },
+        {
+          "heading": "5. Decode 阶段：逐字蹦出答案",
+          "line": 229
+        },
+        {
+          "heading": "5.1 Decode 的计算过程",
+          "line": 231
+        },
+        {
+          "heading": "5.2 为什么 Decode 是 Memory Bound",
+          "line": 243
+        },
+        {
+          "heading": "5.3 TPOT：决定用户体验的流畅度",
+          "line": 258
+        },
+        {
+          "heading": "5.4 Continuous Batching",
+          "line": 264
+        },
+        {
+          "heading": "6. KV Cache 深度解析",
+          "line": 276
+        },
+        {
+          "heading": "6.1 为什么需要 KV Cache",
+          "line": 278
+        },
+        {
+          "heading": "6.2 有无 KV Cache 的计算量对比",
+          "line": 286
+        },
+        {
+          "heading": "6.3 KV Cache 的数据结构",
+          "line": 312
+        },
+        {
+          "heading": "6.4 KV Cache 显存计算",
+          "line": 344
+        },
+        {
+          "heading": "6.5 显存碎片化问题",
+          "line": 376
+        },
+        {
+          "heading": "7. KV Cache 优化技术全景",
+          "line": 386
+        },
+        {
+          "heading": "7.1 PagedAttention：借鉴操作系统的虚拟内存",
+          "line": 388
+        },
+        {
+          "heading": "7.2 Prefix Cache / Prompt Cache",
+          "line": 414
+        },
+        {
+          "heading": "7.3 KV Cache 量化",
+          "line": 422
+        },
+        {
+          "heading": "7.4 GQA / MQA 减少 KV 头数",
+          "line": 435
+        },
+        {
+          "heading": "7.5 Sliding Window Attention",
+          "line": 445
+        },
+        {
+          "heading": "7.6 Token Eviction / Token Dropping",
+          "line": 451
+        },
+        {
+          "heading": "8. 系统级推理优化",
+          "line": 462
+        },
+        {
+          "heading": "8.1 Prefill/Decode 解耦",
+          "line": 464
+        },
+        {
+          "heading": "8.2 Speculative Decoding（投机解码）",
+          "line": 475
+        },
+        {
+          "heading": "8.3 Tensor Parallelism 在推理中的应用",
+          "line": 489
+        },
+        {
+          "heading": "9. 推理性能指标体系",
+          "line": 500
+        },
+        {
+          "heading": "9.1 延迟指标（用户视角）",
+          "line": 504
+        },
+        {
+          "heading": "9.2 吞吐指标（系统视角）",
+          "line": 514
+        },
+        {
+          "heading": "9.3 效率指标（成本视角）",
+          "line": 522
+        },
+        {
+          "heading": "📝 总结",
+          "line": 533
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 550
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 561
+        }
+      ]
+    },
+    "3.9 Tokenization与词嵌入": {
+      "path": "docs/guides/模块一-前置知识/transformer/3.9 Tokenization与词嵌入.md",
+      "title": "3.9 Tokenization与词嵌入",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/3.9%20Tokenization%E4%B8%8E%E8%AF%8D%E5%B5%8C%E5%85%A5.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么需要把文字变成向量",
+          "line": 28
+        },
+        {
+          "heading": "2. Tokenization：把文字切分成基本单元",
+          "line": 41
+        },
+        {
+          "heading": "2.1 Token 是什么",
+          "line": 43
+        },
+        {
+          "heading": "2.2 子词切分：大模型的实际选择",
+          "line": 57
+        },
+        {
+          "heading": "2.3 Tokenization 的中文处理",
+          "line": 76
+        },
+        {
+          "heading": "3. 独热编码：第一次尝试的失败",
+          "line": 85
+        },
+        {
+          "heading": "4. Word Embedding：几何空间里的语义地图",
+          "line": 111
+        },
+        {
+          "heading": "4.1 核心思想：语义相似的词距离相近",
+          "line": 113
+        },
+        {
+          "heading": "4.2 Embedding 空间的神奇属性",
+          "line": 142
+        },
+        {
+          "heading": "4.3 Embedding 矩阵：一张可学习的查找表",
+          "line": 164
+        },
+        {
+          "heading": "5. 位置信息的空缺：为什么还需要 Positional Encoding",
+          "line": 186
+        },
+        {
+          "heading": "6. 从 Token ID 到输入矩阵：Transformer 的输入层",
+          "line": 202
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 239
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 249
+        }
+      ]
+    },
+    "Transformer架构快速入门": {
+      "path": "docs/guides/模块一-前置知识/transformer/Transformer架构快速入门.md",
+      "title": "Transformer架构快速入门",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/transformer/Transformer%E6%9E%B6%E6%9E%84%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么 AI Infra 工程师必须懂 Transformer",
+          "line": 31
+        },
+        {
+          "heading": "2. Transformer 网络结构全貌",
+          "line": 55
+        },
+        {
+          "heading": "2.1 原始 Transformer：Encoder-Decoder 架构",
+          "line": 59
+        },
+        {
+          "heading": "2.2 当前大模型的主流：Decoder-only 架构",
+          "line": 70
+        },
+        {
+          "heading": "2.3 三种架构变体的对比",
+          "line": 87
+        },
+        {
+          "heading": "3. Self-Attention 机制",
+          "line": 104
+        },
+        {
+          "heading": "3.1 直觉理解：Attention 在做什么",
+          "line": 108
+        },
+        {
+          "heading": "3.2 计算过程：从输入到输出的完整流程",
+          "line": 129
+        },
+        {
+          "heading": "3.3 为什么复杂度是 $O(N^2)$",
+          "line": 203
+        },
+        {
+          "heading": "3.4 Multi-Head Attention：为什么要多头",
+          "line": 220
+        },
+        {
+          "heading": "4. 前馈网络（FFN）",
+          "line": 284
+        },
+        {
+          "heading": "4.1 结构：两层线性变换 + 激活函数",
+          "line": 290
+        },
+        {
+          "heading": "4.2 参数量分析：为什么 FFN 是模型参数的大头",
+          "line": 315
+        },
+        {
+          "heading": "4.3 激活函数activation演进：ReLU → GELU → SwiGLU",
+          "line": 331
+        },
+        {
+          "heading": "5. 位置编码",
+          "line": 367
+        },
+        {
+          "heading": "5.1 为什么 Transformer 需要位置信息",
+          "line": 369
+        },
+        {
+          "heading": "5.2 Sinusoidal 位置编码：原始论文方案",
+          "line": 379
+        },
+        {
+          "heading": "5.3 RoPE（旋转位置编码）：当前大模型的主流选择",
+          "line": 403
+        },
+        {
+          "heading": "6. LayerNorm 与残差连接",
+          "line": 440
+        },
+        {
+          "heading": "6.1 残差连接：让梯度畅通无阻",
+          "line": 442
+        },
+        {
+          "heading": "6.2 LayerNorm：稳定训练的归一化操作",
+          "line": 486
+        },
+        {
+          "heading": "6.3 Pre-Norm vs Post-Norm",
+          "line": 498
+        },
+        {
+          "heading": "7. 详解 Transformer Decoder Block",
+          "line": 537
+        },
+        {
+          "heading": "7.1 数据流图解",
+          "line": 541
+        },
+        {
+          "heading": "7.2 维度跟踪",
+          "line": 549
+        },
+        {
+          "heading": "7.3 参数量手算：LLaMA-2-7B 的参数都花在了哪里",
+          "line": 603
+        },
+        {
+          "heading": "8. 从 Transformer 到 LLM：自回归生成",
+          "line": 654
+        },
+        {
+          "heading": "8.1 自回归生成：一次只输出一个 token",
+          "line": 658
+        },
+        {
+          "heading": "8.2 Prefill 和 Decode 两阶段",
+          "line": 677
+        },
+        {
+          "heading": "8.3 KV Cache 的由来",
+          "line": 709
+        },
+        {
+          "heading": "📝 总结",
+          "line": 737
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 758
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 772
+        },
+        {
+          "heading": "论文",
+          "line": 774
+        },
+        {
+          "heading": "教程与博客",
+          "line": 784
+        }
+      ]
+    },
+    "第1章-编程语言基础": {
+      "path": "docs/guides/模块一-前置知识/第1章-编程语言基础.md",
+      "title": "第1章-编程语言基础",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%80-%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86/%E7%AC%AC1%E7%AB%A0-%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%9F%BA%E7%A1%80.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 16
+        },
+        {
+          "heading": "1. 学习目标与开发全景",
+          "line": 35
+        },
+        {
+          "heading": "1.1 三层语言各自负责什么",
+          "line": 50
+        },
+        {
+          "heading": "1.2 开始前的最小工具箱",
+          "line": 69
+        },
+        {
+          "heading": "2. Python：从脚本到工程",
+          "line": 94
+        },
+        {
+          "heading": "2.1 名字、对象与引用",
+          "line": 96
+        },
+        {
+          "heading": "2.2 可变对象、不可变对象与拷贝",
+          "line": 134
+        },
+        {
+          "heading": "默认参数只创建一次",
+          "line": 138
+        },
+        {
+          "heading": "浅拷贝与深拷贝",
+          "line": 156
+        },
+        {
+          "heading": "2.3 作用域、闭包与 LEGB",
+          "line": 172
+        },
+        {
+          "heading": "2.4 类、数据模型与协议",
+          "line": 203
+        },
+        {
+          "heading": "实例方法、类方法和静态方法",
+          "line": 238
+        },
+        {
+          "heading": "2.5 迭代器与生成器：按需生产数据",
+          "line": 258
+        },
+        {
+          "heading": "2.6 装饰器：在调用边界附加行为",
+          "line": 285
+        },
+        {
+          "heading": "2.7 上下文管理器：让资源必定释放",
+          "line": 318
+        },
+        {
+          "heading": "2.8 异常处理：只捕获能够处理的错误",
+          "line": 342
+        },
+        {
+          "heading": "2.9 类型标注与数据类",
+          "line": 364
+        },
+        {
+          "heading": "3. Python 并发与性能分析",
+          "line": 393
+        },
+        {
+          "heading": "3.1 先分清并发与并行",
+          "line": 395
+        },
+        {
+          "heading": "3.2 GIL 到底限制了什么",
+          "line": 409
+        },
+        {
+          "heading": "3.3 线程：共享内存，也共享风险",
+          "line": 421
+        },
+        {
+          "heading": "3.4 多进程：绕开 GIL，但数据搬运有成本",
+          "line": 452
+        },
+        {
+          "heading": "3.5 `asyncio`：协作式 I/O 并发",
+          "line": 482
+        },
+        {
+          "heading": "3.6 正确做基准测试",
+          "line": 505
+        },
+        {
+          "heading": "3.7 从“慢”定位到具体代码",
+          "line": 535
+        },
+        {
+          "heading": "3.8 Python 性能优化的优先级",
+          "line": 570
+        },
+        {
+          "heading": "4. C/C++：内存、生命周期与资源管理",
+          "line": 584
+        },
+        {
+          "heading": "4.1 值、地址、指针与引用",
+          "line": 586
+        },
+        {
+          "heading": "4.2 数组、指针与连续内存",
+          "line": 623
+        },
+        {
+          "heading": "4.3 对象存储期与生命周期",
+          "line": 657
+        },
+        {
+          "heading": "4.4 RAII：把资源绑定到对象生命周期",
+          "line": 679
+        },
+        {
+          "heading": "4.5 智能指针与所有权",
+          "line": 712
+        },
+        {
+          "heading": "4.6 拷贝、移动与 Rule of Zero",
+          "line": 730
+        },
+        {
+          "heading": "4.7 `const`：把不可修改写进接口",
+          "line": 751
+        },
+        {
+          "heading": "4.8 未定义行为为什么危险",
+          "line": 772
+        },
+        {
+          "heading": "5. C++ 编译、链接、模板与构建系统",
+          "line": 793
+        },
+        {
+          "heading": "5.1 从源代码到可执行文件",
+          "line": 795
+        },
+        {
+          "heading": "5.2 编译错误、链接错误与运行时装载错误",
+          "line": 830
+        },
+        {
+          "heading": "5.3 静态库与动态库",
+          "line": 850
+        },
+        {
+          "heading": "5.4 ABI：源码兼容不代表二进制兼容",
+          "line": 857
+        },
+        {
+          "heading": "5.5 模板：在编译期生成类型特化代码",
+          "line": 869
+        },
+        {
+          "heading": "5.6 STL 容器与迭代器",
+          "line": 903
+        },
+        {
+          "heading": "5.7 最小 CMake 项目",
+          "line": 922
+        },
+        {
+          "heading": "5.8 C++ 并发的最小认知",
+          "line": 957
+        },
+        {
+          "heading": "6. Python 与 C++ 互操作",
+          "line": 979
+        },
+        {
+          "heading": "6.1 为什么需要跨语言边界",
+          "line": 981
+        },
+        {
+          "heading": "6.2 `ctypes`：调用稳定的 C ABI",
+          "line": 992
+        },
+        {
+          "heading": "6.3 `pybind11`：自然地绑定 C++ 接口",
+          "line": 1033
+        },
+        {
+          "heading": "6.4 零拷贝不是“没有条件”",
+          "line": 1060
+        },
+        {
+          "heading": "7. Linux 开发基本功",
+          "line": 1074
+        },
+        {
+          "heading": "7.1 文件、目录与文本流",
+          "line": 1076
+        },
+        {
+          "heading": "7.2 引号、变量与退出码",
+          "line": 1100
+        },
+        {
+          "heading": "7.3 权限模型",
+          "line": 1131
+        },
+        {
+          "heading": "7.4 进程、作业与信号",
+          "line": 1143
+        },
+        {
+          "heading": "7.5 查看 CPU、内存、磁盘和网络",
+          "line": 1173
+        },
+        {
+          "heading": "7.6 环境变量与动态库路径",
+          "line": 1188
+        },
+        {
+          "heading": "7.7 SSH 与文件传输",
+          "line": 1208
+        },
+        {
+          "heading": "7.8 调试原生程序",
+          "line": 1236
+        },
+        {
+          "heading": "8. 环境隔离与 GPU 软件栈",
+          "line": 1269
+        },
+        {
+          "heading": "8.1 `venv`、conda 与容器解决不同层次的问题",
+          "line": 1271
+        },
+        {
+          "heading": "8.2 容器不是虚拟机",
+          "line": 1300
+        },
+        {
+          "heading": "8.3 GPU 软件栈：四个容易混淆的部分",
+          "line": 1315
+        },
+        {
+          "heading": "8.4 诊断 GPU 环境的固定顺序",
+          "line": 1336
+        },
+        {
+          "heading": "9. Git 协作与问题定位方法",
+          "line": 1374
+        },
+        {
+          "heading": "9.1 一条干净的贡献流程",
+          "line": 1376
+        },
+        {
+          "heading": "9.2 读懂工作区状态",
+          "line": 1394
+        },
+        {
+          "heading": "9.3 合并、变基与冲突",
+          "line": 1411
+        },
+        {
+          "heading": "9.4 一个可复用的定位框架",
+          "line": 1418
+        },
+        {
+          "heading": "10. 综合实战：给 Python 添加一个 C++ 算子",
+          "line": 1433
+        },
+        {
+          "heading": "10.1 项目结构",
+          "line": 1437
+        },
+        {
+          "heading": "10.2 C++ 实现与绑定",
+          "line": 1446
+        },
+        {
+          "heading": "10.3 CMake 构建",
+          "line": 1473
+        },
+        {
+          "heading": "10.4 验证正确性",
+          "line": 1497
+        },
+        {
+          "heading": "10.5 从教学例子到高性能接口还差什么",
+          "line": 1516
+        },
+        {
+          "heading": "总结",
+          "line": 1532
+        },
+        {
+          "heading": "自我检验清单",
+          "line": 1544
+        },
+        {
+          "heading": "练习题",
+          "line": 1561
+        },
+        {
+          "heading": "参考资料",
+          "line": 1574
+        }
+      ]
+    },
+    "2.1 集合通信原语详解": {
+      "path": "docs/guides/模块三-分布式训练/2.1 集合通信原语详解.md",
+      "title": "2.1 集合通信原语详解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%89-%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/2.1%20%E9%9B%86%E5%90%88%E9%80%9A%E4%BF%A1%E5%8E%9F%E8%AF%AD%E8%AF%A6%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么要单独讲通信原语",
+          "line": 29
+        },
+        {
+          "heading": "2. 点对点通信：一切的基础",
+          "line": 50
+        },
+        {
+          "heading": "3. 集合通信原语详解",
+          "line": 91
+        },
+        {
+          "heading": "3.1 Broadcast：一份数据复制给所有人",
+          "line": 95
+        },
+        {
+          "heading": "3.2 Scatter / Gather：分发与收集",
+          "line": 113
+        },
+        {
+          "heading": "3.3 Reduce：规约到一个 rank",
+          "line": 133
+        },
+        {
+          "heading": "3.4 AllReduce：规约结果人人有份（本章核心）",
+          "line": 153
+        },
+        {
+          "heading": "3.5 ReduceScatter：规约后只留自己那份",
+          "line": 173
+        },
+        {
+          "heading": "3.6 AllGather：分片拼成完整数据",
+          "line": 193
+        },
+        {
+          "heading": "3.7 All-to-All：人人给人人发不同数据",
+          "line": 213
+        },
+        {
+          "heading": "3.8 一个贯穿全书的恒等式",
+          "line": 231
+        },
+        {
+          "heading": "4. Ring AllReduce 算法原理",
+          "line": 241
+        },
+        {
+          "heading": "4.1 朴素 AllReduce 的问题",
+          "line": 245
+        },
+        {
+          "heading": "4.2 Ring：把所有卡连成一个环",
+          "line": 251
+        },
+        {
+          "heading": "4.3 通信量推导：为什么与卡数无关",
+          "line": 273
+        },
+        {
+          "heading": "4.4 带宽最优性与其他拓扑",
+          "line": 291
+        },
+        {
+          "heading": "5. 通信量的量化方法",
+          "line": 303
+        },
+        {
+          "heading": "5.1 统一记号",
+          "line": 307
+        },
+        {
+          "heading": "5.2 三类原语的每卡通信量",
+          "line": 316
+        },
+        {
+          "heading": "5.3 通信时间估算模型",
+          "line": 328
+        },
+        {
+          "heading": "5.4 计算与通信重叠",
+          "line": 341
+        },
+        {
+          "heading": "6. 动手实验",
+          "line": 347
+        },
+        {
+          "heading": "📝 总结",
+          "line": 401
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 410
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 420
+        }
+      ]
+    },
+    "3.1 优化器原理与显存开销分析": {
+      "path": "docs/guides/模块三-分布式训练/3.1 优化器原理与显存开销分析.md",
+      "title": "3.1 优化器原理与显存开销分析",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%89-%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/3.1%20%E4%BC%98%E5%8C%96%E5%99%A8%E5%8E%9F%E7%90%86%E4%B8%8E%E6%98%BE%E5%AD%98%E5%BC%80%E9%94%80%E5%88%86%E6%9E%90.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 优化器到底在训练里干什么",
+          "line": 28
+        },
+        {
+          "heading": "2. 优化器演进：从 SGD 到 AdamW",
+          "line": 56
+        },
+        {
+          "heading": "3. 优化器状态的显存开销",
+          "line": 99
+        },
+        {
+          "heading": "3.1 每个参数要为优化器付多少显存",
+          "line": 105
+        },
+        {
+          "heading": "3.2 把一次训练的显存账全部摊开",
+          "line": 117
+        },
+        {
+          "heading": "3.3 为什么优化器状态必须用 FP32",
+          "line": 155
+        },
+        {
+          "heading": "4. 大 Batch 优化器：LARS 与 LAMB",
+          "line": 166
+        },
+        {
+          "heading": "4.1 大 Batch 为什么会训练不稳",
+          "line": 172
+        },
+        {
+          "heading": "4.2 LARS：给每一层单独定步长",
+          "line": 182
+        },
+        {
+          "heading": "4.3 LAMB：把 LARS 的思想搬进 Adam",
+          "line": 192
+        },
+        {
+          "heading": "5. 动手：把优化器的显存账本翻出来看",
+          "line": 210
+        },
+        {
+          "heading": "📝 总结",
+          "line": 269
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 279
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 287
+        }
+      ]
+    },
+    "4.2 PyTorch 数据并行从原理到实战": {
+      "path": "docs/guides/模块三-分布式训练/4.2 PyTorch 数据并行从原理到实战.md",
+      "title": "4.2 PyTorch 数据并行从原理到实战",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%B8%89-%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83/4.2%20PyTorch%20%E6%95%B0%E6%8D%AE%E5%B9%B6%E8%A1%8C%E4%BB%8E%E5%8E%9F%E7%90%86%E5%88%B0%E5%AE%9E%E6%88%98.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. PyTorch 分布式通信基础",
+          "line": 29
+        },
+        {
+          "heading": "1.1 核心概念",
+          "line": 33
+        },
+        {
+          "heading": "1.2 通信后端选择",
+          "line": 43
+        },
+        {
+          "heading": "1.3 集合通信原语",
+          "line": 55
+        },
+        {
+          "heading": "1.4 初始化通信",
+          "line": 69
+        },
+        {
+          "heading": "2. DDP：数据并行的标准方案",
+          "line": 92
+        },
+        {
+          "heading": "2.1 DDP 的工作原理",
+          "line": 96
+        },
+        {
+          "heading": "2.2 完整的 DDP 训练代码",
+          "line": 106
+        },
+        {
+          "heading": "2.3 DDP 使用要点",
+          "line": 193
+        },
+        {
+          "heading": "2.4 DDP 的局限",
+          "line": 227
+        },
+        {
+          "heading": "3. FSDP：参数分片的显存优化方案",
+          "line": 238
+        },
+        {
+          "heading": "3.1 从 ZeRO 理解 FSDP",
+          "line": 242
+        },
+        {
+          "heading": "3.2 FSDP 的工作流程",
+          "line": 258
+        },
+        {
+          "heading": "3.3 FSDP 分片策略",
+          "line": 269
+        },
+        {
+          "heading": "3.4 FSDP 完整训练代码",
+          "line": 282
+        },
+        {
+          "heading": "3.5 FSDP 模型保存与加载",
+          "line": 397
+        },
+        {
+          "heading": "3.6 FSDP2：下一代 API",
+          "line": 426
+        },
+        {
+          "heading": "4. DDP vs FSDP：如何选择",
+          "line": 448
+        },
+        {
+          "heading": "5. torchrun 与多机训练实战",
+          "line": 470
+        },
+        {
+          "heading": "5.1 torchrun 简介",
+          "line": 472
+        },
+        {
+          "heading": "5.2 单机多卡启动",
+          "line": 480
+        },
+        {
+          "heading": "5.3 多机多卡启动",
+          "line": 490
+        },
+        {
+          "heading": "5.4 弹性训练",
+          "line": 522
+        },
+        {
+          "heading": "5.5 训练代码中获取分布式信息",
+          "line": 539
+        },
+        {
+          "heading": "6. 分布式训练常见踩坑指南",
+          "line": 554
+        },
+        {
+          "heading": "6.1 死锁（Hang）",
+          "line": 556
+        },
+        {
+          "heading": "6.2 常用调试环境变量",
+          "line": 567
+        },
+        {
+          "heading": "6.3 随机种子一致性",
+          "line": 588
+        },
+        {
+          "heading": "6.4 学习率缩放",
+          "line": 609
+        },
+        {
+          "heading": "📝 总结",
+          "line": 638
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 652
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 667
+        }
+      ]
+    },
+    "1.1-CUDA开发环境搭建": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/1.1-CUDA开发环境搭建.md",
+      "title": "1.1-CUDA开发环境搭建",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/1.1-CUDA%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. GPU 驱动与 CUDA Toolkit 的关系",
+          "line": 31
+        },
+        {
+          "heading": "1.1 版本兼容性规则",
+          "line": 35
+        },
+        {
+          "heading": "1.2 CUDA Toolkit 包含的组件",
+          "line": 52
+        },
+        {
+          "heading": "2. 安装 NVIDIA 驱动",
+          "line": 68
+        },
+        {
+          "heading": "2.1 Linux（Ubuntu）",
+          "line": 70
+        },
+        {
+          "heading": "2.2 Windows",
+          "line": 98
+        },
+        {
+          "heading": "2.3 验证驱动安装",
+          "line": 102
+        },
+        {
+          "heading": "3. 安装 CUDA Toolkit",
+          "line": 124
+        },
+        {
+          "heading": "3.1 Linux 安装（推荐 runfile 方式）",
+          "line": 126
+        },
+        {
+          "heading": "3.2 Windows 安装",
+          "line": 143
+        },
+        {
+          "heading": "3.3 conda 安装（适用于 Python 开发者）",
+          "line": 147
+        },
+        {
+          "heading": "4. 环境变量配置",
+          "line": 158
+        },
+        {
+          "heading": "4.1 Linux",
+          "line": 162
+        },
+        {
+          "heading": "4.2 Windows",
+          "line": 182
+        },
+        {
+          "heading": "4.3 验证安装",
+          "line": 188
+        },
+        {
+          "heading": "5. nvcc 编译工具链",
+          "line": 213
+        },
+        {
+          "heading": "5.1 编译流程",
+          "line": 217
+        },
+        {
+          "heading": "5.2 常用编译选项",
+          "line": 231
+        },
+        {
+          "heading": "5.3 关键编译选项说明",
+          "line": 255
+        },
+        {
+          "heading": "5.4 GPU 架构代号速查",
+          "line": 268
+        },
+        {
+          "heading": "6. CMake 集成 CUDA",
+          "line": 281
+        },
+        {
+          "heading": "6.1 最小 CMakeLists.txt",
+          "line": 285
+        },
+        {
+          "heading": "6.2 混合 C++ 和 CUDA 源文件",
+          "line": 305
+        },
+        {
+          "heading": "6.3 构建和运行",
+          "line": 326
+        },
+        {
+          "heading": "7. Hello World：第一个 CUDA 程序",
+          "line": 339
+        },
+        {
+          "heading": "7.1 源代码 `hello_cuda.cu`",
+          "line": 343
+        },
+        {
+          "heading": "7.2 编译并运行",
+          "line": 369
+        },
+        {
+          "heading": "7.3 代码解析",
+          "line": 388
+        },
+        {
+          "heading": "8. 多版本 CUDA 管理",
+          "line": 400
+        },
+        {
+          "heading": "8.1 多版本安装",
+          "line": 404
+        },
+        {
+          "heading": "8.2 使用符号链接切换",
+          "line": 413
+        },
+        {
+          "heading": "8.3 使用 module 系统（集群环境）",
+          "line": 432
+        },
+        {
+          "heading": "8.4 写一个快速切换脚本",
+          "line": 441
+        },
+        {
+          "heading": "9. IDE 配置建议",
+          "line": 462
+        },
+        {
+          "heading": "9.1 VS Code（推荐）",
+          "line": 464
+        },
+        {
+          "heading": "9.2 CLion",
+          "line": 484
+        },
+        {
+          "heading": "9.3 Nsight Visual Studio Edition（Windows）",
+          "line": 491
+        },
+        {
+          "heading": "10. 常见安装问题排查",
+          "line": 499
+        },
+        {
+          "heading": "📝 总结",
+          "line": 515
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 527
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 537
+        }
+      ]
+    },
+    "1.2-CUDA编程模型": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/1.2-CUDA编程模型.md",
+      "title": "1.2-CUDA编程模型",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/1.2-CUDA%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%9E%8B.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 异构计算模型概览",
+          "line": 29
+        },
+        {
+          "heading": "1.1 程序执行流程",
+          "line": 33
+        },
+        {
+          "heading": "1.2 三种函数修饰符",
+          "line": 47
+        },
+        {
+          "heading": "2. Grid/Block/Thread 三级线程层次",
+          "line": 66
+        },
+        {
+          "heading": "2.1 概念模型",
+          "line": 70
+        },
+        {
+          "heading": "2.2 维度与索引",
+          "line": 79
+        },
+        {
+          "heading": "2.3 硬件限制",
+          "line": 97
+        },
+        {
+          "heading": "3. 线程索引计算",
+          "line": 111
+        },
+        {
+          "heading": "3.1 内置变量",
+          "line": 115
+        },
+        {
+          "heading": "3.2 一维索引计算",
+          "line": 124
+        },
+        {
+          "heading": "3.3 二维索引计算",
+          "line": 142
+        },
+        {
+          "heading": "3.4 Grid-stride Loop 模式",
+          "line": 154
+        },
+        {
+          "heading": "4. Kernel 函数与启动语法",
+          "line": 174
+        },
+        {
+          "heading": "4.1 Kernel 定义规则",
+          "line": 176
+        },
+        {
+          "heading": "4.2 启动语法 `<<<...>>>`",
+          "line": 194
+        },
+        {
+          "heading": "4.3 计算启动配置",
+          "line": 207
+        },
+        {
+          "heading": "4.4 错误检查",
+          "line": 221
+        },
+        {
+          "heading": "5. Block 大小选择策略",
+          "line": 243
+        },
+        {
+          "heading": "5.1 基本原则",
+          "line": 247
+        },
+        {
+          "heading": "5.2 为什么必须是 32 的倍数",
+          "line": 255
+        },
+        {
+          "heading": "5.3 Occupancy API（自动选择）",
+          "line": 264
+        },
+        {
+          "heading": "5.4 实用选择指南",
+          "line": 285
+        },
+        {
+          "heading": "6. Warp：硬件调度的基本单位",
+          "line": 296
+        },
+        {
+          "heading": "6.1 什么是 Warp",
+          "line": 298
+        },
+        {
+          "heading": "6.2 Warp 分歧（Divergence）",
+          "line": 302
+        },
+        {
+          "heading": "6.3 Warp 级原语",
+          "line": 328
+        },
+        {
+          "heading": "7. 多维索引与实际应用",
+          "line": 344
+        },
+        {
+          "heading": "7.1 图像处理：2D Grid + 2D Block",
+          "line": 346
+        },
+        {
+          "heading": "7.2 矩阵运算：行列映射",
+          "line": 372
+        },
+        {
+          "heading": "7.3 批处理：3D Grid",
+          "line": 387
+        },
+        {
+          "heading": "8. 占用率与性能",
+          "line": 410
+        },
+        {
+          "heading": "8.1 什么是占用率（Occupancy）",
+          "line": 412
+        },
+        {
+          "heading": "8.2 影响占用率的因素",
+          "line": 422
+        },
+        {
+          "heading": "8.3 用 Occupancy Calculator 分析",
+          "line": 431
+        },
+        {
+          "heading": "📝 总结",
+          "line": 447
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 460
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 471
+        }
+      ]
+    },
+    "1.3-CUDA内存模型": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/1.3-CUDA内存模型.md",
+      "title": "1.3-CUDA内存模型",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/1.3-CUDA%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么内存模型如此重要",
+          "line": 30
+        },
+        {
+          "heading": "2. 内存层次总览",
+          "line": 38
+        },
+        {
+          "heading": "2.1 内存层次架构图",
+          "line": 42
+        },
+        {
+          "heading": "2.2 各级内存对比",
+          "line": 56
+        },
+        {
+          "heading": "3. 全局内存",
+          "line": 70
+        },
+        {
+          "heading": "3.1 基本操作",
+          "line": 74
+        },
+        {
+          "heading": "3.2 合并访问（Coalesced Access）",
+          "line": 92
+        },
+        {
+          "heading": "3.3 访问模式对性能的影响",
+          "line": 108
+        },
+        {
+          "heading": "3.4 SoA vs AoS 示例",
+          "line": 118
+        },
+        {
+          "heading": "4. 共享内存",
+          "line": 140
+        },
+        {
+          "heading": "4.1 声明与使用",
+          "line": 144
+        },
+        {
+          "heading": "4.2 Bank Conflict",
+          "line": 186
+        },
+        {
+          "heading": "4.3 避免 Bank Conflict 的技巧",
+          "line": 205
+        },
+        {
+          "heading": "4.4 共享内存配置",
+          "line": 217
+        },
+        {
+          "heading": "5. 寄存器与局部内存",
+          "line": 232
+        },
+        {
+          "heading": "5.1 寄存器",
+          "line": 234
+        },
+        {
+          "heading": "5.2 寄存器溢出（Register Spilling）",
+          "line": 252
+        },
+        {
+          "heading": "5.3 寄存器使用建议",
+          "line": 265
+        },
+        {
+          "heading": "6. 常量内存",
+          "line": 277
+        },
+        {
+          "heading": "6.1 声明与使用",
+          "line": 281
+        },
+        {
+          "heading": "6.2 适用场景",
+          "line": 305
+        },
+        {
+          "heading": "7. 纹理内存",
+          "line": 317
+        },
+        {
+          "heading": "7.1 特点",
+          "line": 321
+        },
+        {
+          "heading": "7.2 现代替代",
+          "line": 328
+        },
+        {
+          "heading": "8. 统一内存",
+          "line": 342
+        },
+        {
+          "heading": "8.1 基本用法",
+          "line": 346
+        },
+        {
+          "heading": "8.2 页面迁移机制",
+          "line": 369
+        },
+        {
+          "heading": "8.3 性能优化：预取",
+          "line": 376
+        },
+        {
+          "heading": "8.4 适用场景分析",
+          "line": 393
+        },
+        {
+          "heading": "9. 内存选型决策指南",
+          "line": 406
+        },
+        {
+          "heading": "9.1 快速参考卡片",
+          "line": 420
+        },
+        {
+          "heading": "9.2 典型优化模式：Tiling",
+          "line": 431
+        },
+        {
+          "heading": "📝 总结",
+          "line": 476
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 488
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 499
+        }
+      ]
+    },
+    "1.4-第一个实用Kernel": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/1.4-第一个实用Kernel.md",
+      "title": "1.4-第一个实用Kernel",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/1.4-%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%AE%9E%E7%94%A8Kernel.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 从 CPU 到 GPU：一个完整的开发流程",
+          "line": 29
+        },
+        {
+          "heading": "2. 向量加法 Kernel 实现",
+          "line": 53
+        },
+        {
+          "heading": "2.1 Kernel 函数",
+          "line": 61
+        },
+        {
+          "heading": "2.2 为什么需要边界检查",
+          "line": 81
+        },
+        {
+          "heading": "3. 主机端完整代码",
+          "line": 92
+        },
+        {
+          "heading": "3.1 内存管理",
+          "line": 94
+        },
+        {
+          "heading": "3.2 编译与运行",
+          "line": 155
+        },
+        {
+          "heading": "4. CUDA 错误检查",
+          "line": 165
+        },
+        {
+          "heading": "4.1 宏定义",
+          "line": 169
+        },
+        {
+          "heading": "4.2 使用方式",
+          "line": 183
+        },
+        {
+          "heading": "4.3 常见错误码",
+          "line": 195
+        },
+        {
+          "heading": "5. 性能测量：CPU vs GPU",
+          "line": 209
+        },
+        {
+          "heading": "5.1 CPU 基线实现",
+          "line": 211
+        },
+        {
+          "heading": "5.2 使用 CUDA Event 计时",
+          "line": 221
+        },
+        {
+          "heading": "5.3 包含数据传输的端到端计时",
+          "line": 250
+        },
+        {
+          "heading": "5.4 性能结果对比（参考值）",
+          "line": 268
+        },
+        {
+          "heading": "6. 完整可运行代码",
+          "line": 281
+        },
+        {
+          "heading": "7. 性能分析与讨论",
+          "line": 433
+        },
+        {
+          "heading": "7.1 向量加法的算术强度",
+          "line": 435
+        },
+        {
+          "heading": "7.2 带宽利用率分析",
+          "line": 445
+        },
+        {
+          "heading": "7.3 PCIe 传输的开销",
+          "line": 455
+        },
+        {
+          "heading": "7.4 何时值得用 GPU",
+          "line": 465
+        },
+        {
+          "heading": "8. 进阶练习",
+          "line": 477
+        },
+        {
+          "heading": "8.1 练习 1：向量点积",
+          "line": 481
+        },
+        {
+          "heading": "8.2 练习 2：SAXPY",
+          "line": 487
+        },
+        {
+          "heading": "8.3 练习 3：Grid-stride Loop 版本",
+          "line": 493
+        },
+        {
+          "heading": "8.4 练习 4：异步传输与计算重叠",
+          "line": 512
+        },
+        {
+          "heading": "📝 总结",
+          "line": 534
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 546
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 557
+        }
+      ]
+    },
+    "2.1-Warp与执行模型": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/2.1-Warp与执行模型.md",
+      "title": "2.1-Warp与执行模型",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/2.1-Warp%E4%B8%8E%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%9E%8B.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 从硬件视角认识 Warp",
+          "line": 29
+        },
+        {
+          "heading": "1.1 Warp 的形成规则",
+          "line": 33
+        },
+        {
+          "heading": "1.2 Warp Scheduler",
+          "line": 46
+        },
+        {
+          "heading": "2. SIMT 执行模型",
+          "line": 62
+        },
+        {
+          "heading": "2.1 SIMT vs SIMD",
+          "line": 64
+        },
+        {
+          "heading": "2.2 执行流水线",
+          "line": 77
+        },
+        {
+          "heading": "3. Warp Divergence：分支的代价",
+          "line": 96
+        },
+        {
+          "heading": "3.1 什么是 Warp Divergence",
+          "line": 98
+        },
+        {
+          "heading": "3.2 Divergence 的性能影响",
+          "line": 104
+        },
+        {
+          "heading": "3.3 Divergence 的量化",
+          "line": 125
+        },
+        {
+          "heading": "3.4 规避策略",
+          "line": 135
+        },
+        {
+          "heading": "3.5 Independent Thread Scheduling（Volta+）",
+          "line": 195
+        },
+        {
+          "heading": "4. Warp Shuffle：线程间数据交换利器",
+          "line": 207
+        },
+        {
+          "heading": "4.1 为什么需要 Warp Shuffle",
+          "line": 209
+        },
+        {
+          "heading": "4.2 四种 Shuffle 指令",
+          "line": 221
+        },
+        {
+          "heading": "4.3 图解 Shuffle 操作",
+          "line": 244
+        },
+        {
+          "heading": "4.4 实用示例：Warp 内广播",
+          "line": 264
+        },
+        {
+          "heading": "4.5 实用示例：Warp 内求和",
+          "line": 277
+        },
+        {
+          "heading": "5. Warp 级原语与进阶技巧",
+          "line": 309
+        },
+        {
+          "heading": "5.1 Warp Vote 函数",
+          "line": 311
+        },
+        {
+          "heading": "5.2 __activemask() 与 __syncwarp()",
+          "line": 343
+        },
+        {
+          "heading": "5.3 Warp Match 函数（Volta+）",
+          "line": 355
+        },
+        {
+          "heading": "5.4 `width` 参数的妙用",
+          "line": 367
+        },
+        {
+          "heading": "6. 实战案例：Warp 级归约",
+          "line": 385
+        },
+        {
+          "heading": "6.1 完整的 Block 级归约实现",
+          "line": 387
+        },
+        {
+          "heading": "6.2 性能对比",
+          "line": 433
+        },
+        {
+          "heading": "📝 总结",
+          "line": 447
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 461
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 476
+        }
+      ]
+    },
+    "2.2-内存访问优化": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/2.2-内存访问优化.md",
+      "title": "2.2-内存访问优化",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/2.2-%E5%86%85%E5%AD%98%E8%AE%BF%E9%97%AE%E4%BC%98%E5%8C%96.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么内存访问是性能瓶颈",
+          "line": 29
+        },
+        {
+          "heading": "1.1 Roofline 模型快速回顾",
+          "line": 45
+        },
+        {
+          "heading": "2. 全局内存与合并访问",
+          "line": 56
+        },
+        {
+          "heading": "2.1 合并访问的原理",
+          "line": 58
+        },
+        {
+          "heading": "2.2 合并 vs 非合并的性能差异",
+          "line": 68
+        },
+        {
+          "heading": "2.3 对齐要求",
+          "line": 100
+        },
+        {
+          "heading": "2.4 结构体数组 vs 数组结构体",
+          "line": 115
+        },
+        {
+          "heading": "2.5 二维数组的行列访问",
+          "line": 139
+        },
+        {
+          "heading": "3. 共享内存与 Bank Conflict",
+          "line": 156
+        },
+        {
+          "heading": "3.1 共享内存的 Bank 结构",
+          "line": 158
+        },
+        {
+          "heading": "3.2 Bank Conflict 的类型与代价",
+          "line": 174
+        },
+        {
+          "heading": "3.3 经典冲突场景：矩阵转置",
+          "line": 185
+        },
+        {
+          "heading": "3.4 解决方案一：Padding",
+          "line": 202
+        },
+        {
+          "heading": "3.5 解决方案二：Swizzle（高级）",
+          "line": 223
+        },
+        {
+          "heading": "3.6 如何检测 Bank Conflict",
+          "line": 241
+        },
+        {
+          "heading": "4. 向量化加载",
+          "line": 254
+        },
+        {
+          "heading": "4.1 什么是向量化加载",
+          "line": 256
+        },
+        {
+          "heading": "4.2 常用向量类型",
+          "line": 264
+        },
+        {
+          "heading": "4.3 基本用法",
+          "line": 275
+        },
+        {
+          "heading": "4.4 对齐要求",
+          "line": 299
+        },
+        {
+          "heading": "4.5 实用模式：向量化归约",
+          "line": 323
+        },
+        {
+          "heading": "4.6 何时使用向量化加载",
+          "line": 352
+        },
+        {
+          "heading": "5. 内存访问优化实战",
+          "line": 363
+        },
+        {
+          "heading": "5.1 案例：矩阵转置优化",
+          "line": 365
+        },
+        {
+          "heading": "5.2 案例：归约操作中的内存优化",
+          "line": 423
+        },
+        {
+          "heading": "6. 高级技巧与工具",
+          "line": 463
+        },
+        {
+          "heading": "6.1 缓存提示（Cache Hints）",
+          "line": 465
+        },
+        {
+          "heading": "6.2 内存访问分析工具",
+          "line": 481
+        },
+        {
+          "heading": "6.3 优化决策流程图",
+          "line": 495
+        },
+        {
+          "heading": "📝 总结",
+          "line": 515
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 528
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 543
+        }
+      ]
+    },
+    "2.3-Occupancy与资源分配": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/2.3-Occupancy与资源分配.md",
+      "title": "2.3-Occupancy与资源分配",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/2.3-Occupancy%E4%B8%8E%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Occupancy 是什么",
+          "line": 30
+        },
+        {
+          "heading": "1.1 正式定义",
+          "line": 34
+        },
+        {
+          "heading": "1.2 为什么 Occupancy 重要",
+          "line": 45
+        },
+        {
+          "heading": "2. SM 的资源清单",
+          "line": 69
+        },
+        {
+          "heading": "2.1 主要架构资源对比",
+          "line": 73
+        },
+        {
+          "heading": "2.2 资源分配的层级关系",
+          "line": 86
+        },
+        {
+          "heading": "3. 影响 Occupancy 的三大因素",
+          "line": 103
+        },
+        {
+          "heading": "3.1 因素一：寄存器用量",
+          "line": 105
+        },
+        {
+          "heading": "3.2 因素二：共享内存用量",
+          "line": 155
+        },
+        {
+          "heading": "3.3 因素三：Block 大小",
+          "line": 176
+        },
+        {
+          "heading": "4. Occupancy 计算实例",
+          "line": 197
+        },
+        {
+          "heading": "4.1 综合示例",
+          "line": 199
+        },
+        {
+          "heading": "4.2 使用 CUDA Occupancy API",
+          "line": 250
+        },
+        {
+          "heading": "5. Occupancy 不是越高越好",
+          "line": 290
+        },
+        {
+          "heading": "5.1 反直觉的例子",
+          "line": 294
+        },
+        {
+          "heading": "5.2 高 Occupancy 的代价",
+          "line": 305
+        },
+        {
+          "heading": "5.3 何时 Occupancy 是关键",
+          "line": 315
+        },
+        {
+          "heading": "5.4 何时可以接受低 Occupancy",
+          "line": 323
+        },
+        {
+          "heading": "5.5 黄金法则",
+          "line": 331
+        },
+        {
+          "heading": "6. 调优策略与工具",
+          "line": 341
+        },
+        {
+          "heading": "6.1 CUDA Occupancy Calculator",
+          "line": 343
+        },
+        {
+          "heading": "6.2 Nsight Compute 中的 Occupancy 分析",
+          "line": 356
+        },
+        {
+          "heading": "6.3 实用调优流程",
+          "line": 376
+        },
+        {
+          "heading": "6.4 Block 大小选择建议",
+          "line": 396
+        },
+        {
+          "heading": "7. 实战案例分析",
+          "line": 407
+        },
+        {
+          "heading": "7.1 案例：SGEMM Tile 大小权衡",
+          "line": 409
+        },
+        {
+          "heading": "7.2 案例：动态共享内存灵活调优",
+          "line": 433
+        },
+        {
+          "heading": "📝 总结",
+          "line": 462
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 476
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 491
+        }
+      ]
+    },
+    "2.4-同步与原子操作": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/2.4-同步与原子操作.md",
+      "title": "2.4-同步与原子操作",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/2.4-%E5%90%8C%E6%AD%A5%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么并行需要同步",
+          "line": 30
+        },
+        {
+          "heading": "1.1 CUDA 同步层级",
+          "line": 39
+        },
+        {
+          "heading": "2. Block 内同步：\\_\\_syncthreads()",
+          "line": 59
+        },
+        {
+          "heading": "2.1 基本语义",
+          "line": 61
+        },
+        {
+          "heading": "2.2 典型使用场景",
+          "line": 69
+        },
+        {
+          "heading": "2.3 使用规则与陷阱",
+          "line": 92
+        },
+        {
+          "heading": "2.4 __syncthreads() 的性能代价",
+          "line": 131
+        },
+        {
+          "heading": "3. Warp 级同步",
+          "line": 142
+        },
+        {
+          "heading": "3.1 隐式同步（Pre-Volta）",
+          "line": 144
+        },
+        {
+          "heading": "3.2 显式 Warp 同步（Volta+）",
+          "line": 157
+        },
+        {
+          "heading": "3.3 何时需要 __syncwarp()",
+          "line": 173
+        },
+        {
+          "heading": "4. Memory Fence 与内存可见性",
+          "line": 184
+        },
+        {
+          "heading": "4.1 为什么需要 Memory Fence",
+          "line": 186
+        },
+        {
+          "heading": "4.2 三个层级的 Fence",
+          "line": 192
+        },
+        {
+          "heading": "4.3 经典用例：跨 Block 归约中的标志位",
+          "line": 205
+        },
+        {
+          "heading": "5. 原子操作",
+          "line": 241
+        },
+        {
+          "heading": "5.1 什么是原子操作",
+          "line": 243
+        },
+        {
+          "heading": "5.2 CUDA 原子操作清单",
+          "line": 258
+        },
+        {
+          "heading": "5.3 原子操作的性能代价",
+          "line": 274
+        },
+        {
+          "heading": "5.4 atomicCAS：万能原子操作",
+          "line": 286
+        },
+        {
+          "heading": "6. 原子操作的性能优化",
+          "line": 318
+        },
+        {
+          "heading": "6.1 策略一：分层归约减少冲突",
+          "line": 320
+        },
+        {
+          "heading": "6.2 策略二：共享内存原子代替全局内存原子",
+          "line": 357
+        },
+        {
+          "heading": "6.3 策略三：私有化（Privatization）",
+          "line": 392
+        },
+        {
+          "heading": "6.4 策略四：Warp 聚合原子（CUDA 9+）",
+          "line": 417
+        },
+        {
+          "heading": "7. 协作组（Cooperative Groups）",
+          "line": 444
+        },
+        {
+          "heading": "7.1 为什么需要 Cooperative Groups",
+          "line": 446
+        },
+        {
+          "heading": "7.2 常用线程组类型",
+          "line": 455
+        },
+        {
+          "heading": "7.3 Cooperative Groups 归约",
+          "line": 474
+        },
+        {
+          "heading": "7.4 Grid 级同步",
+          "line": 499
+        },
+        {
+          "heading": "📝 总结",
+          "line": 529
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 550
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 565
+        }
+      ]
+    },
+    "3.1-CUDA Reduce算子优化": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/3.1-CUDA Reduce算子优化.md",
+      "title": "3.1-CUDA Reduce算子优化",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/3.1-CUDA%20Reduce%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Reduce 算子基础",
+          "line": 33
+        },
+        {
+          "heading": "1.1 什么是 Reduce",
+          "line": 35
+        },
+        {
+          "heading": "1.2 性能瓶颈分析",
+          "line": 49
+        },
+        {
+          "heading": "1.3 测试环境说明",
+          "line": 59
+        },
+        {
+          "heading": "2. 版本 V0：朴素并行规约",
+          "line": 74
+        },
+        {
+          "heading": "2.1 算法思路",
+          "line": 76
+        },
+        {
+          "heading": "2.2 Kernel 实现",
+          "line": 82
+        },
+        {
+          "heading": "2.3 性能问题：Warp Divergence",
+          "line": 111
+        },
+        {
+          "heading": "3. 版本 V1：消除 Warp Divergence",
+          "line": 127
+        },
+        {
+          "heading": "3.1 改进思路",
+          "line": 129
+        },
+        {
+          "heading": "3.2 Kernel 实现",
+          "line": 139
+        },
+        {
+          "heading": "3.3 为什么能减少 Warp Divergence",
+          "line": 167
+        },
+        {
+          "heading": "4. 版本 V2：解决 Bank Conflict",
+          "line": 183
+        },
+        {
+          "heading": "4.1 Shared Memory Bank 简介",
+          "line": 185
+        },
+        {
+          "heading": "4.2 V1 中的 Bank Conflict 分析",
+          "line": 193
+        },
+        {
+          "heading": "4.3 改进思路：反转步长方向",
+          "line": 204
+        },
+        {
+          "heading": "4.4 Kernel 实现",
+          "line": 218
+        },
+        {
+          "heading": "5. 版本 V3：解决idle线程",
+          "line": 251
+        },
+        {
+          "heading": "5.1 问题：一半线程在\"打酱油\"",
+          "line": 253
+        },
+        {
+          "heading": "5.2 Kernel 实现",
+          "line": 263
+        },
+        {
+          "heading": "5.3 为什么有效",
+          "line": 296
+        },
+        {
+          "heading": "6. 版本 V4：展开最后一个 Warp",
+          "line": 313
+        },
+        {
+          "heading": "6.1 V3 的隐藏瓶颈：多余的 `__syncthreads()`",
+          "line": 315
+        },
+        {
+          "heading": "6.2 Unroll Last Warp（展开最后一个 Warp）",
+          "line": 319
+        },
+        {
+          "heading": "6.3 优化效果分析",
+          "line": 369
+        },
+        {
+          "heading": "7. 版本 V5：完全循环展开",
+          "line": 377
+        },
+        {
+          "heading": "7.1 剩余的循环开销",
+          "line": 379
+        },
+        {
+          "heading": "7.2 使用模板参数实现编译期展开",
+          "line": 388
+        },
+        {
+          "heading": "7.3 为什么模板展开比运行时循环更快",
+          "line": 438
+        },
+        {
+          "heading": "8. 版本 V6：Warp Shuffle 替代 Shared Memory",
+          "line": 455
+        },
+        {
+          "heading": "8.1 Warp Shuffle 原语",
+          "line": 457
+        },
+        {
+          "heading": "8.2 两级规约策略",
+          "line": 476
+        },
+        {
+          "heading": "8.3 Kernel 实现",
+          "line": 490
+        },
+        {
+          "heading": "9. 版本 V7：向量化加载 + Grid Stride Loop",
+          "line": 539
+        },
+        {
+          "heading": "9.1 向量化加载（float4）",
+          "line": 541
+        },
+        {
+          "heading": "9.2 Grid Stride Loop",
+          "line": 554
+        },
+        {
+          "heading": "9.3 Kernel 实现",
+          "line": 563
+        },
+        {
+          "heading": "10. 性能对比与选择建议",
+          "line": 633
+        },
+        {
+          "heading": "10.1 各版本性能汇总",
+          "line": 635
+        },
+        {
+          "heading": "10.2 优化收益来源分析",
+          "line": 650
+        },
+        {
+          "heading": "10.3 实际工程选择建议",
+          "line": 666
+        },
+        {
+          "heading": "📝 总结",
+          "line": 679
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 695
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 710
+        }
+      ]
+    },
+    "4.1-CUDA GEMM算子性能优化": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/4.1-CUDA GEMM算子性能优化.md",
+      "title": "4.1-CUDA GEMM算子性能优化",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/4.1-CUDA%20GEMM%E7%AE%97%E5%AD%90%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 背景与问题定义",
+          "line": 35
+        },
+        {
+          "heading": "1.1 GEMM 的定义",
+          "line": 37
+        },
+        {
+          "heading": "1.2 为什么 GEMM 如此重要",
+          "line": 49
+        },
+        {
+          "heading": "1.3 性能指标",
+          "line": 60
+        },
+        {
+          "heading": "2. 性能分析方法论",
+          "line": 72
+        },
+        {
+          "heading": "2.1 Roofline 模型与计算访存比",
+          "line": 74
+        },
+        {
+          "heading": "2.2 带宽视角分析法",
+          "line": 91
+        },
+        {
+          "heading": "2.3 Wave 模型与 L2 Cache 分析",
+          "line": 104
+        },
+        {
+          "heading": "3. 朴素实现：建立 Baseline",
+          "line": 118
+        },
+        {
+          "heading": "3.1 最直接的实现",
+          "line": 120
+        },
+        {
+          "heading": "3.2 性能分析",
+          "line": 140
+        },
+        {
+          "heading": "4. Thread Block 级 Tiling 优化",
+          "line": 156
+        },
+        {
+          "heading": "4.1 核心思想",
+          "line": 158
+        },
+        {
+          "heading": "4.2 为什么沿 K 维度切分",
+          "line": 166
+        },
+        {
+          "heading": "4.3 计算访存比提升",
+          "line": 176
+        },
+        {
+          "heading": "4.4 协作加载的线程排布",
+          "line": 188
+        },
+        {
+          "heading": "4.5 代码实现",
+          "line": 230
+        },
+        {
+          "heading": "4.6 参数选择",
+          "line": 310
+        },
+        {
+          "heading": "5. Thread 级 Tiling 优化：寄存器级数据复用",
+          "line": 322
+        },
+        {
+          "heading": "5.1 问题：Shared Memory 仍是瓶颈",
+          "line": 335
+        },
+        {
+          "heading": "5.2 外积（Outer Product）分解",
+          "line": 341
+        },
+        {
+          "heading": "5.3 代码实现",
+          "line": 380
+        },
+        {
+          "heading": "5.4 寄存器预算",
+          "line": 431
+        },
+        {
+          "heading": "6. Warp 级分块优化",
+          "line": 445
+        },
+        {
+          "heading": "6.1 动机",
+          "line": 447
+        },
+        {
+          "heading": "6.2 Warp Tile 形状与计算访存比推导",
+          "line": 453
+        },
+        {
+          "heading": "6.3 Warp 内线程位置计算",
+          "line": 471
+        },
+        {
+          "heading": "7. 向量化访存：float4 优化",
+          "line": 500
+        },
+        {
+          "heading": "7.1 为什么需要向量化",
+          "line": 502
+        },
+        {
+          "heading": "7.2 float4 加载宏",
+          "line": 506
+        },
+        {
+          "heading": "7.3 转置A存储策略",
+          "line": 519
+        },
+        {
+          "heading": "7.4 float4 引入后的坐标映射变化",
+          "line": 537
+        },
+        {
+          "heading": "7.5 性能提升",
+          "line": 562
+        },
+        {
+          "heading": "8. Bank Conflict 消除",
+          "line": 572
+        },
+        {
+          "heading": "8.1 什么是 Bank Conflict",
+          "line": 574
+        },
+        {
+          "heading": "8.2 float4 访存下的 Memory Transaction 机制",
+          "line": 595
+        },
+        {
+          "heading": "8.3 Warp 形状对 Bank Conflict 的影响",
+          "line": 611
+        },
+        {
+          "heading": "8.4 float4 下 warp(4x8) 的 Transaction 分析",
+          "line": 635
+        },
+        {
+          "heading": "8.5 解决方案",
+          "line": 685
+        },
+        {
+          "heading": "9. 双缓冲与流水线",
+          "line": 825
+        },
+        {
+          "heading": "9.1 隐藏 Global Memory 延迟",
+          "line": 827
+        },
+        {
+          "heading": "9.2 p-Loop 级双缓冲（Shared → Register）",
+          "line": 833
+        },
+        {
+          "heading": "9.3 K-Loop 级双缓冲（Global → Shared）",
+          "line": 863
+        },
+        {
+          "heading": "9.4 流水线编排",
+          "line": 879
+        },
+        {
+          "heading": "9.5 代码框架",
+          "line": 894
+        },
+        {
+          "heading": "9.6 同步优化",
+          "line": 951
+        },
+        {
+          "heading": "10. Ampere 异步拷贝流水线",
+          "line": 957
+        },
+        {
+          "heading": "10.1 cp.async 指令",
+          "line": 959
+        },
+        {
+          "heading": "10.2 Pipeline 同步模型",
+          "line": 972
+        },
+        {
+          "heading": "10.3 C++ API",
+          "line": 985
+        },
+        {
+          "heading": "10.4 CUTLASS 多级流水线",
+          "line": 1008
+        },
+        {
+          "heading": "10.5 Hopper（SM90）：TMA 与 WGMMA",
+          "line": 1021
+        },
+        {
+          "heading": "11. SASS 级优化与寄存器调度",
+          "line": 1031
+        },
+        {
+          "heading": "11.1 寄存器 Bank Conflict",
+          "line": 1033
+        },
+        {
+          "heading": "11.2 Register Reuse Cache",
+          "line": 1039
+        },
+        {
+          "heading": "11.3 寄存器重映射",
+          "line": 1045
+        },
+        {
+          "heading": "11.4 指令交错",
+          "line": 1057
+        },
+        {
+          "heading": "12. 实战参数选择与调优指南",
+          "line": 1075
+        },
+        {
+          "heading": "12.1 推荐参数表",
+          "line": 1077
+        },
+        {
+          "heading": "12.2 优化级别与预期性能",
+          "line": 1091
+        },
+        {
+          "heading": "12.3 调优工具",
+          "line": 1104
+        },
+        {
+          "heading": "12.4 写法优化：被忽视的性能杀手",
+          "line": 1114
+        },
+        {
+          "heading": "12.5 常见陷阱",
+          "line": 1181
+        },
+        {
+          "heading": "📝 总结",
+          "line": 1197
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 1210
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 1225
+        }
+      ]
+    },
+    "5.1-CUDA Softmax朴素实现优化": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/5.1-CUDA Softmax朴素实现优化.md",
+      "title": "5.1-CUDA Softmax朴素实现优化",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/5.1-CUDA%20Softmax%E6%9C%B4%E7%B4%A0%E5%AE%9E%E7%8E%B0%E4%BC%98%E5%8C%96.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Softmax 基础与数值问题",
+          "line": 30
+        },
+        {
+          "heading": "1.1 什么是 Softmax",
+          "line": 32
+        },
+        {
+          "heading": "1.2 数值溢出问题",
+          "line": 44
+        },
+        {
+          "heading": "1.3 解决方案：减最大值技巧",
+          "line": 54
+        },
+        {
+          "heading": "1.4 计算流程与性能瓶颈",
+          "line": 64
+        },
+        {
+          "heading": "1.5 测试环境",
+          "line": 76
+        },
+        {
+          "heading": "2. 版本 V0：朴素实现（单线程处理一行）",
+          "line": 90
+        },
+        {
+          "heading": "2.1 算法思路",
+          "line": 92
+        },
+        {
+          "heading": "2.2 Kernel 实现",
+          "line": 96
+        },
+        {
+          "heading": "2.3 性能问题分析",
+          "line": 127
+        },
+        {
+          "heading": "3. 版本 V1：Safe Softmax 三遍扫描",
+          "line": 139
+        },
+        {
+          "heading": "3.1 改进思路",
+          "line": 141
+        },
+        {
+          "heading": "3.2 Kernel 实现",
+          "line": 147
+        },
+        {
+          "heading": "3.3 性能分析",
+          "line": 212
+        },
+        {
+          "heading": "4. 版本 V2：Warp Shuffle 优化规约",
+          "line": 226
+        },
+        {
+          "heading": "4.1 改进思路",
+          "line": 228
+        },
+        {
+          "heading": "4.2 Kernel 实现",
+          "line": 234
+        },
+        {
+          "heading": "4.3 为什么 Warp Shuffle 更快",
+          "line": 328
+        },
+        {
+          "heading": "5. 版本 V3：向量化加载 float4",
+          "line": 343
+        },
+        {
+          "heading": "5.1 改进思路",
+          "line": 345
+        },
+        {
+          "heading": "5.2 Kernel 实现",
+          "line": 353
+        },
+        {
+          "heading": "5.3 性能改进",
+          "line": 411
+        },
+        {
+          "heading": "6. 版本 V4：两遍融合 Kernel",
+          "line": 421
+        },
+        {
+          "heading": "6.1 三遍扫描的冗余",
+          "line": 423
+        },
+        {
+          "heading": "6.2 Kernel 实现",
+          "line": 431
+        },
+        {
+          "heading": "6.3 局限性与适用场景",
+          "line": 477
+        },
+        {
+          "heading": "7. 性能对比与工程建议",
+          "line": 492
+        },
+        {
+          "heading": "7.1 各版本性能汇总",
+          "line": 494
+        },
+        {
+          "heading": "7.2 实际工程选择",
+          "line": 507
+        },
+        {
+          "heading": "📝 总结",
+          "line": 520
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 532
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 547
+        }
+      ]
+    },
+    "5.2-CUDA Online Softmax实现": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/5.2-CUDA Online Softmax实现.md",
+      "title": "5.2-CUDA Online Softmax实现",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/5.2-CUDA%20Online%20Softmax%E5%AE%9E%E7%8E%B0.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么需要 Online Softmax",
+          "line": 31
+        },
+        {
+          "heading": "1.1 三遍扫描的代价",
+          "line": 33
+        },
+        {
+          "heading": "1.2 核心洞察",
+          "line": 45
+        },
+        {
+          "heading": "2. Online Softmax 算法推导",
+          "line": 55
+        },
+        {
+          "heading": "2.1 递推关系推导",
+          "line": 57
+        },
+        {
+          "heading": "2.2 完整算法伪代码",
+          "line": 102
+        },
+        {
+          "heading": "2.3 数值稳定性保证",
+          "line": 120
+        },
+        {
+          "heading": "2.4 测试环境",
+          "line": 128
+        },
+        {
+          "heading": "3. 版本 V0：单线程 Online Softmax",
+          "line": 134
+        },
+        {
+          "heading": "3.1 算法思路",
+          "line": 136
+        },
+        {
+          "heading": "3.2 Kernel 实现",
+          "line": 140
+        },
+        {
+          "heading": "3.3 性能分析",
+          "line": 170
+        },
+        {
+          "heading": "4. 版本 V1：Block 级并行 + Warp Shuffle 合并规约",
+          "line": 180
+        },
+        {
+          "heading": "4.1 并行化挑战",
+          "line": 182
+        },
+        {
+          "heading": "4.2 用 Warp Shuffle 实现合并规约",
+          "line": 203
+        },
+        {
+          "heading": "4.3 Kernel 实现",
+          "line": 209
+        },
+        {
+          "heading": "4.4 与三遍 Safe Softmax 的对比",
+          "line": 284
+        },
+        {
+          "heading": "5. 版本 V2：向量化加载 float4",
+          "line": 301
+        },
+        {
+          "heading": "5.1 改进思路",
+          "line": 303
+        },
+        {
+          "heading": "5.2 Kernel 实现",
+          "line": 307
+        },
+        {
+          "heading": "5.3 float4 与 Online 递推的配合",
+          "line": 391
+        },
+        {
+          "heading": "6. 版本 V3：寄存器缓存消除第二遍读取",
+          "line": 403
+        },
+        {
+          "heading": "6.1 终极优化思路",
+          "line": 405
+        },
+        {
+          "heading": "6.2 Kernel 实现",
+          "line": 413
+        },
+        {
+          "heading": "6.3 寄存器压力分析",
+          "line": 484
+        },
+        {
+          "heading": "7. 版本 V4：多行并行 + Grid Stride",
+          "line": 502
+        },
+        {
+          "heading": "7.1 适用场景",
+          "line": 504
+        },
+        {
+          "heading": "7.2 Kernel 实现",
+          "line": 512
+        },
+        {
+          "heading": "7.3 Grid Stride 的优势",
+          "line": 607
+        },
+        {
+          "heading": "8. 性能对比与 FlashAttention 的联系",
+          "line": 620
+        },
+        {
+          "heading": "8.1 各版本性能汇总",
+          "line": 622
+        },
+        {
+          "heading": "8.2 与 FlashAttention 的联系",
+          "line": 634
+        },
+        {
+          "heading": "8.3 工程选择建议",
+          "line": 661
+        },
+        {
+          "heading": "📝 总结",
+          "line": 672
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 685
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 700
+        }
+      ]
+    },
+    "6.1-FlashAttention V1详解": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/6.1-FlashAttention V1详解.md",
+      "title": "6.1-FlashAttention V1详解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/6.1-FlashAttention%20V1%E8%AF%A6%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 标准 Attention 的性能瓶颈",
+          "line": 31
+        },
+        {
+          "heading": "1.1 标准 Attention 计算流程",
+          "line": 33
+        },
+        {
+          "heading": "1.2 显存瓶颈分析",
+          "line": 51
+        },
+        {
+          "heading": "1.3 计算强度不足",
+          "line": 63
+        },
+        {
+          "heading": "2. FlashAttention 核心思想",
+          "line": 77
+        },
+        {
+          "heading": "2.1 IO-Awareness：关注数据搬运",
+          "line": 81
+        },
+        {
+          "heading": "2.2 两个关键技术",
+          "line": 87
+        },
+        {
+          "heading": "2.3 直觉类比",
+          "line": 96
+        },
+        {
+          "heading": "3. Online Softmax 算法",
+          "line": 102
+        },
+        {
+          "heading": "3.1 标准 Softmax 的三遍扫描",
+          "line": 104
+        },
+        {
+          "heading": "3.2 Online Softmax 的递推公式",
+          "line": 130
+        },
+        {
+          "heading": "3.3 正确性保证",
+          "line": 154
+        },
+        {
+          "heading": "4. Tiling 分块计算策略",
+          "line": 168
+        },
+        {
+          "heading": "4.1 分块方案",
+          "line": 170
+        },
+        {
+          "heading": "4.2 SRAM 使用规划",
+          "line": 193
+        },
+        {
+          "heading": "4.3 外循环与内循环",
+          "line": 208
+        },
+        {
+          "heading": "5. 前向传播完整流程",
+          "line": 226
+        },
+        {
+          "heading": "5.1 逐步推导",
+          "line": 228
+        },
+        {
+          "heading": "5.2 算法伪代码",
+          "line": 269
+        },
+        {
+          "heading": "5.3 数值稳定性",
+          "line": 310
+        },
+        {
+          "heading": "6. 反向传播与重计算",
+          "line": 321
+        },
+        {
+          "heading": "6.1 反向传播的挑战",
+          "line": 323
+        },
+        {
+          "heading": "6.2 重计算策略",
+          "line": 343
+        },
+        {
+          "heading": "6.3 重计算的代价",
+          "line": 354
+        },
+        {
+          "heading": "7. IO 复杂度分析",
+          "line": 368
+        },
+        {
+          "heading": "7.1 标准 Attention 的 IO 复杂度",
+          "line": 370
+        },
+        {
+          "heading": "7.2 FlashAttention 的 IO 复杂度",
+          "line": 378
+        },
+        {
+          "heading": "7.3 下界证明",
+          "line": 396
+        },
+        {
+          "heading": "7.4 实际加速效果",
+          "line": 400
+        },
+        {
+          "heading": "8. 实现要点与代码示例",
+          "line": 413
+        },
+        {
+          "heading": "8.1 张量形状贯穿全过程",
+          "line": 415
+        },
+        {
+          "heading": "8.2 Kernel 设计要点",
+          "line": 444
+        },
+        {
+          "heading": "8.3 Triton 简化实现",
+          "line": 461
+        },
+        {
+          "heading": "📝 总结",
+          "line": 577
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 588
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 601
+        }
+      ]
+    },
+    "6.2-FlashAttention V2详解": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/6.2-FlashAttention V2详解.md",
+      "title": "6.2-FlashAttention V2详解",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/6.2-FlashAttention%20V2%E8%AF%A6%E8%A7%A3.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. V1 的性能瓶颈回顾",
+          "line": 31
+        },
+        {
+          "heading": "1.1 V1 的实际利用率",
+          "line": 33
+        },
+        {
+          "heading": "1.2 硬件特性分析",
+          "line": 45
+        },
+        {
+          "heading": "2. 核心改进一：调换循环顺序",
+          "line": 58
+        },
+        {
+          "heading": "2.1 V1 的循环结构问题",
+          "line": 60
+        },
+        {
+          "heading": "2.2 V2 的新循环结构",
+          "line": 67
+        },
+        {
+          "heading": "2.3 收益分析",
+          "line": 81
+        },
+        {
+          "heading": "3. 核心改进二：减少非矩阵乘运算",
+          "line": 101
+        },
+        {
+          "heading": "3.1 问题：非 GEMM 指令的瓶颈",
+          "line": 103
+        },
+        {
+          "heading": "3.2 V2 的优化：延迟 Rescaling",
+          "line": 114
+        },
+        {
+          "heading": "3.3 收益量化",
+          "line": 136
+        },
+        {
+          "heading": "4. 核心改进三：Warp 级工作分配优化",
+          "line": 148
+        },
+        {
+          "heading": "4.1 V1 的 Warp 分配方案：沿 K/V 维度划分",
+          "line": 150
+        },
+        {
+          "heading": "4.2 V2 的 Warp 分配：沿 Q 维度划分",
+          "line": 166
+        },
+        {
+          "heading": "4.3 对比两种分配策略",
+          "line": 178
+        },
+        {
+          "heading": "5. Causal Mask 优化",
+          "line": 190
+        },
+        {
+          "heading": "5.1 Causal Mask 的作用",
+          "line": 192
+        },
+        {
+          "heading": "5.2 朴素实现的浪费",
+          "line": 200
+        },
+        {
+          "heading": "5.3 V2 的块级跳过策略",
+          "line": 204
+        },
+        {
+          "heading": "5.4 加速效果",
+          "line": 223
+        },
+        {
+          "heading": "6. 前向传播完整算法",
+          "line": 229
+        },
+        {
+          "heading": "6.1 算法伪代码",
+          "line": 231
+        },
+        {
+          "heading": "6.2 与 V1 的关键差异",
+          "line": 280
+        },
+        {
+          "heading": "7. 反向传播优化",
+          "line": 293
+        },
+        {
+          "heading": "7.1 保存 logsumexp 而非分离的 m 和 l",
+          "line": 295
+        },
+        {
+          "heading": "7.2 反向传播的并行策略",
+          "line": 301
+        },
+        {
+          "heading": "7.3 反向传播中的 D 向量",
+          "line": 308
+        },
+        {
+          "heading": "8. 性能分析与对比",
+          "line": 322
+        },
+        {
+          "heading": "8.1 A100 上的性能",
+          "line": 324
+        },
+        {
+          "heading": "8.2 与其他实现的对比",
+          "line": 335
+        },
+        {
+          "heading": "8.3 长序列的显存优势（训练激活总占用估算）",
+          "line": 346
+        },
+        {
+          "heading": "📝 总结",
+          "line": 358
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 369
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 381
+        }
+      ]
+    },
+    "第7章-AI编译器": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/第7章-AI编译器.md",
+      "title": "第7章-AI编译器",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC7%E7%AB%A0-AI%E7%BC%96%E8%AF%91%E5%99%A8.md",
+      "sections": [
+        {
+          "heading": "本章简介",
+          "line": 10
+        }
+      ]
+    },
+    "第8章-性能分析工具链": {
+      "path": "docs/guides/模块二-CUDA编程与算子优化/第8章-性能分析工具链.md",
+      "title": "第8章-性能分析工具链",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E4%BA%8C-CUDA%E7%BC%96%E7%A8%8B%E4%B8%8E%E7%AE%97%E5%AD%90%E4%BC%98%E5%8C%96/%E7%AC%AC8%E7%AB%A0-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%E9%93%BE.md",
+      "sections": [
+        {
+          "heading": "本章简介",
+          "line": 10
+        }
+      ]
+    },
+    "1.1-LLM推理基础": {
+      "path": "docs/guides/模块四-推理优化/第1章-LLM推理基础/1.1-LLM推理基础.md",
+      "title": "1.1-LLM推理基础",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC1%E7%AB%A0-LLM%E6%8E%A8%E7%90%86%E5%9F%BA%E7%A1%80/1.1-LLM%E6%8E%A8%E7%90%86%E5%9F%BA%E7%A1%80.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 17
+        },
+        {
+          "heading": "1. 自回归生成：Prefill 与 Decode 两阶段",
+          "line": 30
+        },
+        {
+          "heading": "1.1 从\"续写\"理解自回归",
+          "line": 32
+        },
+        {
+          "heading": "1.2 两个阶段：Prefill 和 Decode",
+          "line": 46
+        },
+        {
+          "heading": "1.3 两阶段的计算特性对比",
+          "line": 66
+        },
+        {
+          "heading": "2. KV Cache：用显存换计算",
+          "line": 80
+        },
+        {
+          "heading": "2.1 不缓存会怎样",
+          "line": 82
+        },
+        {
+          "heading": "2.2 KV Cache 的生命周期",
+          "line": 92
+        },
+        {
+          "heading": "2.3 显存账本：KV Cache 到底占多少",
+          "line": 103
+        },
+        {
+          "heading": "2.4 碎片化问题",
+          "line": 135
+        },
+        {
+          "heading": "3. 关键性能指标：如何衡量\"快\"",
+          "line": 143
+        },
+        {
+          "heading": "3.1 延迟类指标：用户等多久",
+          "line": 147
+        },
+        {
+          "heading": "3.2 吞吐类指标：机器能扛多少",
+          "line": 170
+        },
+        {
+          "heading": "3.3 尾延迟与 Goodput：别被平均值骗了",
+          "line": 182
+        },
+        {
+          "heading": "4. 瓶颈分析：为什么 Decode 打不满算力",
+          "line": 193
+        },
+        {
+          "heading": "4.1 算术强度：计算与访存的比值",
+          "line": 197
+        },
+        {
+          "heading": "4.2 Roofline 模型：一张图看懂瓶颈",
+          "line": 207
+        },
+        {
+          "heading": "4.3 把 Prefill 和 Decode 放上去",
+          "line": 229
+        },
+        {
+          "heading": "5. 推理全链路拆解",
+          "line": 251
+        },
+        {
+          "heading": "📝 总结",
+          "line": 276
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 287
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 299
+        }
+      ]
+    },
+    "2.1-PagedAttention": {
+      "path": "docs/guides/模块四-推理优化/第2章-推理引擎核心技术/2.1-PagedAttention.md",
+      "title": "2.1-PagedAttention",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/2.1-PagedAttention.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 问题回顾：连续分配的两宗罪",
+          "line": 33
+        },
+        {
+          "heading": "2. 核心思想：借鉴操作系统的虚拟内存分页",
+          "line": 46
+        },
+        {
+          "heading": "3. Block Table：逻辑块到物理块的映射",
+          "line": 62
+        },
+        {
+          "heading": "4. 分页如何消灭碎片",
+          "line": 96
+        },
+        {
+          "heading": "5. Kernel 视角：分散的物理块怎么被读出来",
+          "line": 115
+        },
+        {
+          "heading": "6. 意外之喜：内存共享与 Copy-on-Write",
+          "line": 140
+        },
+        {
+          "heading": "7. 抢占与恢复：显存不够时怎么办",
+          "line": 165
+        },
+        {
+          "heading": "8. 工程实践：PagedAttention 在 vLLM 里怎么调",
+          "line": 182
+        },
+        {
+          "heading": "9. 源码走读：vLLM V1 的 KV Cache 管理",
+          "line": 214
+        },
+        {
+          "heading": "9.1 两个核心类的分工",
+          "line": 220
+        },
+        {
+          "heading": "9.2 空闲块为什么用双向链表",
+          "line": 238
+        },
+        {
+          "heading": "9.3 引用计数与释放顺序",
+          "line": 249
+        },
+        {
+          "heading": "10. 代价与权衡",
+          "line": 286
+        },
+        {
+          "heading": "📝 总结",
+          "line": 299
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 310
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 325
+        }
+      ]
+    },
+    "2.2-Continuous Batching": {
+      "path": "docs/guides/模块四-推理优化/第2章-推理引擎核心技术/2.2-Continuous Batching.md",
+      "title": "2.2-Continuous Batching",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/2.2-Continuous%20Batching.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 为什么要批处理",
+          "line": 30
+        },
+        {
+          "heading": "2. Static Batching 的致命短板",
+          "line": 42
+        },
+        {
+          "heading": "3. Continuous Batching：迭代级调度",
+          "line": 66
+        },
+        {
+          "heading": "4. 一次调度循环里发生了什么",
+          "line": 93
+        },
+        {
+          "heading": "5. 与 PagedAttention 的协同",
+          "line": 109
+        },
+        {
+          "heading": "6. 源码走读：vLLM V1 的 Scheduler",
+          "line": 125
+        },
+        {
+          "heading": "6.1 两个队列与一个循环",
+          "line": 131
+        },
+        {
+          "heading": "6.2 一步调度的决策顺序",
+          "line": 150
+        },
+        {
+          "heading": "6.3 抢占的代码行为",
+          "line": 190
+        },
+        {
+          "heading": "7. 调度中的关键权衡",
+          "line": 200
+        },
+        {
+          "heading": "📝 总结",
+          "line": 212
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 221
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 233
+        }
+      ]
+    },
+    "2.3-Prefix Cache 与 RadixAttention": {
+      "path": "docs/guides/模块四-推理优化/第2章-推理引擎核心技术/2.3-Prefix Cache 与 RadixAttention.md",
+      "title": "2.3-Prefix Cache 与 RadixAttention",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/2.3-Prefix%20Cache%20%E4%B8%8E%20RadixAttention.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 重复的前缀有多浪费",
+          "line": 30
+        },
+        {
+          "heading": "2. 复用的物理基础：块级 KV 共享",
+          "line": 46
+        },
+        {
+          "heading": "3. vLLM 的 Automatic Prefix Caching",
+          "line": 60
+        },
+        {
+          "heading": "3.1 块哈希：如何判断\"前缀相同\"",
+          "line": 64
+        },
+        {
+          "heading": "3.2 匹配与复用流程",
+          "line": 80
+        },
+        {
+          "heading": "3.3 V1 的\"零开销\"设计",
+          "line": 99
+        },
+        {
+          "heading": "4. 缓存的淘汰：LRU 与引用计数",
+          "line": 105
+        },
+        {
+          "heading": "5. SGLang 的 RadixAttention",
+          "line": 118
+        },
+        {
+          "heading": "6. 源码走读：vLLM APC 的哈希与匹配",
+          "line": 141
+        },
+        {
+          "heading": "6.1 块哈希是怎么\"链\"起来的",
+          "line": 145
+        },
+        {
+          "heading": "6.2 复用与淘汰的四张表",
+          "line": 174
+        },
+        {
+          "heading": "7. 适用场景与注意事项",
+          "line": 193
+        },
+        {
+          "heading": "📝 总结",
+          "line": 213
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 222
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 233
+        }
+      ]
+    },
+    "2.4-Chunked Prefill 与统一调度": {
+      "path": "docs/guides/模块四-推理优化/第2章-推理引擎核心技术/2.4-Chunked Prefill 与统一调度.md",
+      "title": "2.4-Chunked Prefill 与统一调度",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/2.4-Chunked%20Prefill%20%E4%B8%8E%E7%BB%9F%E4%B8%80%E8%B0%83%E5%BA%A6.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. Prefill 是怎么拖慢 Decode 的",
+          "line": 30
+        },
+        {
+          "heading": "2. Chunked Prefill：把长 Prefill 切块",
+          "line": 52
+        },
+        {
+          "heading": "3. Token Budget：调度的统一货币",
+          "line": 77
+        },
+        {
+          "heading": "4. vLLM V1 的统一调度器",
+          "line": 96
+        },
+        {
+          "heading": "5. 源码走读：Token Budget 如何切出 Chunk",
+          "line": 119
+        },
+        {
+          "heading": "6. 关键参数与调优",
+          "line": 166
+        },
+        {
+          "heading": "7. 权衡与适用场景",
+          "line": 184
+        },
+        {
+          "heading": "📝 总结",
+          "line": 203
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 212
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 223
+        }
+      ]
+    },
+    "2.5-Attention 后端与图优化": {
+      "path": "docs/guides/模块四-推理优化/第2章-推理引擎核心技术/2.5-Attention 后端与图优化.md",
+      "title": "2.5-Attention 后端与图优化",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC2%E7%AB%A0-%E6%8E%A8%E7%90%86%E5%BC%95%E6%93%8E%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF/2.5-Attention%20%E5%90%8E%E7%AB%AF%E4%B8%8E%E5%9B%BE%E4%BC%98%E5%8C%96.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 15
+        },
+        {
+          "heading": "1. 一个反直觉的瓶颈：CPU 拖了 GPU 的后腿",
+          "line": 30
+        },
+        {
+          "heading": "2. 可插拔的 Attention 后端",
+          "line": 52
+        },
+        {
+          "heading": "3. 后端如何处理 Prefill/Decode 混合批次",
+          "line": 71
+        },
+        {
+          "heading": "4. CUDA Graph：把一串 Kernel 启动打包成一次",
+          "line": 81
+        },
+        {
+          "heading": "5. torch.compile 与 Piecewise CUDA Graph",
+          "line": 101
+        },
+        {
+          "heading": "6. 源码走读：vLLM 怎么切图与捕获",
+          "line": 126
+        },
+        {
+          "heading": "6.1 Attention 被包成\"不透明算子\"",
+          "line": 130
+        },
+        {
+          "heading": "6.2 一张图被切成三种子图",
+          "line": 136
+        },
+        {
+          "heading": "6.3 按 Batch Size 捕获与重放",
+          "line": 153
+        },
+        {
+          "heading": "7. 实践中的开关与权衡",
+          "line": 179
+        },
+        {
+          "heading": "📝 总结",
+          "line": 193
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 203
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 214
+        }
+      ]
+    },
+    "vllm快速入门": {
+      "path": "docs/guides/模块四-推理优化/第3章-深入vLLM/vllm快速入门.md",
+      "title": "vllm快速入门",
+      "url": "https://github.com/caomaolufei/AIInfraGuide/blob/main/docs/guides/%E6%A8%A1%E5%9D%97%E5%9B%9B-%E6%8E%A8%E7%90%86%E4%BC%98%E5%8C%96/%E7%AC%AC3%E7%AB%A0-%E6%B7%B1%E5%85%A5vLLM/vllm%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8.md",
+      "sections": [
+        {
+          "heading": "📑 目录",
+          "line": 11
+        },
+        {
+          "heading": "1. 什么是 vLLM",
+          "line": 27
+        },
+        {
+          "heading": "1.1 vLLM 的核心优势",
+          "line": 33
+        },
+        {
+          "heading": "1.2 vLLM 在推理生态中的定位",
+          "line": 44
+        },
+        {
+          "heading": "2. 核心原理：PagedAttention",
+          "line": 57
+        },
+        {
+          "heading": "2.1 传统 KV Cache 的问题",
+          "line": 61
+        },
+        {
+          "heading": "2.2 PagedAttention 的解决方案",
+          "line": 73
+        },
+        {
+          "heading": "3. 安装与环境准备",
+          "line": 93
+        },
+        {
+          "heading": "3.1 系统要求",
+          "line": 95
+        },
+        {
+          "heading": "3.2 使用 uv 安装（推荐）",
+          "line": 104
+        },
+        {
+          "heading": "3.3 使用 conda + pip 安装",
+          "line": 119
+        },
+        {
+          "heading": "3.4 AMD ROCm 环境",
+          "line": 128
+        },
+        {
+          "heading": "3.5 验证安装",
+          "line": 138
+        },
+        {
+          "heading": "4. 离线批量推理",
+          "line": 144
+        },
+        {
+          "heading": "4.1 基础用法",
+          "line": 148
+        },
+        {
+          "heading": "4.2 Chat 模式推理",
+          "line": 181
+        },
+        {
+          "heading": "4.3 HuggingFace generation_config 的影响",
+          "line": 235
+        },
+        {
+          "heading": "5. 在线服务部署",
+          "line": 243
+        },
+        {
+          "heading": "5.1 启动服务器",
+          "line": 247
+        },
+        {
+          "heading": "5.2 Chat Completions API",
+          "line": 264
+        },
+        {
+          "heading": "5.3 Completions API",
+          "line": 308
+        },
+        {
+          "heading": "5.4 API 认证",
+          "line": 327
+        },
+        {
+          "heading": "5.5 支持的 API 端点",
+          "line": 348
+        },
+        {
+          "heading": "6. 关键参数调优",
+          "line": 357
+        },
+        {
+          "heading": "6.1 采样参数（SamplingParams）",
+          "line": 359
+        },
+        {
+          "heading": "6.2 引擎关键参数",
+          "line": 374
+        },
+        {
+          "heading": "6.3 显存估算与 gpu-memory-utilization",
+          "line": 387
+        },
+        {
+          "heading": "6.4 Attention Backend 选择",
+          "line": 407
+        },
+        {
+          "heading": "7. 多 GPU 推理与张量并行",
+          "line": 424
+        },
+        {
+          "heading": "7.1 基础用法",
+          "line": 428
+        },
+        {
+          "heading": "7.2 模型大小与 GPU 数量参考",
+          "line": 451
+        },
+        {
+          "heading": "7.3 vLLM 支持的并行方式",
+          "line": 465
+        },
+        {
+          "heading": "8. 常见问题与排错",
+          "line": 477
+        },
+        {
+          "heading": "8.1 启动时 OOM",
+          "line": 479
+        },
+        {
+          "heading": "8.2 Chat 模型输出乱码",
+          "line": 501
+        },
+        {
+          "heading": "8.3 ModelScope 下载模型",
+          "line": 507
+        },
+        {
+          "heading": "8.4 指定信任远程代码",
+          "line": 516
+        },
+        {
+          "heading": "📝 总结",
+          "line": 524
+        },
+        {
+          "heading": "🎯 自我检验清单",
+          "line": 534
+        },
+        {
+          "heading": "📚 参考资料",
+          "line": 545
+        }
+      ]
+    }
+  }
+}
