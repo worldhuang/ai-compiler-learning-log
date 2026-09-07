@@ -6,7 +6,28 @@ const snapshot = JSON.parse(fs.readFileSync(path.join(base, 'data/guide-sources.
 const aliases = JSON.parse(fs.readFileSync(path.join(base, 'data/guide-aliases.json'), 'utf8'));
 const algorithm = JSON.parse(fs.readFileSync(path.join(base, 'data/algorithm-roadmap.json'), 'utf8'));
 
+export const planMeta = JSON.parse(fs.readFileSync(path.join(base, 'data/inference-plan.json'), 'utf8'));
+
 const supplement = {
+  'ort': ['ONNX Runtime：Python · InferenceSession 与输入', 'https://onnxruntime.ai/docs/get-started/with-python.html'],
+  'ort-quant': ['ONNX Runtime：Quantization · 静态量化、校准与调试', 'https://onnxruntime.ai/docs/performance/model-optimizations/quantization.html'],
+  'ort-graph': ['ONNX Runtime：Graph Optimizations · 等级与优化图导出', 'https://onnxruntime.ai/docs/performance/model-optimizations/graph-optimizations.html'],
+  'ort-cuda': ['ONNX Runtime：CUDA EP · 安装兼容性与配置', 'https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html'],
+  'onnx-export': ['PyTorch：ONNX · torch.export-based exporter / dynamic_shapes', 'https://docs.pytorch.org/docs/stable/onnx.html'],
+  'tensorrt': ['TensorRT：Quick Start · ONNX 部署与 Runtime', 'https://docs.nvidia.com/deeplearning/tensorrt/latest/getting-started/quick-start-guide.html'],
+  'tensorrt-python': ['TensorRT：Python API · Build / Deserialize / Execute', 'https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/python-api-docs.html'],
+  'tensorrt-shapes': ['TensorRT：Working with Dynamic Shapes · profiles', 'https://docs.nvidia.com/deeplearning/tensorrt/latest/inference-library/work-with-dynamic-shapes.html'],
+  'vllm-quant': ['vLLM：Quantization · Supported Hardware', 'https://docs.vllm.ai/en/latest/features/quantization/'],
+  'vllm-parallel': ['vLLM：Parallelism and Scaling · TP / 副本', 'https://docs.vllm.ai/en/latest/serving/parallelism_scaling/'],
+  'vllm-metrics': ['vLLM：Production Metrics · 请求/队列/KV', 'https://docs.vllm.ai/en/latest/usage/metrics/'],
+  'vllm-docker': ['vLLM：Using Docker · 镜像与容器运行', 'https://docs.vllm.ai/en/latest/deployment/docker/'],
+  'vllm-bench': ['vLLM：bench serve · 指标、数据与参数', 'https://docs.vllm.ai/en/latest/cli/bench/serve/'],
+  'vllm-apc': ['vLLM：Automatic Prefix Caching', 'https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/'],
+  'hf-quant': ['Hugging Face：Bitsandbytes · 4/8-bit 加载与硬件要求', 'https://huggingface.co/docs/transformers/quantization/bitsandbytes'],
+  'cuda-graphs': ['PyTorch：CUDA semantics · CUDA Graphs', 'https://docs.pytorch.org/docs/stable/notes/cuda.html#cuda-graphs'],
+  'fastapi': ['FastAPI：Tutorial · 路由与请求校验（按今日范围）', 'https://fastapi.tiangolo.com/tutorial/'],
+  'fastapi-stream': ['FastAPI：Custom Response · StreamingResponse', 'https://fastapi.tiangolo.com/advanced/custom-response/'],
+
   'triton-add': ['Triton 官方：Vector Addition', 'https://triton-lang.org/main/getting-started/tutorials/01-vector-add.html'],
   'triton-softmax': ['Triton 官方：Fused Softmax', 'https://triton-lang.org/main/getting-started/tutorials/02-fused-softmax.html'],
   'triton-norm': ['Triton 官方：Layer Normalization', 'https://triton-lang.org/main/getting-started/tutorials/05-layer-norm.html'],
@@ -21,59 +42,8 @@ const supplement = {
 };
 
 export function reviseWeeks(weeks) {
-  const outputs = [
-    'MiniTensor 工程骨架、元数据、索引与 CTest',
-    'RAII Storage、共享 View、naive matmul 与 Sanitizer',
-    '泛型算子、CPU tiled/parallel matmul 与 v0.1',
-    'CPU 访存/汇编/并发微实验与测量基线',
-    '小型 Decoder reference、KV Cache 与 GPU 性能模型',
-    'CUDA vector add、三版 transpose 与可靠计时',
-    'reduction、stable softmax、LayerNorm 正确基线',
-    'CUDA tiled GEMM、外部 Tensor Core 基线与性能证据',
-    'Triton 三类算子、分块 attention reference 与小规模调参',
-    '标量 autograd、PyTorch custom op 与非连续输入检查',
-    'FX eval Conv+BN 折叠、ONNX 对照与安全图改写',
-    'torch.compile 捕获、guard、graph break 与回归实验',
-    '小型 IR/CFG/SSA、fold/DCE 与 verifier',
-    'Toy 第 1–6 章运行、rewrite 与 lowering 测试',
-    '固定版本 TVM 的 MLP 导入、编译与执行',
-    'TIR baseline、GPU schedule 与有预算的调优',
-    '两进程 DDP/collective、状态分片实验或明确标注的模拟',
-    'KV 分页/批处理/前缀缓存模拟与推理指标',
-    '项目 A RFC、三类 reference 与测试/benchmark 协议',
-    'Softmax/RMSNorm 优化、PyTorch 接入与 dispatch',
-    'RoPE、支持矩阵与统一性能报告（MLP 选修）',
-    '项目 A mini Decoder 接入、干净复现与 v1.0',
-    '项目 B 固定 RMSNorm+MLP 子图导入与三条基线',
-    '项目 B RMSNorm TIR、GPU schedule 与重放测试',
-    '项目 B 一个安全融合模式、有限 shape guard 与 fallback',
-    '项目 B 外部 kernel、runtime 诊断与 Decoder 接入',
-    '项目 B 20+ 图测试、三组 workload 与 v1.0',
-    '真实 issue 最小复现、根因证据与贡献草稿',
-    '两个项目复现审计、简历与源码演示',
-    '模拟、查漏、投递材料与未完成项清单',
-  ];
-  const files = {
-    2:'include/minitensor/storage.hpp · include/minitensor/tensor_view.hpp · src/operators.cpp · tests/test_storage.cpp · tests/test_matmul.cpp',
-    5:'labs/transformer/attention.py · norms.py · decoder.py · kv_cache.py · tests/ · labs/gpu_microarch/device_info.py',
-    9:'triton_kernels/add.py · softmax.py · rmsnorm.py · labs/attention/blocked_reference.py · tests/',
-    10:'autograd/scalar.py · extensions/ · tests/test_autograd.py · tests/test_custom_op.py',
-    13:'compiler_core/ir.py · cfg.py · interpreter.py · passes.py · tests/test_ir.py',
-    14:'mlir-toy/ · saved_ir/ · tests/（按固定版本的 Toy 工程组织）',
-    17:'distributed_labs/collective.py · ddp.py · memory_estimate.py · sharding_sim.py',
-    18:'inference_labs/decoder_bench.py · paged_cache.py · scheduler.py · prefix_cache.py · tests/',
-  };
-  weeks.forEach((w,i)=>{w.output=outputs[i];if(files[i+1])w.fileHint=files[i+1];});
-  weeks[1].title='MiniTensor II：Storage、View 与正确性基线';
-  weeks[4].title='Transformer 最小实现与 GPU 基础';
-  weeks[4].goal='先逐个实现 attention、norm、FFN、RoPE，再拼小 Decoder；用容量和算量理解 GPU 场景。';
-  weeks[8].goal='以 Triton 算子与分块 attention reference 理解 DSL 和 IO；不要求本周自研完整 FlashAttention。';
-  weeks[13].title='MLIR：Toy、Rewrite 与 Lowering';
-  weeks[13].goal='用 Toy 的真实章节理解多层 IR 与 rewrite；tiny-gpu-compiler 是选修，不挤占主线。';
-  weeks[17].title='推理基础：KV Cache、分页与调度';
-  weeks[17].goal='用可运行模拟学会缓存和调度，再在可用硬件上检查真实引擎；量化和完整服务列选修。';
-  weeks[18].goal='核心范围固定为 Softmax/RMSNorm/RoPE；工程化、测试、框架接入与性能证据优先。';
-  weeks[20].title='项目 A：RoPE 与完整性能证据';
+  if(weeks.length!==planMeta.weeks.length) throw new Error('Week count mismatch');
+  weeks.forEach((w,i)=>Object.assign(w,planMeta.weeks[i]));
 }
 
 export function resolveReading(spec) {
@@ -89,7 +59,11 @@ export function resolveReading(spec) {
   return ranges.split(',').map(number => {
     const section = source.sections.find(s => s.heading === number || s.heading.match(/^(\d+(?:\.\d+)*)(?:[ .：:]|$)/)?.[1] === number);
     if (!section) throw new Error('Section not in verified source: ' + spec + ' → ' + number);
-    return {kind: 'guide', title: source.title, heading: section.heading, sourceKey, line: section.line, url: source.url + '?plain=1#L' + section.line};
+    return {kind: 'guide', title: source.title, heading: section.heading, sourceKey, line: section.line,
+      overview:!!source.overview, anchor:section.anchor,
+      url: source.websiteUrl + (section.anchor ? '#' + section.anchor : ''),
+      sourceUrl: source.url + '?plain=1#L' + section.line,
+      readingScope: source.overview ? '该页目前是简介/提纲；只读本页与今日主题相关的段落，不存在完整的编号小节正文。' : '从此标题读到下一个同级标题；不要求读整章。原文示例先运行，再做本计划配套练习。'};
   });
 }
 
@@ -121,8 +95,8 @@ export function buildCurriculum(weeks, hot100) {
   const algorithms=buildAlgorithmSchedule(hot100);
   const days=lines.map((line,i)=>{
     const fields=line.split('|');
-    if(fields.length!==4 || fields.some(x=>!x.trim())) throw new Error('Bad daily row '+(i+1));
-    const [refs,knowledge,task,expected]=fields;
+    if(![4,6].includes(fields.length) || fields.some(x=>!x.trim())) throw new Error('Bad daily row '+(i+1));
+    const [refs,knowledge,task,expected,dailyFiles,purpose]=fields;
     const week=Math.floor(i/7)+1, day=i%7+1;
     const readings=refs.split(';').flatMap(resolveReading);
     const id=week+'-'+day;
@@ -132,14 +106,24 @@ export function buildCurriculum(weeks, hot100) {
       relation:readings.some(r=>r.kind==='supplement')
         ? 'AIInfraGuide 提供路线或基础；今日实现细节补充自官方材料。下方任务为学习计划设计，不是原文的章节标题或现成作业。'
         : '先读上方真实小节，再把这些概念用于下方练习。MiniTensor、CPU 实验和项目 A/B 是配套练习，不是原文提供的完整项目。',
-      purpose:'通过「'+task+'」，掌握'+knowledge.split(';').join('、')+'，服务于本周目标：'+weeks[week-1].goal,
+      purpose:purpose || '通过「'+task+'」，掌握'+knowledge.split(';').join('、')+'，服务于本周目标：'+weeks[week-1].goal,
       bufferPolicy:day===7?'本日优先处理本周未完成的代码/难题；全部完成才做下面的巩固任务。若巩固任务顺延，保留未勾选，不把补课等同该任务完成。':null,
-      files:weeks[week-1].fileHint,
+      files:(()=>{
+        if(!dailyFiles)return weeks[week-1].fileHint;
+        const projectRoot=dailyFiles.match(/^projects\/[^/]+\//)?.[0];
+        return dailyFiles.split('；').map(p=>projectRoot&&!/^(projects\/|labs\/|docs\/learning-log\/)/.test(p)?projectRoot+p:p).join('；');
+      })(),
       evidence:'docs/learning-log/W'+String(week).padStart(2,'0')+'-D'+String(day).padStart(2,'0')+'.md',
       algorithms:algorithms.days[i],
-      minutes:{reading:35,coding:95,validation:30,evidence:10,algorithm:algorithms.days[i].length>1?90:algorithms.days[i].length?60:0,buffer:10},
-      history:i<11?'保留历史：已完成则无需重做，只有原文定位被纠正。':null,
+      minutes:(()=>{
+        const algo=algorithms.days[i].length>1?90:algorithms.days[i].length?60:0;
+        return day===7
+          ? {reading:15,coding:30,validation:15,evidence:10,algorithm:algo,buffer:170-algo}
+          : {reading:35,coding:165-algo,validation:20,evidence:10,algorithm:algo,buffer:10};
+      })(),
+      date:new Date(Date.UTC(2026,7,31+i)).toISOString().slice(0,10),
+      history:i<14?'保留历史：已完成则无需重做，只有原文定位被纠正。':null,
     };
   });
-  return {revision:'2026-09-04-verified',checkedAt:snapshot.checkedAt,days,algorithms:{...algorithms,days:undefined}};
+  return {revision:planMeta.revision,checkedAt:snapshot.checkedAt,deadline:planMeta.deadline,lastCoreDate:planMeta.lastCoreDate,days,algorithms:{...algorithms,days:undefined}};
 }

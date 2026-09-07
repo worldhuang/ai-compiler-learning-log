@@ -34,5 +34,11 @@
   "chunk": "2.4-Chunked Prefill 与统一调度",
   "backend": "2.5-Attention 后端与图优化",
   "vllm": "vllm快速入门",
-  "route": "AI Infra学习路线"
+  "route": "AI Infra学习路线",
+  "tokens": "3.9 Tokenization与词嵌入",
+  "quant": "第4章-量化",
+  "serving": "第8章-生产级服务特性",
+  "bench": "第9章-性能分析与Benchmark",
+  "deploy": "第10章-生产部署与运维",
+  "select": "第11章-推理优化选型与端到端实战"
 }

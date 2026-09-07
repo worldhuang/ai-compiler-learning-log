@@ -12,7 +12,7 @@ const algorithm=JSON.parse(await readFile(new URL('../data/algorithm-roadmap.jso
 
 function contextWithStorage(saved={}) {
   const element=()=>({innerHTML:'',textContent:'',value:'',style:{},append(){},insertAdjacentElement(){},querySelectorAll(){return []}});
-  const ids=Object.fromEntries(['weeks','signals','phaseButtons','unlockForm','unlockInput','unlockError','offlineGate','search','startDate','doneTop','percentTop','percentBig','doneBig','topBar'].map(id=>[id,element()]));
+  const ids=Object.fromEntries(['weeks','signals','phaseButtons','unlockForm','unlockInput','unlockError','offlineGate','search','startDate','doneTop','percentTop','percentBig','doneBig','topBar','timingNotice'].map(id=>[id,element()]));
   const storage=new Map([['ai-compiler-standalone-v3',JSON.stringify(saved)]]);
   const localStorage={getItem:k=>storage.get(k),setItem:(k,v)=>storage.set(k,v)};
   const ctx=vm.createContext({...ids,document:{head:element(),createElement:element,querySelector:element,getElementById:id=>ids[id]},localStorage,sessionStorage:{getItem(){},setItem(){}},console});
@@ -34,7 +34,10 @@ test('210 explicit day records: stable IDs, real sections, no guessed weekday co
     for(const r of d.readings){
       if(r.kind==='guide'){
         assert.ok(snapshot.sources[r.sourceKey].sections.some(s=>s.heading===r.heading&&s.line===r.line),r.heading);
-        assert.ok(r.url.endsWith('#L'+r.line));
+        assert.ok(r.sourceUrl.endsWith('#L'+r.line));
+        assert.ok(r.anchor, 'Exact website heading anchor required: '+r.heading);
+        assert.equal(r.url,snapshot.sources[r.sourceKey].websiteUrl+'#'+r.anchor);
+        assert.equal(snapshot.sources[r.sourceKey].websiteCheckedAt,'2026-09-07');
         assert.doesNotMatch(r.heading,/storage\/view 的内存布局/);
       } else assert.match(r.heading,/不是 AIInfraGuide/);
     }
@@ -73,13 +76,54 @@ test('Carl main directory is fully scheduled before 100 distinct Hot100 entries'
   assert.ok(!data.curriculum.days.slice(firstHot).some(d=>d.algorithms.some(p=>p.stage==='代码随想录'||p.stage==='前置章节漏题核对')));
 });
 
+test('algorithm schedule is byte-for-byte equivalent per day to the previous version',async()=>{
+  const baseline=JSON.parse(await readFile(new URL('./algorithm-baseline.json',import.meta.url),'utf8'));
+  assert.deepEqual(data.curriculum.days.map(d=>({id:d.id,algorithms:d.algorithms})),baseline);
+});
+
+test('deadline, daily capacity and weekly catch-up time are explicit',()=>{
+  assert.equal(data.curriculum.days[0].date,'2026-08-31');
+  assert.equal(data.curriculum.days.at(-1).date,'2027-03-28');
+  assert.equal(data.curriculum.deadline,'2027-03-31');
+  for(const d of data.curriculum.days){
+    assert.equal(Object.values(d.minutes).reduce((a,b)=>a+b,0),240,d.id);
+    if(d.day===7){assert.ok(d.minutes.buffer>=80,d.id);assert.equal(d.minutes.coding,30);}
+    if(d.week>2){assert.ok(d.purpose.length>15);assert.ok(d.files.includes('.'));}
+    assert.ok(d.readings.some(r=>r.kind==='guide'),d.id);
+  }
+});
+
+test('inference dependencies precede projects and hardware extensions are honest',()=>{
+  const w=n=>data.curriculum.days.filter(d=>d.week===n);
+  assert.match(w(4).map(d=>d.task).join(' '),/MLP/);
+  assert.match(w(6).map(d=>d.task).join(' '),/KV Cache/);
+  assert.match(w(12).map(d=>d.task).join(' '),/ONNX/);
+  assert.match(w(13).map(d=>d.task).join(' '),/TensorRT/);
+  assert.match(w(14).map(d=>d.task).join(' '),/量化/);
+  assert.match(w(15).map(d=>d.task).join(' '),/vLLM/);
+  assert.match(data.weeks[18].title,/项目 A/);
+  assert.match(data.weeks[23].title,/项目 B/);
+  assert.match(w(22)[4].expected,/CPU 模拟结果绝不标成双卡吞吐/);
+  assert.match(w(26)[3].expected,/不宣称在 HF 模型中融合/);
+  assert.equal(data.phases.length,6);
+  assert.ok(data.weeks.every(w=>data.phases[w.phase-1]));
+  assert.doesNotMatch(data.curriculum.days.map(d=>d.task).join(' '),/用两进程.*DDP|本周.*FSDP/);
+  assert.doesNotMatch(script,/W17 做 collective\/DDP|量化是选修|Transformer 子图编译器/);
+});
+
+test('a changed start date reports a missed deadline without resetting completion',()=>{
+  const {ctx,ids}=contextWithStorage({completed:{'2-5':true},startDate:'2026-10-01'});
+  assert.match(ids.timingNotice.textContent,/晚于4月前目标/);
+  assert.equal(vm.runInContext('completed["2-5"]',ctx),true);
+});
+
 test('actual renderer uses the explicit daily contract on every day',()=>{
   assert.doesNotThrow(()=>new Function(script));
   const {ctx,ids}=contextWithStorage();
   assert.equal((ids.weeks.innerHTML.match(/class="day /g)||[]).length,210);
   for(const day of data.curriculum.days){
     const result=vm.runInContext('guide({...DATA.weeks['+(day.week-1)+'],index:'+day.week+'},'+(day.day-1)+')',ctx);
-    assert.equal(result.steps[1],'动手（约 95 分钟）：'+day.task);
+    assert.equal(result.steps[1],'动手（约 '+day.minutes.coding+' 分钟）：'+day.task);
     assert.equal(result.done[0],day.expected);
     const learning=vm.runInContext('learning({...DATA.weeks['+(day.week-1)+'],index:'+day.week+'},'+(day.day-1)+')',ctx);
     assert.deepEqual(Array.from(learning.points),day.knowledge);
@@ -98,6 +142,7 @@ test('history and expansion state are not reset by rerender or persistence',()=>
 
 test('local, public, root Pages and docs Pages have exactly the same payload',async()=>{
   assert.equal(await readFile(new URL('../public/worldhaung_ai.html',import.meta.url),'utf8'),html);
+  assert.equal(await readFile(new URL('../docs/worldhaung_ai.html',import.meta.url),'utf8'),html);
   for(const p of ['../index.html','../docs/index.html']){
     const wrapper=await readFile(new URL(p,import.meta.url),'utf8');
     const encoded=wrapper.match(/const b="([A-Za-z0-9+/=]+)"/)[1];

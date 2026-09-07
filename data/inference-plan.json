@@ -1,0 +1,295 @@
+{
+  "revision": "2026-09-07-inference-v1",
+  "checkedAt": "2026-09-07",
+  "startDate": "2026-08-31",
+  "lastCoreDate": "2027-03-28",
+  "deadline": "2027-03-31",
+  "assumptions": [
+    "每天约4小时含刷题；每周Day7留80–170分钟补课；若实际只有2小时，不能保证原截止日期。",
+    "后续可用双RTX3090；先按普通24GB×2规划，用户所说64GB待设备快照核实。",
+    "双卡未到位不阻塞单卡核心项目；GPU实验不能用CPU模拟冒充完成。",
+    "知识先导实验与项目复用同一代码，项目阶段补契约、工程化和真实模型证据，不从零重复全部实验。"
+  ],
+  "phases": [
+    {
+      "range": "W01–W04",
+      "name": "基础与小项目",
+      "color": "#ef6a4c"
+    },
+    {
+      "range": "W05–W10",
+      "name": "模型与 GPU 算子",
+      "color": "#e6a83e"
+    },
+    {
+      "range": "W11–W18",
+      "name": "推理部署与编译",
+      "color": "#3c86c6"
+    },
+    {
+      "range": "W19–W23",
+      "name": "项目 A · 推理服务",
+      "color": "#7257aa"
+    },
+    {
+      "range": "W24–W27",
+      "name": "项目 B · 融合算子",
+      "color": "#249577"
+    },
+    {
+      "range": "W28–W30",
+      "name": "缓冲与求职材料",
+      "color": "#756d68"
+    }
+  ],
+  "weeks": [
+    {
+      "title": "MiniTensor I：工程骨架与张量接口",
+      "goal": "恢复 C++ 构建、对象接口和测试基础；保持历史任务，不做第一天 benchmark。",
+      "output": "library、demo、CTest 与张量元数据",
+      "phase": 1
+    },
+    {
+      "title": "MiniTensor II：Storage、View 与正确性",
+      "goal": "保留当前进度，建立所有权、布局与 naive matmul；不提前安排优化报告。",
+      "output": "RAII、共享视图、正确 matmul 与 Sanitizer",
+      "phase": 1
+    },
+    {
+      "title": "MiniTensor 收尾：泛型、并发与原生接口",
+      "goal": "只把小项目做完；分开学习队列与 worker，不扩成通用张量框架。",
+      "output": "泛型 add、tiled CPU matmul、线程队列与 C ABI",
+      "phase": 1
+    },
+    {
+      "title": "Python / Linux / PyTorch 实用基础",
+      "goal": "先补推理所需的语言、环境、张量和模型接口。",
+      "output": "可配置 MLP、设备/精度实验与 checkpoint",
+      "phase": 1
+    },
+    {
+      "title": "Transformer 部件：输入、Attention、Norm、FFN",
+      "goal": "每天一个部件，逐项写 shape 与数值测试，不同时拼完整 LLM。",
+      "output": "tokenizer 使用、attention/norm/FFN reference",
+      "phase": 2
+    },
+    {
+      "title": "Transformer 生成与 GPU 性能模型",
+      "goal": "接上 RoPE、Decoder、KV Cache 和 greedy；学会估算显存。",
+      "output": "cached decode 等价测试与设备容量工具",
+      "phase": 2
+    },
+    {
+      "title": "CUDA：线程、访存与可靠计时",
+      "goal": "一个 kernel 一个边界地学习，先正确再测量。",
+      "output": "vector add、三版 transpose 与 CUDA Event",
+      "phase": 2
+    },
+    {
+      "title": "CUDA：规约与稳定 Softmax",
+      "goal": "依次处理同步、尾部、shuffle 和数值稳定，不复现所有优化版本。",
+      "output": "两级 reduce、stable/block softmax、online reference",
+      "phase": 2
+    },
+    {
+      "title": "CUDA GEMM 与 Nsight 分析",
+      "goal": "学习分块与一个受控优化；Tensor Core 用库基线，3090 不做 Hopper 专属指令。",
+      "output": "naive/tiled GEMM、资源报告与库对照",
+      "phase": 2
+    },
+    {
+      "title": "Triton 与 Attention 的 IO 思路",
+      "goal": "写三种小算子，手写分块 attention reference；成熟高性能 attention 使用库。",
+      "output": "Triton add/softmax/RMSNorm 与 SDPA 对照",
+      "phase": 2
+    },
+    {
+      "title": "PyTorch 接入与 compile 入门",
+      "goal": "把 kernel 接入框架，处理布局回退、fake、graph break 和扩展版本。",
+      "output": "custom op、profiler trace、编译稳态基线",
+      "phase": 3
+    },
+    {
+      "title": "ONNX / ONNX Runtime 部署",
+      "goal": "先部署自己写的小 MLP，再处理动态 batch 和执行 provider。",
+      "output": "固定/动态 ONNX、ORT CPU/GPU 正确性与对照",
+      "phase": 3
+    },
+    {
+      "title": "TensorRT 工程部署",
+      "goal": "分天完成 engine 构建、执行、精度、profile 和诊断，不强制 LLM 插件。",
+      "output": "TensorRT engine、动态 profile 与部署比较",
+      "phase": 3
+    },
+    {
+      "title": "量化：原理、校准与真实小模型",
+      "goal": "先手写 INT8，再跑 PTQ 和一种支持的量化 LLM；质量与性能一起验。",
+      "output": "量化 reference、ORT PTQ 与模型质量/显存记录",
+      "phase": 3
+    },
+    {
+      "title": "vLLM：真实单卡离线与服务",
+      "goal": "固定版本与模型，跑通 HTTP、流式、容量和指标，默认仅本机。",
+      "output": "单卡服务、SSE 客户端与 KV/队列指标",
+      "phase": 3
+    },
+    {
+      "title": "KV Cache、调度与并行原理",
+      "goal": "用小模拟理解分页与调度，再用真实引擎验证缓存和切块；TP 先看数学。",
+      "output": "分页/批处理模拟、APC/chunked 实验、TP 等价示例",
+      "phase": 3
+    },
+    {
+      "title": "推理编译：FX / Inductor / CUDA Graph",
+      "goal": "保留与推理直接相关的 IR、改写、guard、捕获；TVM/MLIR 深入另列选修。",
+      "output": "安全 FX pass、动态编译、CUDA Graph 与 custom op 图接入",
+      "phase": 3
+    },
+    {
+      "title": "推理服务工程与压测基础",
+      "goal": "先拆开练习并发、代理、取消、容器与指标，再做正式服务项目。",
+      "output": "可测的 HTTP 代理、token 准入与压测基线",
+      "phase": 3
+    },
+    {
+      "title": "项目 A：基线、配置与测量协议",
+      "goal": "一个真实模型、一个主引擎；固定 workload 和数学指标定义。",
+      "output": "项目 RFC、环境快照、模型与 workload manifest",
+      "phase": 4
+    },
+    {
+      "title": "项目 A：可验证压测器",
+      "goal": "自己实现原始事件采集、到达模型与统计，并与官方工具交叉检查。",
+      "output": "open/closed-loop 压测器与容量探索报告",
+      "phase": 4
+    },
+    {
+      "title": "项目 A：准入、背压与故障恢复",
+      "goal": "实现有界服务组件，通过故障测试和过载消融证明作用。",
+      "output": "token 预算网关、有界队列、取消/指标/故障测试",
+      "phase": 4
+    },
+    {
+      "title": "项目 A：优化消融与双卡进阶",
+      "goal": "逐个测试 APC、chunk、图模式、量化；有双卡再比较 TP 与两个副本。",
+      "output": "优化消融、真实双卡可选对照与配置索引",
+      "phase": 4
+    },
+    {
+      "title": "项目 A：质量、重复实验与 v1.0 候选",
+      "goal": "冻结评估集，完成稳定性、干净复现和报告；不承诺固定加速比。",
+      "output": "100 例质量评估、重复 benchmark、完整服务报告",
+      "phase": 4
+    },
+    {
+      "title": "项目 B：RMSNorm 与残差融合基线",
+      "goal": "只做两个关联前向接口，定义舍入/布局/回退契约，继承已有练习。",
+      "output": "reference、参数化测试、融合 kernel 与基线",
+      "phase": 5
+    },
+    {
+      "title": "项目 B：受控优化与 shape dispatch",
+      "goal": "基于 profiler 改一个因素；与 eager/compile 对比，报告负收益场景。",
+      "output": "小规模调参、支持矩阵、dispatch 与性能分析",
+      "phase": 5
+    },
+    {
+      "title": "项目 B：框架与真实模型接入",
+      "goal": "tiny Decoder 验融合；真实 HF 模型先只替换 RMSNorm，明确两类边界。",
+      "output": "custom op、compile、HF 模型正确性与命中 trace",
+      "phase": 5
+    },
+    {
+      "title": "项目 B：测试、性能与可安装交付",
+      "goal": "完成四层验证、最终实验和本地可安装包；不包装为通用推理引擎。",
+      "output": "50+ 参数化用例、模型 benchmark、API 与复现报告",
+      "phase": 5
+    },
+    {
+      "title": "项目缓冲与真实开源贡献",
+      "goal": "优先清欠项，再复现一个真实问题；上游提交不是自动或保证合并。",
+      "output": "最小复现、根因/回归测试、贡献草稿",
+      "phase": 6
+    },
+    {
+      "title": "秋招材料与技术演示",
+      "goal": "按 JD 逐条映射实际证据；只写自己能解释、能运行的成果。",
+      "output": "两项目简历条目、证据矩阵与源码演示",
+      "phase": 6
+    },
+    {
+      "title": "最终复现、查漏与投递准备",
+      "goal": "用独立环境和模拟验证知识，月底剩余三天作额外截止缓冲。",
+      "output": "两项目最终 checklist、部署取舍与可提交材料",
+      "phase": 6
+    }
+  ],
+  "jdSignals": [
+    {
+      "company": "思朗科技 · 2027 校招",
+      "role": "推理框架工程师",
+      "skills": "企业 HR 发布：2026-08-26 招聘起始；CUDA、vLLM/ORT/TensorRT、缓存/量化/并行。对应 W07–W27；分布式/通信深度另有缺口。",
+      "url": "https://www.nowcoder.com/jobs/detail/463017?urlSource=sitemap",
+      "evidence": "企业招聘账号的岗位正文；不是保证录用或永久有效岗位"
+    },
+    {
+      "company": "字节跳动 Seed · 官方校招方向",
+      "role": "机器学习系统 · 推理与编译",
+      "skills": "2027 招聘方向：推理计算/存储瓶颈、调度与编译算子。对应 W07–W27；这是官方方向说明，不是单岗完整 JD。",
+      "url": "https://seed.bytedance.com/zh/seedearlycareer",
+      "evidence": "官方校招方向；无单岗发布时间"
+    },
+    {
+      "company": "阿里巴巴 · 官方团队招聘",
+      "role": "大模型推理系统工程师/专家",
+      "skills": "推理架构、算子到调度、性能/精度/成本。当前路线覆盖通用推理基础；多模态/专家资历不等于已满足。",
+      "url": "https://alibaba.github.io/ROCK/zh-Hans/careers/",
+      "evidence": "官方团队职位简介；完整单岗条件与发布日期未核实，不当校招硬门槛"
+    },
+    {
+      "company": "算苗科技 · 2027 校招补充样本",
+      "role": "AI 编译器 / AI 框架研发",
+      "skills": "2026-08-26 高校就业网招聘：Triton/MLIR、算子优化、vLLM/SGLang。对应 W10–W27；纯编译器还需深补 LLVM/MLIR。",
+      "url": "https://job.hust.edu.cn/zpinfo1/2407497.htm",
+      "evidence": "高校发布企业招聘正文；新兴芯片企业补充对照，不冒称大厂"
+    }
+  ],
+  "projects": [
+    {
+      "name": "A · 可复现 LLM 推理服务与性能优化",
+      "weeks": "W19–W23",
+      "own": "自研可交叉校验的压测器、token 预算准入/有界队列、故障恢复与指标；对真实模型做质量约束下的消融。",
+      "boundary": "vLLM 提供模型执行和内部调度；不宣称自研完整引擎、线上大规模部署或千卡训练。",
+      "repos": [
+        [
+          "vLLM",
+          "https://github.com/vllm-project/vllm"
+        ],
+        [
+          "SGLang（比较阅读，不强制双实现）",
+          "https://github.com/sgl-project/sglang"
+        ]
+      ]
+    },
+    {
+      "name": "B · 融合归约算子与 PyTorch/模型接入",
+      "weeks": "W24–W27",
+      "own": "RMSNorm 与 residual+RMSNorm、明确数值/布局契约、shape dispatch、fallback、torch.library/compile、真实模型 norm 接入与性能证据。",
+      "boundary": "真实 HF 模型先只替换 RMSNorm；残差融合端到端验收在自有 tiny Decoder；不冒称通用编译器。",
+      "repos": [
+        [
+          "Triton",
+          "https://github.com/triton-lang/triton"
+        ],
+        [
+          "FlashAttention（源码与测试参照）",
+          "https://github.com/Dao-AILab/flash-attention"
+        ],
+        [
+          "PyTorch",
+          "https://github.com/pytorch/pytorch"
+        ]
+      ]
+    }
+  ]
+}

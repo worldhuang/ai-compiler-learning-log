@@ -3,8 +3,8 @@ import "./globals.css";
 import "./daily-guide.css";
 
 export const metadata: Metadata = {
-  title: "AI 编译器学习日志｜30 周核对版",
-  description: "30 周逐日学习、真实原文章节与配套代码验收；从栈与队列继续代码随想录，再完成 Hot 100。",
+  title: "推理优化学习日志｜2027年4月前",
+  description: "30 周推理部署与优化：对应 AIInfraGuide 真实小节、明确逐日代码验收，保留现有算法进度。",
   openGraph: {
     title: "AI 编译器学习日志",
     description: "30 周 · 从基础到项目",
