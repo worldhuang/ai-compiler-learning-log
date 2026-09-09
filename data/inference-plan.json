@@ -33,7 +33,7 @@
     },
     {
       "range": "W24–W27",
-      "name": "项目 B · 融合算子",
+      "name": "项目 B · FX 子图融合",
       "color": "#249577"
     },
     {
@@ -182,27 +182,27 @@
       "phase": 4
     },
     {
-      "title": "项目 B：RMSNorm 与残差融合基线",
-      "goal": "只做两个关联前向接口，定义舍入/布局/回退契约，继承已有练习。",
-      "output": "reference、参数化测试、融合 kernel 与基线",
+      "title": "项目 B：FX 子图前端与融合语义",
+      "goal": "先限定可追踪的 Residual→RMSNorm 子图，完成 FX 捕获、语义契约与安全改写，再接已有算子练习。",
+      "output": "原/优化图、reference、参数化测试与融合 kernel",
       "phase": 5
     },
     {
-      "title": "项目 B：受控优化与 shape dispatch",
-      "goal": "基于 profiler 改一个因素；与 eager/compile 对比，报告负收益场景。",
-      "output": "小规模调参、支持矩阵、dispatch 与性能分析",
+      "title": "项目 B：手写算子、dispatch 与 custom op",
+      "goal": "让 FX Pass 只在 shape/dtype/layout guard 成立时接入手写 Triton kernel；基于 profiler 做受控优化。",
+      "output": "Triton RMSNorm/残差融合、支持矩阵、dispatch、custom op 与性能分析",
       "phase": 5
     },
     {
-      "title": "项目 B：框架与真实模型接入",
-      "goal": "tiny Decoder 验融合；真实 HF 模型先只替换 RMSNorm，明确两类边界。",
-      "output": "custom op、compile、HF 模型正确性与命中 trace",
+      "title": "项目 B：图内接入与真实模型验证",
+      "goal": "以 tiny Decoder 验证 FX 融合路径；真实 HF 模型仅替换 RMSNorm，明确两类证据边界。",
+      "output": "FX→custom op 图内证据、compile、HF 模型正确性与命中 trace",
       "phase": 5
     },
     {
-      "title": "项目 B：测试、性能与可安装交付",
-      "goal": "完成四层验证、最终实验和本地可安装包；不包装为通用推理引擎。",
-      "output": "50+ 参数化用例、模型 benchmark、API 与复现报告",
+      "title": "项目 B：四层验证、性能与可安装交付",
+      "goal": "分别报告原/优化图、算子、tiny Decoder 和 HF norm 的证据；不包装为通用编译器或推理引擎。",
+      "output": "50+ 参数化用例、图/模型 benchmark、API 与复现报告",
       "phase": 5
     },
     {
@@ -272,10 +272,10 @@
       ]
     },
     {
-      "name": "B · 融合归约算子与 PyTorch/模型接入",
+      "name": "B · 基于 PyTorch FX 与 Triton 的推理子图融合与运行时调度系统",
       "weeks": "W24–W27",
-      "own": "RMSNorm 与 residual+RMSNorm、明确数值/布局契约、shape dispatch、fallback、torch.library/compile、真实模型 norm 接入与性能证据。",
-      "boundary": "真实 HF 模型先只替换 RMSNorm；残差融合端到端验收在自有 tiny Decoder；不冒称通用编译器。",
+      "own": "针对固定、可验证的 Residual→RMSNorm 子图：FX 捕获、shape/dtype/layout guard、语义保持 Pattern Pass、custom op 替换、手写 Triton 融合 kernel、fallback、torch.compile 与模型级证据。",
+      "boundary": "FX Pass 只覆盖自有、可追踪的 Post-Norm tiny Decoder 固定模式；真实 HF 模型先只替换 RMSNorm。不是任意模型的通用图编译器、代码生成器或完整推理引擎。",
       "repos": [
         [
           "Triton",

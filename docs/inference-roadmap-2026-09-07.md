@@ -64,7 +64,7 @@
 - C++阶段收敛到MiniTensor的3周小项目，增加W04 Python/Linux/PyTorch前置；Transformer拆成两周，不在一天里要求全部模型结构。
 - 取消强制DDP/FSDP/ZeRO实作周；推理中的TP原理与可选双卡实验保留。
 - 原来传统IR/MLIR/TVM连续深入的时间，转给ONNX/ORT、TensorRT、量化、vLLM、缓存调度和服务工程；FX/torch.compile/CUDA Graph保留。并非宣称已完整掌握纯编译器后端。
-- 项目A从算子集合改为真实LLM服务优化工程；项目B从TVM子图编译器改为小范围深做的融合算子与PyTorch/真实模型接入。
+- 项目A从算子集合改为真实LLM服务优化工程；项目B升级为受限但完整的 FX 子图融合链：固定 Post-Norm residual→RMSNorm 模式的捕获、语义 guard、Pattern Pass、custom op、手写 Triton kernel、fallback 与模型证据；它不是通用图编译器。
 - 双卡并不等于千卡训练实践，不能在简历写没有做过的集群经验。
 
 ## 阅读映射规则
@@ -83,17 +83,17 @@ W19–W23。自研可交叉校验的压测器、token 预算准入/有界队列�
 
 开源参照：[vLLM](https://github.com/vllm-project/vllm)、[SGLang（比较阅读，不强制双实现）](https://github.com/sgl-project/sglang)。
 
-### B · 融合归约算子与 PyTorch/模型接入
+### B · 基于 PyTorch FX 与 Triton 的推理子图融合与运行时调度系统
 
-W24–W27。RMSNorm 与 residual+RMSNorm、明确数值/布局契约、shape dispatch、fallback、torch.library/compile、真实模型 norm 接入与性能证据。
+W24–W27。针对固定、可验证的 Residual→RMSNorm 子图：FX 捕获、shape/dtype/layout guard、语义保持 Pattern Pass、custom op 替换、手写 Triton 融合 kernel、fallback、torch.compile 与模型级证据。
 
-边界：真实 HF 模型先只替换 RMSNorm；残差融合端到端验收在自有 tiny Decoder；不冒称通用编译器。
+边界：FX Pass 只覆盖自有、可追踪的 Post-Norm tiny Decoder 固定模式；真实 HF 模型先只替换 RMSNorm。不是任意模型的通用图编译器、代码生成器或完整推理引擎。
 
 开源参照：[Triton](https://github.com/triton-lang/triton)、[FlashAttention（源码与测试参照）](https://github.com/Dao-AILab/flash-attention)、[PyTorch](https://github.com/pytorch/pytorch)。
 
 项目A：100条固定质量样本；3类workload、每配置3次重复；官方工具交叉检查；明确拒绝率/成功延迟/goodput和SSE chunk语义；故障/取消/容量归还测试；干净复现。探索50请求不冒充高置信P99。
 
-项目B：50+参数化用例；FP32/FP16/非对齐/fallback；torch.library/fake/compile；独立算子、tiny Decoder残差融合、真实HF模型norm替换三层分别报告；所有数字可定位到原始日志。不保证固定加速比例。
+项目B：50+参数化用例；正例/反例图、FP32/FP16/非对齐/fallback；torch.library/fake/compile；原/优化 FX 图、独立算子、tiny Decoder 残差融合、真实 HF 模型 norm 替换四层分别报告；所有数字可定位到原始日志。不保证固定加速比例。
 
 ## 工程检测与版本入口
 
@@ -101,4 +101,3 @@ W24–W27。RMSNorm 与 residual+RMSNorm、明确数值/布局契约、shape dis
 - 自动测试：210稳定ID、阅读标题/anchor、240分钟预算、Day7缓冲、先修关系、双卡边界、渲染每日内容、勾选/展开状态、所有HTML入口载荷一致、服务重定向。
 - 发现远端HTML入口混用50周、39周、30周旧版；最新根目录worldhaung_ai.html的算法与本地核对版一致。本次统一根index、docs/index、根/ docs/ public下worldhaung_ai.html到同一数据，防止不同网址看到不同计划。
 - 勾选仍为浏览器本地存储，跨设备不自动同步。口令不是安全身份认证；公开仓库内容本来即可阅读。
-

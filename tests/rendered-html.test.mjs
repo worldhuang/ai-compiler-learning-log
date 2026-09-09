@@ -104,11 +104,29 @@ test('inference dependencies precede projects and hardware extensions are honest
   assert.match(data.weeks[18].title,/项目 A/);
   assert.match(data.weeks[23].title,/项目 B/);
   assert.match(w(22)[4].expected,/CPU 模拟结果绝不标成双卡吞吐/);
-  assert.match(w(26)[3].expected,/不宣称在 HF 模型中融合/);
+  assert.match(w(26).map(d=>d.expected).join(' '),/不宣称在 HF 模型中融合/);
   assert.equal(data.phases.length,6);
   assert.ok(data.weeks.every(w=>data.phases[w.phase-1]));
   assert.doesNotMatch(data.curriculum.days.map(d=>d.task).join(' '),/用两进程.*DDP|本周.*FSDP/);
   assert.doesNotMatch(script,/W17 做 collective\/DDP|量化是选修|Transformer 子图编译器/);
+});
+
+test('project B has a bounded FX-to-kernel fusion path rather than a generic compiler claim',()=>{
+  const w=n=>data.curriculum.days.filter(d=>d.week===n);
+  const b=[...w(24),...w(25),...w(26),...w(27)].map(d=>d.task+' '+d.expected+' '+d.purpose).join(' ');
+  assert.match(data.weeks[23].title,/FX 子图/);
+  assert.match(b,/symbolic_trace/);
+  assert.match(b,/GraphModule/);
+  assert.match(b,/FX Pass/);
+  assert.match(b,/custom op/);
+  assert.match(b,/Triton/);
+  assert.match(b,/正例/);
+  assert.match(b,/反例/);
+  assert.match(b,/fallback/);
+  const project=data.plan.projects.find(p=>p.name.startsWith('B ·'));
+  assert.match(project.own,/FX 捕获/);
+  assert.match(project.boundary,/不是任意模型/);
+  assert.doesNotMatch(project.own+' '+project.boundary,/通用图编译器[^、】【。]*$/);
 });
 
 test('a changed start date reports a missed deadline without resetting completion',()=>{
